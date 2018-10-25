@@ -1,9 +1,9 @@
 ﻿Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.Windows.Forms
 
 Public Class Form1
 
     Dim commandBuffer As New List(Of Char)
-    Dim chars As New Dictionary(Of Keys, Char)
 
     Private Sub boxTerminal_KeyDown(sender As Object, e As KeyEventArgs) Handles boxTerminal.KeyDown
         If e.KeyCode = Keys.Enter Then
@@ -13,16 +13,12 @@ Public Class Form1
             End If
 
             Call boxTerminal.AppendText("# ")
-        ElseIf chars.ContainsKey(Keys.KeyCode) Then
-            commandBuffer += chars(e.KeyCode)
+        ElseIf Keys.KeyCode.IsPrintableCharacter Then
+            commandBuffer += e.KeyCode.ToChar
         End If
     End Sub
 
     Private Sub FireCommand(cmd As String)
-
-    End Sub
-
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
     End Sub
 End Class
