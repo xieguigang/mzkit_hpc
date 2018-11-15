@@ -52,6 +52,14 @@ Module Program
         Dim appName$
         Dim cli$
 
+        If argv.IsNullOrEmpty Then
+            Call Console.WriteLine(" Syntax:")
+            Call Console.WriteLine()
+            Call Console.WriteLine(" ForEach [*.ext] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>")
+
+            Return 0
+        End If
+
         If argv(1).TextEquals("do") Then
             filter = argv(0)
             appName = argv(2)
