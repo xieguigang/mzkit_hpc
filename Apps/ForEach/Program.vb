@@ -56,7 +56,7 @@ Module Program
         If argv.IsNullOrEmpty Then
             Call Console.WriteLine(" Syntax:")
             Call Console.WriteLine()
-            Call Console.WriteLine(" ForEach [*.ext] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>")
+            Call Console.WriteLine(" ForEach [*.ext/dir] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>")
 
             Return 0
         End If
@@ -78,9 +78,15 @@ Module Program
             Throw New NotImplementedException()
         End If
 
-        For Each file As String In dir.EnumerateFiles(filter)
-            Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
-        Next
+        If filter.TextEquals("dir") Then
+            For Each file As String In dir.ListDirectory
+                Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
+            Next
+        Else
+            For Each file As String In dir.EnumerateFiles(filter)
+                Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
+            Next
+        End If
 
         Return 0
     End Function
