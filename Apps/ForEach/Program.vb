@@ -51,6 +51,7 @@ Module Program
         Dim argv$() = App.CommandLine.Tokens
         Dim appName$
         Dim cli$
+        Dim dir$ = App.CurrentDirectory
 
         If argv.IsNullOrEmpty Then
             Call Console.WriteLine(" Syntax:")
@@ -68,11 +69,16 @@ Module Program
             filter = "*.*"
             appName = argv(1)
             cli = CLITools.Join(argv.Skip(2))
+        ElseIf argv(3).TextEquals("do") Then
+            filter = argv(0)
+            appName = argv(4)
+            cli = CLITools.Join(argv.Skip(5))
+            dir = argv(2)
         Else
             Throw New NotImplementedException()
         End If
 
-        For Each file As String In App.CurrentDirectory.EnumerateFiles(filter)
+        For Each file As String In dir.EnumerateFiles(filter)
             Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
         Next
 
