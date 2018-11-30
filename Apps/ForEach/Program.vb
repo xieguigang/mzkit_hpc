@@ -80,11 +80,11 @@ Module Program
 
         If filter.TextEquals("dir") Then
             For Each file As String In dir.ListDirectory
-                Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
+                Call App.Shell(appName, cli.Replace("$file", file).Replace("$basename", file.DirectoryName), CLR:=True).Run()
             Next
         Else
             For Each file As String In dir.EnumerateFiles(filter)
-                Call App.Shell(appName, cli.Replace("$file", file), CLR:=True).Run()
+                Call App.Shell(appName, cli.Replace("$file", file).Replace("$basename", file.BaseName), CLR:=True).Run()
             Next
         End If
 
