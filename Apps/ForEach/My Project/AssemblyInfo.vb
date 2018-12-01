@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ls - list directory contents")>
-<Assembly: AssemblyDescription("List information about the FILEs (the current directory by default). Sort entries alphabetically if none of -cftuSUX nor --sort.")>
+<Assembly: AssemblyTitle("foreach batch task cli helper")>
+<Assembly: AssemblyDescription("foreach batch task cli helper")>
 <Assembly: AssemblyCompany("Microsoft")>
-<Assembly: AssemblyProduct("ls")>
+<Assembly: AssemblyProduct("foreach")>
 <Assembly: AssemblyCopyright("Copyright © Microsoft 2016")>
-<Assembly: AssemblyTrademark("")>
+<Assembly: AssemblyTrademark("CMD.Internals")>
 
 <Assembly: ComVisible(False)>
 
