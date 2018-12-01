@@ -84,10 +84,15 @@ Module Program
         End If
 
         Dim commandLines As New List(Of String)
-        Dim parallels% = CType(appName & " " & cli, CommandLine) _
-            .EnvironmentVariables _
-            .TryGetValue("parallel") _
+        Dim environment As Dictionary(Of String, String) = CType(appName & " " & cli, CommandLine).EnvironmentVariables
+        Dim parallels% = environment _
+            .TryGetValue("/parallel") _
             .ParseInteger Or NoParallel
+        Dim isCLR As Boolean = environment.TryGetValue("/clr", [default]:="false").ParseBoolean
+
+        If Not isCLR Then
+            cli = CLITools.Join(CLITools.GetTokens(cli).TakeWhile(Function(t) Not t.TextEquals("/@set")))
+        End If
 
         If filter.TextEquals("dir") Then
             For Each file As String In dir.ListDirectory
