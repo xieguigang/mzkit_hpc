@@ -40,8 +40,13 @@
 #End Region
 
 Imports Microsoft.VisualBasic.CommandLine
+Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.Language.Default
+Imports Microsoft.VisualBasic.Parallel.Threads
 
 Module Program
+
+    ReadOnly NoParallel As DefaultValue(Of Integer) = 1
 
     ' foreach [*.txt] do cli_tool command_argvs
     ' 使用 $file 作为文件路径的占位符
@@ -78,15 +83,23 @@ Module Program
             Throw New NotImplementedException()
         End If
 
+        Dim commandLines As New List(Of String)
+        Dim parallels% = CType(appName & " " & cli, CommandLine) _
+            .EnvironmentVariables _
+            .TryGetValue("parallel") _
+            .ParseInteger Or NoParallel
+
         If filter.TextEquals("dir") Then
             For Each file As String In dir.ListDirectory
-                Call App.Shell(appName, cli.Replace("$file", file).Replace("$basename", file.DirectoryName), CLR:=True).Run()
+                commandLines += cli.Replace("$file", file).Replace("$basename", file.DirectoryName)
             Next
         Else
             For Each file As String In dir.EnumerateFiles(filter)
-                Call App.Shell(appName, cli.Replace("$file", file).Replace("$basename", file.BaseName), CLR:=True).Run()
+                commandLines += cli.Replace("$file", file).Replace("$basename", file.BaseName)
             Next
         End If
+
+        Call commandLines.BatchTask(Function(task) App.Shell(appName, task, CLR:=True).Run, numThreads:=parallels)
 
         Return 0
     End Function
