@@ -46,7 +46,7 @@ Imports Microsoft.VisualBasic.Parallel.Threads
 
 Module Program
 
-    ReadOnly NoParallel As DefaultValue(Of Integer) = 1
+    ReadOnly NoParallel As DefaultValue(Of String) = "1"
 
     ' foreach [*.txt] do cli_tool command_argvs
     ' 使用 $file 作为文件路径的占位符
@@ -85,9 +85,7 @@ Module Program
 
         Dim commandLines As New List(Of String)
         Dim environment As Dictionary(Of String, String) = CType(appName & " " & cli, CommandLine).EnvironmentVariables
-        Dim parallels% = environment _
-            .TryGetValue("/parallel") _
-            .ParseInteger Or NoParallel
+        Dim parallels% = environment.TryGetValue("/parallel") Or NoParallel
         Dim isCLR As Boolean = environment.TryGetValue("/clr", [default]:="false").ParseBoolean
 
         If Not isCLR Then
