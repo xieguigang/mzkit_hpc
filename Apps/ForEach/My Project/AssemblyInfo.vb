@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("foreach batch task cli helper")>
 <Assembly: AssemblyDescription("foreach batch task cli helper")>
-<Assembly: AssemblyCompany("Microsoft")>
+<Assembly: AssemblyCompany("MIT")>
 <Assembly: AssemblyProduct("foreach")>
-<Assembly: AssemblyCopyright("Copyright © Microsoft 2016")>
+<Assembly: AssemblyCopyright("Copyright © MIT licensed 2016")>
 <Assembly: AssemblyTrademark("CMD.Internals")>
 
 <Assembly: ComVisible(False)>
