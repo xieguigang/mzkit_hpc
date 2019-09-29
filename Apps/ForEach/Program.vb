@@ -39,24 +39,22 @@
 
 #End Region
 
+Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Language.Default
+Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Parallel.Threads
 
 Module Program
 
-    ReadOnly NoParallel As DefaultValue(Of String) = "1"
+    ReadOnly noParallel As [Default](Of String) = "1"
 
     ' foreach [*.txt] do cli_tool command_argvs
     ' 使用 $file 作为文件路径的占位符
 
     Public Function Main() As Integer
-        Dim filter$ = ""
         Dim argv$() = App.CommandLine.Tokens
-        Dim appName$
-        Dim cli$
-        Dim dir$ = App.CurrentDirectory
 
         If argv.IsNullOrEmpty Then
             Call Console.WriteLine(" Syntax:")
@@ -64,7 +62,17 @@ Module Program
             Call Console.WriteLine(" ForEach [*.ext/dir] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>")
 
             Return 0
+        Else
+            Return argv.doForeach
         End If
+    End Function
+
+    <Extension>
+    Private Function doForeach(argv$()) As Integer
+        Dim filter$ = ""
+        Dim appName$
+        Dim cli$
+        Dim dir$ = App.CurrentDirectory
 
         If argv(1).TextEquals("do") Then
             filter = argv(0)
@@ -85,11 +93,19 @@ Module Program
 
         Dim commandLines As New List(Of String)
         Dim environment As Dictionary(Of String, String) = CType(appName & " " & cli, CommandLine).EnvironmentVariables
-        Dim parallels% = environment.TryGetValue("/parallel") Or NoParallel
+        Dim parallels% = environment.TryGetValue("/parallel") Or noParallel
         Dim isCLR As Boolean = environment.TryGetValue("/clr", [default]:="false").ParseBoolean
+        Dim appShell As Func(Of String, Integer) =
+            Function(task)
+                Return App.Shell(appName, task, CLR:=True).Run
+            End Function
 
         If Not isCLR Then
-            cli = CLITools.Join(CLITools.GetTokens(cli).TakeWhile(Function(t) Not t.TextEquals("/@set")))
+            cli = CLITools.GetTokens(cli) _
+                .TakeWhile(Function(t)
+                               Return Not t.TextEquals("/@set")
+                           End Function) _
+                .DoCall(AddressOf CLITools.Join)
         End If
 
         If filter.TextEquals("dir") Then
@@ -102,7 +118,7 @@ Module Program
             Next
         End If
 
-        Call commandLines.BatchTask(Function(task) App.Shell(appName, task, CLR:=True).Run, numThreads:=parallels)
+        Call commandLines.BatchTask(appShell, numThreads:=parallels)
 
         Return 0
     End Function
