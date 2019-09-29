@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("foreach batch task cli helper")>
-<Assembly: AssemblyDescription("foreach batch task cli helper")>
+<Assembly: AssemblyTitle("CommandLine foreach batch task cli helper tool")>
+<Assembly: AssemblyDescription("CommandLine foreach batch task cli helper tool")>
 <Assembly: AssemblyCompany("MIT")>
-<Assembly: AssemblyProduct("foreach")>
+<Assembly: AssemblyProduct("CMD.Internals")>
 <Assembly: AssemblyCopyright("Copyright © MIT licensed 2016")>
-<Assembly: AssemblyTrademark("CMD.Internals")>
+<Assembly: AssemblyTrademark("CMD")>
 
 <Assembly: ComVisible(False)>
 

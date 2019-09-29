@@ -39,7 +39,9 @@
 
 #End Region
 
+Imports System.Reflection
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ApplicationServices.Development
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Language.Default
@@ -53,13 +55,18 @@ Module Program
     ' foreach [*.txt] do cli_tool command_argvs
     ' 使用 $file 作为文件路径的占位符
 
+    Const SYNOPSIS$ = "ForEach [*.ext/dir] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>"
+
     Public Function Main() As Integer
         Dim argv$() = App.CommandLine.Tokens
 
         If argv.IsNullOrEmpty Then
-            Call Console.WriteLine(" Syntax:")
-            Call Console.WriteLine()
-            Call Console.WriteLine(" ForEach [*.ext/dir] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>")
+            Dim info As AssemblyInfo = Assembly _
+                .LoadFile(App.ExecutablePath) _
+                .DoCall(AddressOf ApplicationInfoUtils.FromAssembly)
+            Dim description$ = "CommandLine foreach batch task cli helper tool"
+
+            Call CLITools.AppSummary(info, description, SYNOPSIS, App.StdOut)
 
             Return 0
         Else
