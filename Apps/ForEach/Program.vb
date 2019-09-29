@@ -41,12 +41,14 @@
 
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ApplicationServices
 Imports Microsoft.VisualBasic.ApplicationServices.Development
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Language.Default
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Parallel.Threads
+Imports AssemblyInfo = Microsoft.VisualBasic.ApplicationServices.Development.AssemblyInfo
 
 Module Program
 
@@ -117,11 +119,11 @@ Module Program
 
         If filter.TextEquals("dir") Then
             For Each file As String In dir.ListDirectory
-                commandLines += cli.Replace("$file", file).Replace("$basename", file.DirectoryName)
+                commandLines += cli.Replace("$file", file.CLIPath).Replace("$basename", file.DirectoryName.CLIToken)
             Next
         Else
             For Each file As String In dir.EnumerateFiles(filter)
-                commandLines += cli.Replace("$file", file).Replace("$basename", file.BaseName)
+                commandLines += cli.Replace("$file", file.CLIPath).Replace("$basename", file.BaseName.CLIToken)
             Next
         End If
 
