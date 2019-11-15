@@ -57,6 +57,8 @@ Module Program
     ' foreach [*.txt] do cli_tool command_argvs
     ' 使用 $file 作为文件路径的占位符
 
+    ' foreach @lines in "SqliteExport dbfile.db" do SqliteExport /export /db "dbfile.db" /table $line 
+
     Const SYNOPSIS$ = "ForEach [*.ext/dir] [In <Folder>] Do <Action> <Arguments, use '$file' as placeholder>"
 
     Public Function Main() As Integer
@@ -71,9 +73,28 @@ Module Program
             Call CLITools.AppSummary(info, description, SYNOPSIS, App.StdOut)
 
             Return 0
+        ElseIf argv(1) = "@lines" Then
+            Return argv.doForEachLine
         Else
             Return argv.doForeach
         End If
+    End Function
+
+    <Extension>
+    Private Function doForEachLine(argv As String()) As Integer
+        Dim source = argv(3)
+        Dim sequence As String()
+
+        If source.FileExists Then
+            sequence = source.ReadAllLines
+        Else
+            With New IORedirectFile(source, isShellCommand:=True)
+                Call .Run()
+                sequence = .StandardOutput.LineTokens
+            End With
+        End If
+
+        Return 0
     End Function
 
     <Extension>
