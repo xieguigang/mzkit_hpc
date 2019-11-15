@@ -48,6 +48,7 @@ Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Language.Default
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Parallel.Threads
+Imports Microsoft.VisualBasic.Serialization.JSON
 Imports AssemblyInfo = Microsoft.VisualBasic.ApplicationServices.Development.AssemblyInfo
 
 Module Program
@@ -73,7 +74,7 @@ Module Program
             Call CLITools.AppSummary(info, description, SYNOPSIS, App.StdOut)
 
             Return 0
-        ElseIf argv(1) = "@lines" Then
+        ElseIf argv(Scan0) = "@lines" Then
             Return argv.doForEachLine
         Else
             Return argv.doForeach
@@ -82,17 +83,27 @@ Module Program
 
     <Extension>
     Private Function doForEachLine(argv As String()) As Integer
-        Dim source = argv(3)
+        Dim source = argv(2)
         Dim sequence As String()
+        Dim cli_template = CLITools.Join(argv.Skip(4))
+
+        Call $"Run for command: {cli_template}".__INFO_ECHO
 
         If source.FileExists Then
             sequence = source.ReadAllLines
         Else
             With New IORedirectFile(source, isShellCommand:=True)
                 Call .Run()
-                sequence = .StandardOutput.LineTokens
+                sequence = .StandardOutput.LineTokens.Where(Function(l) Not l.StringEmpty).ToArray
             End With
         End If
+
+        Dim cli$
+
+        For Each line As String In sequence
+            cli = cli_template.Replace("$line", line.CLIToken)
+            Call New IORedirectFile(cli, isShellCommand:=True).Run()
+        Next
 
         Return 0
     End Function
