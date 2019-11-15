@@ -59,6 +59,8 @@ Module Program
                 Return False
             End Function)
 
-        Return tableNames.ToArray
+        Return tableNames _
+            .OrderBy(Function(s) s) _
+            .ToArray
     End Function
 End Module
