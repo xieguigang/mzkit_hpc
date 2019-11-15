@@ -48,7 +48,6 @@ Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Language.Default
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Parallel.Threads
-Imports Microsoft.VisualBasic.Serialization.JSON
 Imports AssemblyInfo = Microsoft.VisualBasic.ApplicationServices.Development.AssemblyInfo
 
 Module Program

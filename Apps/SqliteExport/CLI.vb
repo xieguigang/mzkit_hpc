@@ -55,9 +55,13 @@ Imports Microsoft.VisualBasic.Net.Http
 
                         If row(i).GetType Is GetType(Byte()) Then
                             ' base64
-                            cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
+                            If IsDBNull(row(i)) Then
+                                cols.Add(fields(i), "")
+                            Else
+                                cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
+                            End If
                         Else
-                            cols.Add(fields(i), row(i))
+                            cols.Add(fields(i), Scripting.ToString(row(i)))
                         End If
                     Next
                 Else
@@ -66,9 +70,13 @@ Imports Microsoft.VisualBasic.Net.Http
                     For i As Integer = 0 To fields.Length - 1
                         If row(i).GetType Is GetType(Byte()) Then
                             ' base64
-                            cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
+                            If IsDBNull(row(i)) Then
+                                cols.Add(fields(i), "")
+                            Else
+                                cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
+                            End If
                         Else
-                            cols.Add(fields(i), row(i))
+                            cols.Add(fields(i), Scripting.ToString(row(i)))
                         End If
                     Next
                 End If
