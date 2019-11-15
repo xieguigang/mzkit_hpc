@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SQLite
+Imports Microsoft.VisualBasic.Language
 
 Module Program
 
@@ -6,15 +7,16 @@ Module Program
         Return GetType(CLI).RunCLI(App.CommandLine)
     End Function
 
-    Public Sub SelectQueryTable(dbFile$, tableName$, rowAction As Func(Of Object(), Boolean))
+    Public Sub SelectQueryTable(dbFile$, selectQuery$, rowAction As Func(Of Integer, Object(), Boolean))
         Dim connStr$ = $"data source={dbFile.GetFullPath};version=3;"
         Dim cn As New SQLiteConnection(connStr)
         Call cn.Open()
 
         Dim cmd = cn.CreateCommand()
-        cmd.CommandText = $"SELECT * FROM {tableName};"
+        cmd.CommandText = selectQuery
 
         Dim row As New List(Of Object)
+        Dim rid As i32 = Scan0
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
             Do While reader.Read()
@@ -22,8 +24,10 @@ Module Program
                     Call row.Add(reader(i))
                 Next
 
-                If rowAction(row.ToArray) Then
+                If rowAction(++rid, row.ToArray) Then
                     Exit Do
+                Else
+                    Call row.Clear()
                 End If
             Loop
         End Using
