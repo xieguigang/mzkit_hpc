@@ -1,11 +1,12 @@
 ﻿Imports Microsoft.VisualBasic.CommandLine
+Imports Microsoft.VisualBasic.CommandLine.InteropService.SharedORM
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Data.csv
 Imports Microsoft.VisualBasic.Data.csv.IO
 Imports Microsoft.VisualBasic.Data.IO.ManagedSqlite.Core.SQLSchema
 Imports Microsoft.VisualBasic.Net.Http
 
-Module CLI
+<CLI> Module CLI
 
     <ExportAPI("/export")>
     <Usage("/export /db <database.sqlite3> /table <tableName> [/out <table.csv>]")>
