@@ -1,10 +1,20 @@
 ﻿Imports System.Data.SQLite
 Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.Data.IO.ManagedSqlite.Core.SQLSchema
+Imports Microsoft.VisualBasic.CommandLine
 
 Module Program
 
     Public Function Main() As Integer
-        Return GetType(CLI).RunCLI(App.CommandLine)
+        Return GetType(CLI).RunCLI(App.CommandLine, executeFile:=AddressOf printTableNames)
+    End Function
+
+    Private Function printTableNames(dbFile As String, args As CommandLine) As Integer
+        Dim names = GetAllTableNames(dbFile)
+
+        Call names.DoEach(AddressOf Console.WriteLine)
+
+        Return 0
     End Function
 
     Public Sub SelectQueryTable(dbFile$, selectQuery$, rowAction As Func(Of Integer, Object(), Boolean))
@@ -33,4 +43,22 @@ Module Program
         End Using
     End Sub
 
+    Public Function GetAllTableNames(dbFile As String) As String()
+        Dim tableNames As New List(Of String)
+
+        Call Program.SelectQueryTable(
+            dbFile, $"SELECT * FROM sqlite_master;",
+            Function(rid, names)
+                ' CREATE TABLE sqlite_master (type TEXT, name TEXT, tbl_name TEXT, rootpage INTEGER, sql TEXT);
+                If CStr(names(Scan0)) = "table" Then
+                    Dim schema As New Schema(names(4))
+
+                    tableNames.Add(names(2))
+                End If
+
+                Return False
+            End Function)
+
+        Return tableNames.ToArray
+    End Function
 End Module
