@@ -15,20 +15,18 @@ Imports Microsoft.VisualBasic.Net.Http
         Dim tableName$ = args <= "/table"
         Dim out$ = args("/out") Or $"{dbFile.TrimSuffix}_{tableName}.csv"
         Dim fields As String() = Nothing
-
-        Call Program.SelectQueryTable(
-            dbFile, $"SELECT * FROM sqlite_master;",
-            Function(rid, names)
+        Dim getFieldNames =
+            Function(rid As Integer, names As Object())
                 ' CREATE TABLE sqlite_master (type TEXT, name TEXT, tbl_name TEXT, rootpage INTEGER, sql TEXT);
                 If CStr(names(Scan0)) = "table" AndAlso CStr(names(1)) = tableName Then
-                    Dim schema As New Schema(names(4))
-
-                    fields = schema.columns.Keys
+                    fields = New Schema(names(4)).columns.Keys
                     Return True
                 Else
                     Return False
                 End If
-            End Function)
+            End Function
+
+        Call Program.SelectQueryTable(dbFile, $"SELECT * FROM sqlite_master;", getFieldNames)
 
         If fields.IsNullOrEmpty Then
             Call $"Could not found table '{tableName}' in database: {dbFile}".PrintException

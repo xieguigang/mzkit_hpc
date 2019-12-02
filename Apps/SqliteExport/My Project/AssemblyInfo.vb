@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SqliteExport")>
-<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyTitle("Sqlite3 database data export helper")>
+<Assembly: AssemblyDescription("Sqlite3 database data export helper")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("SqliteExport")>
-<Assembly: AssemblyCopyright("Copyright ©  2019")>
-<Assembly: AssemblyTrademark("")>
+<Assembly: AssemblyProduct("CMD")>
+<Assembly: AssemblyCopyright("Copyright © MIT license 2019")>
+<Assembly: AssemblyTrademark("SQLite3")>
 
 <Assembly: ComVisible(False)>
 

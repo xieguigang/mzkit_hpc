@@ -5,6 +5,12 @@ Imports Microsoft.VisualBasic.CommandLine
 
 Module Program
 
+    ' 1. print all table names in database
+    ' SqliteExport file.db
+    '
+    ' 2. export by table name
+    ' SqliteExport /export /db <database.sqlite3> /table <tableName> 
+
     Public Function Main() As Integer
         Return GetType(CLI).RunCLI(App.CommandLine, executeFile:=AddressOf printTableNames)
     End Function
@@ -45,19 +51,17 @@ Module Program
 
     Public Function GetAllTableNames(dbFile As String) As String()
         Dim tableNames As New List(Of String)
-
-        Call Program.SelectQueryTable(
-            dbFile, $"SELECT * FROM sqlite_master;",
-            Function(rid, names)
+        Dim trygetTableName =
+            Function(rid As Integer, names As Object())
                 ' CREATE TABLE sqlite_master (type TEXT, name TEXT, tbl_name TEXT, rootpage INTEGER, sql TEXT);
                 If CStr(names(Scan0)) = "table" Then
-                    Dim schema As New Schema(names(4))
-
                     tableNames.Add(names(2))
                 End If
 
                 Return False
-            End Function)
+            End Function
+
+        Call Program.SelectQueryTable(dbFile, $"SELECT * FROM sqlite_master;", trygetTableName)
 
         Return tableNames _
             .OrderBy(Function(s) s) _
