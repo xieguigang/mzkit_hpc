@@ -80,6 +80,19 @@ Module Program
         End If
     End Function
 
+    Private Function getSequenceFromShellStdOutput(source As String) As String()
+        With New IORedirectFile(source, isShellCommand:=True)
+            Call .Run()
+
+            ' Get sequence lines of text from std_output
+            ' of the downstream app command invoke
+            Return .StandardOutput _
+                   .LineTokens _
+                   .Where(Function(l) Not l.StringEmpty) _
+                   .ToArray
+        End With
+    End Function
+
     <Extension>
     Private Function doForEachLine(argv As String()) As Integer
         Dim source = argv(2)
@@ -90,18 +103,24 @@ Module Program
 
         If source.FileExists Then
             sequence = source.ReadAllLines
+
+            If sequence.Length = 1 AndAlso sequence(Scan0).First = "@"c Then
+                sequence = sequence(Scan0) _
+                    .Substring(1) _
+                    .DoCall(AddressOf getSequenceFromShellStdOutput)
+            End If
         Else
-            With New IORedirectFile(source, isShellCommand:=True)
-                Call .Run()
-                sequence = .StandardOutput.LineTokens.Where(Function(l) Not l.StringEmpty).ToArray
-            End With
+            sequence = getSequenceFromShellStdOutput(source)
         End If
 
         Dim cli$
+        Dim invoke As IORedirectFile
 
         For Each line As String In sequence
             cli = cli_template.Replace("$line", line.CLIToken)
-            Call New IORedirectFile(cli, isShellCommand:=True).Run()
+
+            invoke = New IORedirectFile(cli, isShellCommand:=True)
+            invoke.Run()
         Next
 
         Return 0
