@@ -37,11 +37,17 @@ Imports Microsoft.VisualBasic.Net.Http
         Dim table As New List(Of EntityObject)
         Dim haveIDCol As Integer = fields.IndexOf("ID")
 
-        Call Program.SelectQueryTable(
-            dbFile, SQL,
-            Function(rid, row)
-                Dim id As String
-                Dim cols As New Dictionary(Of String, String)
+        Call Program.SelectQueryTable(dbFile, SQL, getRowData(haveIDCol, fields, table))
+
+        Return table.SaveDataSet(out).CLICode
+    End Function
+
+    Private Function getRowData(haveIDCol%, fields As String(), table As List(Of EntityObject)) As Func(Of Integer, Object(), Boolean)
+        Dim id As String
+        Dim cols As New Dictionary(Of String, String)
+        Dim parseRow =
+            Function(rid%, row As Object()) As Boolean
+                cols.Clear()
 
                 If haveIDCol > -1 Then
                     id = row(haveIDCol)
@@ -79,11 +85,11 @@ Imports Microsoft.VisualBasic.Net.Http
                     Next
                 End If
 
-                table.Add(New EntityObject With {.ID = id, .Properties = cols})
+                Call table.Add(New EntityObject With {.ID = id, .Properties = cols})
 
                 Return False
-            End Function)
+            End Function
 
-        Return table.SaveDataSet(out).CLICode
+        Return parseRow
     End Function
 End Module
