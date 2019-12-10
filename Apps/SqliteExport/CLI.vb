@@ -2,9 +2,7 @@
 Imports Microsoft.VisualBasic.CommandLine.InteropService.SharedORM
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Data.csv
-Imports Microsoft.VisualBasic.Data.csv.IO
 Imports Microsoft.VisualBasic.Data.IO.ManagedSqlite.Core.SQLSchema
-Imports Microsoft.VisualBasic.Net.Http
 
 <CLI> Module CLI
 
@@ -34,62 +32,10 @@ Imports Microsoft.VisualBasic.Net.Http
         End If
 
         Dim SQL$ = $"SELECT {fields.JoinBy(", ")} FROM {tableName};"
-        Dim table As New List(Of EntityObject)
-        Dim haveIDCol As Integer = fields.IndexOf("ID")
+        Dim export As New TableExport(fields)
 
-        Call Program.SelectQueryTable(dbFile, SQL, getRowData(haveIDCol, fields, table))
+        Call Program.SelectQueryTable(dbFile, SQL, AddressOf export.Fill)
 
-        Return table.SaveDataSet(out).CLICode
-    End Function
-
-    Private Function getRowData(haveIDCol%, fields As String(), table As List(Of EntityObject)) As Func(Of Integer, Object(), Boolean)
-        Dim id As String
-        Dim cols As New Dictionary(Of String, String)
-        Dim parseRow =
-            Function(rid%, row As Object()) As Boolean
-                cols.Clear()
-
-                If haveIDCol > -1 Then
-                    id = row(haveIDCol)
-
-                    For i As Integer = 0 To fields.Length - 1
-                        If i = haveIDCol Then
-                            Continue For
-                        End If
-
-                        If row(i).GetType Is GetType(Byte()) Then
-                            ' base64
-                            If IsDBNull(row(i)) Then
-                                cols.Add(fields(i), "")
-                            Else
-                                cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
-                            End If
-                        Else
-                            cols.Add(fields(i), Scripting.ToString(row(i)))
-                        End If
-                    Next
-                Else
-                    id = "#" & rid
-
-                    For i As Integer = 0 To fields.Length - 1
-                        If row(i).GetType Is GetType(Byte()) Then
-                            ' base64
-                            If IsDBNull(row(i)) Then
-                                cols.Add(fields(i), "")
-                            Else
-                                cols.Add(fields(i), DirectCast(row(i), Byte()).ToBase64String)
-                            End If
-                        Else
-                            cols.Add(fields(i), Scripting.ToString(row(i)))
-                        End If
-                    Next
-                End If
-
-                Call table.Add(New EntityObject With {.ID = id, .Properties = cols})
-
-                Return False
-            End Function
-
-        Return parseRow
+        Return export.GetTable.SaveDataSet(out).CLICode
     End Function
 End Module
