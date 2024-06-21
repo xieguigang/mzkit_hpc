@@ -10,7 +10,17 @@
 */
 declare namespace MsImaging {
    /**
-    * run measure of the ion features in IPC parallel
+    * run measure of the ion features in IPC parallel for a huge ms-imaging rawdata matrix
+    * 
+    * 
+     * @param x -
+     * @param grid_size -
+     * 
+     * + default value Is ``5``.
+   */
+   function MSI_ionStat_parallel(x: object, grid_size?: object): object;
+   /**
+    * run measure of the ion features in IPC parallel for a huge single cells rawdata matrix
     * 
     * 
      * @param x -

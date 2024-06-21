@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>run measure of the ion features in IPC parallel for a huge single cells rawdata matrix</title>
+    <title>run measure of the ion features in IPC parallel for a huge ms-imaging rawdata matrix</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <link rel="stylesheet" type="text/css" href="https://mzkit.org/assets/js/page.css">
@@ -13,12 +13,12 @@
 
         <table style="width: 100%;">
             <tr>
-                <td>SCMs_ionStat_parallel {MsImaging}</td>
+                <td>MSI_ionStat_parallel {MsImaging}</td>
                 <td style="text-align: right;">R Documentation</td>
             </tr>
         </table>
 
-        <h2>run measure of the ion features in IPC parallel for a huge single cells rawdata matrix</h2>
+        <h2>run measure of the ion features in IPC parallel for a huge ms-imaging rawdata matrix</h2>
 
         <h3>Description</h3>
 
@@ -27,7 +27,8 @@
         <h3>Usage</h3>
 
         <div style="width: 100%; padding-left: 3%; color: black;">
-            <pre><code class='language-R' style="color: black; font-weight:normal;"><strong>SCMs_ionStat_parallel</strong>(<i>x</i>);</code></pre>
+            <pre><code class='language-R' style="color: black; font-weight:normal;"><strong>MSI_ionStat_parallel</strong>(<i>x</i>,
+    <i>grid.size</i> = <span style='color: green;'>5</span>);</code></pre>
         </div>
 
         <h3>Arguments</h3>
@@ -36,6 +37,10 @@
             
 <dt>x</dt>
 <dd><p>[as <a href="/vignettes/clr/BioNovoGene/Analytical/MassSpectrometry/SingleCells/Deconvolute/MzMatrix.html">MzMatrix</a>]</p></dd>
+
+
+<dt>grid.size</dt>
+<dd><p>[as integer]</p></dd>
 
         </table>
 
@@ -50,7 +55,7 @@
 
         <h3>Value</h3>
 
-        this function returns data object of type <a href="/vignettes/clr/BioNovoGene/Analytical/MassSpectrometry/SingleCells/SingleCellIonStat.html">SingleCellIonStat</a>.<h4>clr value class</h4><ul><li><a href="/vignettes/clr/BioNovoGene/Analytical/MassSpectrometry/SingleCells/SingleCellIonStat.html">SingleCellIonStat</a></li></ul>
+        this function returns data object of type <a href="/vignettes/clr/BioNovoGene/Analytical/MassSpectrometry/MsImaging/IonStat.html">IonStat</a>.<h4>clr value class</h4><ul><li><a href="/vignettes/clr/BioNovoGene/Analytical/MassSpectrometry/MsImaging/IonStat.html">IonStat</a></li></ul>
 
         <h3 style="display: none;">Examples</h3>
 
