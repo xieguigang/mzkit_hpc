@@ -24,7 +24,7 @@
     <ProjectReference Include="..\..\..\..\..\src\assembly\assembly\assembly-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\ms2_math-core\mzmath-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\SingleCells\SingleCells.vbproj" />
-    <ProjectReference Include="..\..\..\..\..\src\visualize\MsImaging\MsImaging.NET5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\mzmath\SpatialMath\SpatialMath.vbproj" />
     <ProjectReference Include="..\IpcParallel\IpcParallel.vbproj" />
   </ItemGroup>
 
