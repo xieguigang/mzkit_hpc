@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\R-sharp\R#\Rsharp-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\computing\batch\batch.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\computing\Parallel\parallel-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\networking\networking.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data\BinaryData\BinaryData\binarydata-netcore5.vbproj" />
@@ -16,4 +18,16 @@
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\mime\application%json\JSON-netcore5.vbproj" />
   </ItemGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rsharp_app_release|x64'">
+ 
+    <OutputPath>../../assembly/</OutputPath>
+    <RemoveIntegerChecks>true</RemoveIntegerChecks>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+  
+  </PropertyGroup>
+  
 </Project>
