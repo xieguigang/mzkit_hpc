@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MZKit.IpcParallel</RootNamespace>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>MZKit.IpcParallel</AssemblyName>
+    <UseApplicationFramework>True</UseApplicationFramework>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Rsharp_app_release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\computing\Parallel\parallel-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\networking\networking.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\mzmath\SingleCells\SingleCells.vbproj" />
+  </ItemGroup>
+
+</Project>
