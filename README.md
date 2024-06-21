@@ -1,3 +1,1 @@
-# CMD.Internal
-
-CMD batch script enhancement
+# Build high performance computing mzkit algorithm library based on Darwinism HPC runtime
