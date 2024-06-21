@@ -15,7 +15,7 @@ Public Class FeatureVector
     Public Property mzmax As Double
     Public Property intensity As Double()
 
-    Public Function MeasureMSIIon() As IonStat
+    Public Function MeasureMSIIon(grid_size As Integer) As IonStat
 
     End Function
 

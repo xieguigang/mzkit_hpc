@@ -10,9 +10,6 @@ Public Module DoStatSingleCellsMatrix
 
     <Extension>
     Public Iterator Function MeasureIonFeatures(matrix As MzMatrix) As IEnumerable(Of SingleCellIonStat)
-        Dim labels As String() = matrix.matrix _
-            .Select(Function(si) si.label) _
-            .ToArray
         Dim env As Argument = DarwinismEnvironment.GetEnvironmentArguments
         Dim vectorPack = matrix.getFeatures.Split(CInt(matrix.featureSize / env.n_threads / 2))
         Dim task As New Func(Of FeatureVector(), SingleCellIonStat())(AddressOf MeasureIonsFeaturesTask)
@@ -28,6 +25,9 @@ Public Module DoStatSingleCellsMatrix
     Private Iterator Function getFeatures(matrix As MzMatrix) As IEnumerable(Of FeatureVector)
         Dim offset As Integer
         Dim mat As PixelData() = matrix.matrix
+        Dim labels As String() = matrix.matrix _
+            .Select(Function(si) si.label) _
+            .ToArray
 
         For i As Integer = 0 To matrix.featureSize - 1
             offset = i
@@ -38,7 +38,8 @@ Public Module DoStatSingleCellsMatrix
                 .mzmax = matrix.mzmax(i),
                 .intensity = (From cell As PixelData
                               In mat
-                              Select cell(offset)).ToArray
+                              Select cell(offset)).ToArray,
+                .cell_labels = labels
             }
         Next
     End Function
