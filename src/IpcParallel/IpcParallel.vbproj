@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\DataScience\DataMining\DataMining.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\networking\networking.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\SingleCells\SingleCells.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\visualize\MsImaging\MsImaging.NET5.vbproj" />
   </ItemGroup>
 
 </Project>
