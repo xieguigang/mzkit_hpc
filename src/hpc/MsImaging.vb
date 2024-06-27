@@ -39,4 +39,17 @@ Public Module MsImaging
     Public Function msiIonsStats(x As MzMatrix, Optional grid_size As Integer = 5) As Object
         Return x.MeasureIonFeatures(grid_size).ToArray
     End Function
+
+    ''' <summary>
+    ''' image processor for huge HE-stain bitmap file 
+    ''' </summary>
+    ''' <param name="file">
+    ''' the file path to the HE-stain image file, should be processed as bitmap 
+    ''' file at first via image processing software like photoshop.
+    ''' </param>
+    ''' <returns></returns>
+    <ExportAPI("HEstain_tissue_reader")>
+    Public Function HEstain_tissueReader(file As String) As Object
+
+    End Function
 End Module
