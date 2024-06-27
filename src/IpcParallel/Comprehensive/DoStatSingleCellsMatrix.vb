@@ -6,47 +6,50 @@ Imports Darwinism.DataScience.DataMining
 Imports Darwinism.HPC.Parallel
 Imports Microsoft.VisualBasic.Linq
 
-Public Module DoStatSingleCellsMatrix
+Namespace Comprehensive
 
-    <Extension>
-    Public Iterator Function MeasureIonFeatures(matrix As MzMatrix) As IEnumerable(Of SingleCellIonStat)
-        Dim env As Argument = DarwinismEnvironment.GetEnvironmentArguments
-        Dim vectorPack = matrix.getFeatures.Split(CInt(matrix.featureSize / env.n_threads / 2))
-        Dim task As New Func(Of FeatureVector(), SingleCellIonStat())(AddressOf MeasureIonsFeaturesTask)
+    Public Module DoStatSingleCellsMatrix
 
-        For Each batch As SingleCellIonStat() In Host.ParallelFor(Of FeatureVector(), SingleCellIonStat())(env, task, vectorPack)
-            For Each ion_stat As SingleCellIonStat In batch
-                Yield ion_stat
+        <Extension>
+        Public Iterator Function MeasureIonFeatures(matrix As MzMatrix) As IEnumerable(Of SingleCellIonStat)
+            Dim env As Argument = DarwinismEnvironment.GetEnvironmentArguments
+            Dim vectorPack = matrix.getFeatures.Split(CInt(matrix.featureSize / env.n_threads / 2))
+            Dim task As New Func(Of FeatureVector(), SingleCellIonStat())(AddressOf MeasureIonsFeaturesTask)
+
+            For Each batch As SingleCellIonStat() In Host.ParallelFor(Of FeatureVector(), SingleCellIonStat())(env, task, vectorPack)
+                For Each ion_stat As SingleCellIonStat In batch
+                    Yield ion_stat
+                Next
             Next
-        Next
-    End Function
+        End Function
 
-    <Extension>
-    Private Iterator Function getFeatures(matrix As MzMatrix) As IEnumerable(Of FeatureVector)
-        Dim offset As Integer
-        Dim mat As PixelData() = matrix.matrix
-        Dim labels As String() = matrix.matrix _
-            .Select(Function(si) si.label) _
-            .ToArray
+        <Extension>
+        Private Iterator Function getFeatures(matrix As MzMatrix) As IEnumerable(Of FeatureVector)
+            Dim offset As Integer
+            Dim mat As PixelData() = matrix.matrix
+            Dim labels As String() = matrix.matrix _
+                .Select(Function(si) si.label) _
+                .ToArray
 
-        For i As Integer = 0 To matrix.featureSize - 1
-            offset = i
+            For i As Integer = 0 To matrix.featureSize - 1
+                offset = i
 
-            Yield New FeatureVector With {
-                .mz = matrix.mz(i),
-                .mzmin = matrix.mzmin(i),
-                .mzmax = matrix.mzmax(i),
-                .intensity = (From cell As PixelData
-                              In mat
-                              Select cell(offset)).ToArray,
-                .cell_labels = labels
-            }
-        Next
-    End Function
+                Yield New FeatureVector With {
+                    .mz = matrix.mz(i),
+                    .mzmin = matrix.mzmin(i),
+                    .mzmax = matrix.mzmax(i),
+                    .intensity = (From cell As PixelData
+                                  In mat
+                                  Select cell(offset)).ToArray,
+                    .cell_labels = labels
+                }
+            Next
+        End Function
 
-    <EmitStream(GetType(FeatureVectorPackFile), Target:=GetType(FeatureVector()))>
-    Public Function MeasureIonsFeaturesTask(packs As FeatureVector()) As SingleCellIonStat()
-        Return (From i As FeatureVector In packs Select i.MeasureStat).ToArray
-    End Function
+        <EmitStream(GetType(FeatureVectorPackFile), Target:=GetType(FeatureVector()))>
+        Public Function MeasureIonsFeaturesTask(packs As FeatureVector()) As SingleCellIonStat()
+            Return (From i As FeatureVector In packs Select i.MeasureStat).ToArray
+        End Function
 
-End Module
+    End Module
+End Namespace
