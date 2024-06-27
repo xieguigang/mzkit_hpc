@@ -71,6 +71,8 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "netCDF", "..\..\..\..\..\GC
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "SpatialMath", "..\..\..\..\src\mzmath\SpatialMath\SpatialMath.vbproj", "{5FA85ACF-0F1F-4B8C-B36D-5470988C4CE1}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "mzkit.interopArguments", "..\..\mzkit_app\src\mzkit.interopArguments\mzkit.interopArguments.shproj", "{C295C3AF-3E62-4756-966A-3D0B90DED160}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CFD_win32|Any CPU = CFD_win32|Any CPU
@@ -2089,11 +2091,14 @@ Global
 		{02989B0A-94E9-4D9F-9339-23975223A7A1} = {B1B4BD64-A334-44E2-A761-CA506FAC85E6}
 		{4B9C528F-C4A5-4F51-B461-C026B6FEE248} = {B1B4BD64-A334-44E2-A761-CA506FAC85E6}
 		{5FA85ACF-0F1F-4B8C-B36D-5470988C4CE1} = {2F09D6DF-C9E5-4862-AE4F-A24A07F36EFC}
+		{C295C3AF-3E62-4756-966A-3D0B90DED160} = {2F09D6DF-C9E5-4862-AE4F-A24A07F36EFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8406D53-6391-4268-9980-2D624C589DCA}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\mzkit_app\src\mzkit.interopArguments\mzkit.interopArguments.projitems*{2304c92f-4a85-497a-a992-d0c1df94b9e9}*SharedItemsImports = 5
 		..\..\..\..\..\GCModeller\src\R-sharp\studio\Rstudio.common\Rstudio.common.projitems*{996770f4-0cf6-4baf-b259-d3f11927e96b}*SharedItemsImports = 5
+		..\..\mzkit_app\src\mzkit.interopArguments\mzkit.interopArguments.projitems*{c295c3af-3e62-4756-966a-3d0b90ded160}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
