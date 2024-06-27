@@ -8,6 +8,7 @@ Imports Darwinism.HPC.Parallel.IpcStream
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.Ranges.Model
 Imports Microsoft.VisualBasic.MIME.application.json
+Imports MZKit.IpcParallel.Comprehensive
 
 Public Class MakePeakAlignment
 
@@ -63,6 +64,7 @@ Public Class MakePeakAlignment
         Return peaktable
     End Function
 
+    <EmitStream(GetType(XicPack), Target:=GetType(FeatureXic()))>
     Private Shared Function MakePeakTable(peak_groups As FeatureXic(), args As MakePeakAlignment) As PeakTablePack
         Dim peaktable As New List(Of xcms2)
         Dim rt_shifts As New List(Of RtShift)
