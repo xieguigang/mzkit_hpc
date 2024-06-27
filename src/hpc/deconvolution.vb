@@ -47,7 +47,7 @@ Module deconvolution
             errors,
             rtRange,
             baseline, joint, dtw,
-            rt_shifts)
+            rt_shifts).ToArray
         Dim vec As New vec(peaktable, RType.GetRSharpType(GetType(xcms2)))
         Call vec.setAttribute("rt.shift", rt_shifts)
         Return vec
