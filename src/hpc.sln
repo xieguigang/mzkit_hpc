@@ -47,7 +47,7 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "graph-netcore5", "..\..\..\
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "assembly-netcore5", "..\..\..\..\src\assembly\assembly\assembly-netcore5.vbproj", "{E1221150-A95A-40BC-A1DB-E8215D00AD73}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "IpcParallel", "IpcParallel\IpcParallel.vbproj", "{5BD91D3B-7EE6-4492-AD0F-75FE5DBEE9A0}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "IpcParallel", "IpcParallel\IpcParallel.vbproj", "{5BD91D3B-7EE6-4492-AD0F-75FE5DBEE9A0}"
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "DataMining", "..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\DataScience\DataMining\DataMining.vbproj", "{EABB02B9-52E0-4426-AE39-254F8C7466C7}"
 EndProject
