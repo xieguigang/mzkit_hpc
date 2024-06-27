@@ -1,5 +1,10 @@
-﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math
+﻿Imports System.IO
+Imports batch
+Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
+Imports Darwinism.DataScience.DataMining
+Imports Darwinism.HPC.Parallel
+Imports Darwinism.HPC.Parallel.IpcStream
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.Ranges.Model
 Imports Microsoft.VisualBasic.MIME.application.json
@@ -12,20 +17,20 @@ Public Class MakePeakAlignment
     Public Property joint As Boolean
     Public Property dtw As Boolean
 
-    Public Function CreatePeaktable(peak_groups As XICPool, features_mz As Double(),
-                                    errors As Tolerance,
-                                    rtRange As DoubleRange,
-                                    baseline As Double,
-                                    joint As Boolean,
-                                    dtw As Boolean, ByRef rt_shifts As RtShift()) As xcms2()
-
-        Dim pack As String = New MakePeakAlignment With {
+    Public Shared Function CreatePeaktable(peak_groups As XICPool, features_mz As Double(),
+                                           errors As Tolerance, rtRange As DoubleRange,
+                                           baseline As Double,
+                                           joint As Boolean,
+                                           dtw As Boolean,
+                                           ByRef rt_shifts As RtShift()) As IEnumerable(Of xcms2)
+        ' deconvolution task parameters
+        Dim pars As New MakePeakAlignment With {
             .baseline = baseline,
             .dtw = dtw,
             .errors = errors.ToScript,
             .joint = joint,
             .rt_range = rtRange.MinMax
-        }.GetJson
+        }
         Dim pool As FeatureXic() = features_mz.AsParallel _
             .Select(Function(mz)
                         Dim pick_features = peak_groups.GetXICMatrix(mz, errors).ToArray
@@ -39,7 +44,23 @@ Public Class MakePeakAlignment
                         }
                     End Function) _
             .ToArray
+        Dim deconv As New Func(Of FeatureXic(), MakePeakAlignment, PeakTablePack)(AddressOf MakePeakTable)
+        Dim env As Argument = DarwinismEnvironment.GetEnvironmentArguments
+        Dim vectorPack = pool.Split(CInt(pool.Length / env.n_threads / 2))
+        Dim shiftList As New List(Of RtShift)
+        Dim peaktable As New List(Of xcms2)
 
+        Call VBDebugger.EchoLine("run lc-ms deconvolution in ipc parallel with arguments:")
+        Call VBDebugger.EchoLine(pars.GetJson)
+
+        For Each batch As PeakTablePack In Host.ParallelFor(Of FeatureXic(), PeakTablePack)(env, deconv, vectorPack, SocketRef.WriteBuffer(pars))
+            Call peaktable.AddRange(batch.peaktable)
+            Call shiftList.AddRange(batch.rt_shifts)
+        Next
+
+        rt_shifts = shiftList.ToArray
+
+        Return peaktable
     End Function
 
     Private Shared Function MakePeakTable(peak_groups As FeatureXic(), args As MakePeakAlignment) As PeakTablePack
@@ -102,4 +123,42 @@ Public Class FeatureXic
         Return (result, shifts.ToArray)
     End Function
 
+End Class
+
+Public Class PeakResultPack : Implements IEmitStream
+
+    Public Function BufferInMemory(obj As Object) As Boolean Implements IEmitStream.BufferInMemory
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function WriteBuffer(obj As Object, file As Stream) As Boolean Implements IEmitStream.WriteBuffer
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function WriteBuffer(obj As Object) As Stream Implements IEmitStream.WriteBuffer
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function ReadBuffer(file As Stream) As Object Implements IEmitStream.ReadBuffer
+        Throw New NotImplementedException()
+    End Function
+End Class
+
+Public Class XicPack : Implements IEmitStream
+
+    Public Function BufferInMemory(obj As Object) As Boolean Implements IEmitStream.BufferInMemory
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function WriteBuffer(obj As Object, file As Stream) As Boolean Implements IEmitStream.WriteBuffer
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function WriteBuffer(obj As Object) As Stream Implements IEmitStream.WriteBuffer
+        Throw New NotImplementedException()
+    End Function
+
+    Public Function ReadBuffer(file As Stream) As Object Implements IEmitStream.ReadBuffer
+        Throw New NotImplementedException()
+    End Function
 End Class
