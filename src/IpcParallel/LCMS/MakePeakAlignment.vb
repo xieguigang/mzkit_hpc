@@ -5,7 +5,6 @@ Imports Microsoft.VisualBasic.MIME.application.json
 
 Public Class MakePeakAlignment
 
-    Public Property features_mz As Double()
     Public Property errors As String
     Public Property rt_range As Double()
     Public Property baseline As Double
@@ -23,7 +22,6 @@ Public Class MakePeakAlignment
             .baseline = baseline,
             .dtw = dtw,
             .errors = errors.ToScript,
-            .features_mz = features_mz,
             .joint = joint,
             .rt_range = rtRange.MinMax
         }.GetJson
