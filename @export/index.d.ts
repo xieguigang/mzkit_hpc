@@ -8,4 +8,15 @@ declare namespace mzkit_hpc {
       */
       function onLoad(): object;
    }
+   /**
+     * @param outputdir default value Is ``./``.
+     * @param mzdiff default value Is ``0.005``.
+     * @param peak.width default value Is ``[3, 90]``.
+   */
+   function deconvolution(rawdata: any, outputdir?: any, mzdiff?: any, peak.width?: any): object;
+   /**
+     * @param mzdiff default value Is ``0.005``.
+     * @param peak.width default value Is ``[3, 90]``.
+   */
+   function ms1_peaktable(files: any, mzbins: any, mzdiff?: any, peak.width?: any): object;
 }

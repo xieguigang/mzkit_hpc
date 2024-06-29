@@ -1,0 +1,34 @@
+﻿.TH DECONVOLUTION 1 2024-Jun "" "Do ms1 deconvolution of the rawdata"
+.SH NAME
+deconvolution \- deconvolution(rawdata,
+    <i>outputdir</i> = <span style='color: brown;'><strong>'./'</strong></span>,
+    <i>mzdiff</i> = <span style='color: green;'>0.005</span>,
+    <i>peak.width</i> = [<span style='color: green;'>90</span>])
+.SH SYNOPSIS
+\fIdeconvolution(rawdata,
+    <i>outputdir</i> = <span style='color: brown;'><strong>'./'</strong></span>,
+    <i>mzdiff</i> = <span style='color: green;'>0.005</span>,
+    <i>peak.width</i> = [<span style='color: green;'>90</span>])\fR
+.SH OPTIONS
+.PP
+\fBrawdata\fB \fR\- . a directory path that contains the mzXML or mzML rawdata files.
+.PP
+.PP
+\fBoutputdir\fB \fR\- './'. a directory path for save the peaktable result file and the temp cache files.
+.PP
+.PP
+\fBmzdiff\fB \fR\- 0.005. the mass tolerance error for create the mz bins from the ms1 rawdata, the XIC data is generated based on this parameter value
+.PP
+.PP
+\fBpeak.width\fB \fR\- [3, 90]. the rt range of the peak data
+.PP
+.SH VALUE
+.PP
+this function returns nothing
+.PP
+.SH FILES
+.PP
+SMRUCC/R#.declare_function.deconvolution at lcms.R:line 12
+.PP
+.SH COPYRIGHT
+Copyright © xieguigang, MIT Licensed 2024
