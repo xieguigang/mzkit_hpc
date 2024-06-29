@@ -5,7 +5,9 @@ Version: 3.2.56.56444
 Author: xieguigang
 Maintainer: xieguigang <gg.xie@bionovogene.com>
 Description: Build high performance computing mzkit algorithm library 
-    based on Darwinism HPC runtime.
+    based on Darwinism HPC runtime. An engineering practice of processing 
+    ultra massive lc-ms mass spectrometry rawdata, ms-imaging rawdata 
+    and single-cells metabolomics rawdata.
 License: MIT
 Encoding: UTF-8
 LazyData: true
