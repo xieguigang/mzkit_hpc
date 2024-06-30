@@ -4,15 +4,18 @@ Imports Darwinism.HPC.Parallel
 Public Class PeakResultPack : Implements IEmitStream
 
     Public Function BufferInMemory(obj As Object) As Boolean Implements IEmitStream.BufferInMemory
-        Throw New NotImplementedException()
+        Return True
     End Function
 
     Public Function WriteBuffer(obj As Object, file As Stream) As Boolean Implements IEmitStream.WriteBuffer
-        Throw New NotImplementedException()
+        Dim result As PeakTablePack = obj
+
     End Function
 
     Public Function WriteBuffer(obj As Object) As Stream Implements IEmitStream.WriteBuffer
-        Throw New NotImplementedException()
+        Dim file As New MemoryStream
+        Call WriteBuffer(obj, file)
+        Return file
     End Function
 
     Public Function ReadBuffer(file As Stream) As Object Implements IEmitStream.ReadBuffer
