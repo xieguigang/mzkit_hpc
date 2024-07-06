@@ -6,6 +6,7 @@ Imports Darwinism.HPC.Parallel
 Imports Darwinism.HPC.Parallel.IpcStream
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.Ranges.Model
+Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.MIME.application.json
 
 Public Class MakePeakAlignment
@@ -86,6 +87,22 @@ Public Class PeakTablePack
 
     Public Property peaktable As xcms2()
     Public Property rt_shifts As RtShift()
+
+    Public ReadOnly Property npeaks As Integer
+        Get
+            Return peaktable.TryCount
+        End Get
+    End Property
+
+    Public ReadOnly Property sampleNames As String()
+        Get
+            Return peaktable _
+                .Select(Function(a) a.Properties.Keys) _
+                .IteratesALL _
+                .Distinct _
+                .ToArray
+        End Get
+    End Property
 
 End Class
 

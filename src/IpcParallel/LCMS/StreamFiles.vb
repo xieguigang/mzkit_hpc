@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports Darwinism.HPC.Parallel
 
 Public Class PeakResultPack : Implements IEmitStream
@@ -10,6 +11,11 @@ Public Class PeakResultPack : Implements IEmitStream
     Public Function WriteBuffer(obj As Object, file As Stream) As Boolean Implements IEmitStream.WriteBuffer
         Dim result As PeakTablePack = obj
 
+        Call SaveXcms.DumpSample(result.peaktable, result.npeaks, result.sampleNames, file)
+        Call SaveRtShifts.DumpShiftsData(result.rt_shifts, file)
+        Call file.Flush()
+
+        Return True
     End Function
 
     Public Function WriteBuffer(obj As Object) As Stream Implements IEmitStream.WriteBuffer
@@ -19,7 +25,13 @@ Public Class PeakResultPack : Implements IEmitStream
     End Function
 
     Public Function ReadBuffer(file As Stream) As Object Implements IEmitStream.ReadBuffer
-        Throw New NotImplementedException()
+        Dim peak As xcms2() = SaveXcms.ReadSamplePeaks(file)
+        Dim rtshifts As RtShift() = SaveRtShifts.ParseRtShifts(file).ToArray
+
+        Return New PeakTablePack With {
+            .peaktable = peak,
+            .rt_shifts = rtshifts
+        }
     End Function
 End Class
 
