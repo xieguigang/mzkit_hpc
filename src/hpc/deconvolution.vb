@@ -11,6 +11,9 @@ Imports SMRUCC.Rsharp.Runtime.Components
 Imports SMRUCC.Rsharp.Runtime.Interop
 Imports vec = SMRUCC.Rsharp.Runtime.Internal.Object.vector
 
+''' <summary>
+''' LCMS rawdata processor
+''' </summary>
 <Package("deconvolution")>
 Module deconvolution
 
@@ -19,9 +22,14 @@ Module deconvolution
     ''' </summary>
     ''' <param name="peak_groups"></param>
     ''' <param name="features_mz"></param>
-    ''' <returns></returns>
+    ''' <returns>
+    ''' this function returns a vector of the <see cref="xcms2"/> peaks data, andalso 
+    ''' the <see cref="RtShift"/> value is attached in the value vector via R# object
+    ''' attribute named ``rt.shift``.
+    ''' </returns>
     ''' <remarks></remarks>
     ''' <keywords>lc-ms</keywords>
+    ''' 
     <ExportAPI("peak_alignments")>
     Public Function peak_alignments(peak_groups As XICPool, features_mz As Double(),
                                     Optional tolerance As Object = "da:0.005",
