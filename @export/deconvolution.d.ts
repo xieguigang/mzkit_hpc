@@ -5,6 +5,7 @@
 // ref=hpc.deconvolution@hpc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 
 /**
+ * LCMS rawdata processor
  * 
 */
 declare namespace deconvolution {
@@ -26,6 +27,9 @@ declare namespace deconvolution {
      * + default value Is ``false``.
      * @param env 
      * + default value Is ``null``.
+     * @return this function returns a vector of the @``T:BioNovoGene.Analytical.MassSpectrometry.Math.xcms2`` peaks data, andalso 
+     *  the @``T:BioNovoGene.Analytical.MassSpectrometry.Math.RtShift`` value is attached in the value vector via R# object
+     *  attribute named ``rt.shift``.
    */
    function peak_alignments(peak_groups: object, features_mz: number, tolerance?: any, peak_width?: any, baseline?: number, joint?: boolean, dtw?: boolean, env?: object): any;
 }

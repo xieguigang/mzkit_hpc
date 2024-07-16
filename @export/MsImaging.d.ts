@@ -10,6 +10,14 @@
 */
 declare namespace MsImaging {
    /**
+    * image processor for huge HE-stain bitmap file
+    * 
+    * 
+     * @param file the file path to the HE-stain image file, should be processed as bitmap 
+     *  file at first via image processing software like photoshop.
+   */
+   function HEstain_tissue_reader(file: string): any;
+   /**
     * run measure of the ion features in IPC parallel for a huge ms-imaging rawdata matrix
     * 
     * 
