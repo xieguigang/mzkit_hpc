@@ -87,7 +87,7 @@ Namespace Comprehensive
             Dim max_spot As Integer() = cell_labels(max_i).Split(","c).AsInteger
             Dim spots As (xyz As String, intensity As Double)() = (
                 From cell As (String, Double)
-                In cell_labels.Zip(intensity)
+                In cell_labels.Zip(second:=intensity)
                 Where cell.Second > 0).ToArray
             Dim points = spots.Select(Function(cell) cell.xyz.Split(","c).AsInteger).ToArray
             Dim pixels = points.Select(Function(a) New Point(a(0), a(1))).CreateReadOnlyGrid
