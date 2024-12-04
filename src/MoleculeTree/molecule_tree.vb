@@ -101,6 +101,7 @@ Public Class molecule_tree : Inherits db_models
 
         Dim spares As New List(Of SparseGraph.Edge)
 
+        ' graph data should be link to the internal atom group table
         For Each key As ChemicalKey In graph.AllBonds
             Call spares.Add(New SparseGraph.Edge(
                 GetAtom(key.U), GetAtom(key.V)
