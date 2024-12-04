@@ -27,6 +27,8 @@ Public Module GraphMatrix
 
             If pull.IsNullOrEmpty Then
                 Exit Do
+            Else
+                page += 1
             End If
 
             For Each json As treeModel.graph In TqdmWrapper.Wrap(pull)
