@@ -13,20 +13,33 @@
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\R-sharp\R#\Rsharp-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\computing\batch\batch.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\computing\Parallel\parallel-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\DataScience\DataMining\DataMining.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\Darwinism\src\networking\networking.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data\BinaryData\BinaryData\binarydata-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data\BinaryData\HDSPack\HDSPack.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data\BinaryData\msgpack\msgpack-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data\BinaryData\netCDF\netCDF.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\DataMining\DataMining\DataMining.NET5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\Graph\graph-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\MachineLearning\MachineLearning\machine_learning-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\Mathematica\Math\DataFittings\linear-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\Mathematica\Math\Math.Statistics\stats-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\Mathematica\Math\Math\Math.NET5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Data_science\Mathematica\SignalProcessing\SignalProcessing\signalprocessing-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Microsoft.VisualBasic.Core\src\Core.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\mime\application%json\JSON-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\..\graphQL\src\mysqli\LibMySQL\LibMySQL.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\assembly\assembly\assembly-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\assembly\mzPack\mzpack.NET5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\assembly\SignalReader\SignalReader.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\metadb\Chemoinformatics\chemoinformatics-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\metadb\SMILES\SMILES.NET5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\ms2_math-core\mzmath-netcore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\mz_deco\deconv.NET5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\SingleCells\SingleCells.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\SpatialMath\SpatialMath.vbproj" />
     <ProjectReference Include="..\IpcParallel\IpcParallel.vbproj" />
+    <ProjectReference Include="..\MoleculeTree\MoleculeTree.vbproj" />
   </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rsharp_app_release|x64'">
