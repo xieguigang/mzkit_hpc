@@ -83,6 +83,19 @@ Public Class molecule_tree : Inherits db_models
         Else
             For Each atom As ChemicalElement In graph.AllElements
                 Dim aid As UInteger = GetAtom(atom)
+                Dim index As Integer = atom.ID
+
+                If molecule_atoms.where(
+                    field("molecule") = check.id,
+                    field("index") = index,
+                    field("atom_id") = aid).find(Of treeModel.molecule_atoms) Is Nothing Then
+
+                    molecule_atoms.add(
+                        field("molecule") = check.id,
+                        field("index") = index,
+                        field("atom_id") = aid
+                    )
+                End If
             Next
         End If
 
