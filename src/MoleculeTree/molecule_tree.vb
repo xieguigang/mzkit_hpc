@@ -99,13 +99,18 @@ Public Class molecule_tree : Inherits db_models
             Next
         End If
 
-        Dim spares As SparseGraph = SparseGraph.Copy(graph)
-        Dim graph_json As String = spares.GetJson
+        Dim spares As New List(Of SparseGraph.Edge)
+
+        For Each key As ChemicalKey In graph.AllBonds
+            Call spares.Add(New SparseGraph.Edge(
+                GetAtom(key.U), GetAtom(key.V)
+            ))
+        Next
 
         Call Me.graph.add(
             field("molecule_id") = check.id,
             field("hashcode") = hashcode,
-            field("graph") = graph_json,
+            field("graph") = spares.ToArray.GetJson,
             field("smiles") = smiles,
             field("matrix") = ""
         )
