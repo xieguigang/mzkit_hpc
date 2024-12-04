@@ -54,6 +54,19 @@
   
   </PropertyGroup>
 
-    <Import Project="..\..\..\mzkit_app\src\mzkit.interopArguments\mzkit.interopArguments.projitems" Label="Shared" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+
+    <OutputPath>../../assembly/</OutputPath>
+    <RemoveIntegerChecks>true</RemoveIntegerChecks>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+
+  </PropertyGroup>
+
+
+  <Import Project="..\..\..\mzkit_app\src\mzkit.interopArguments\mzkit.interopArguments.projitems" Label="Shared" />
   
 </Project>
