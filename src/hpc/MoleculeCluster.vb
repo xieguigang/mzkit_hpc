@@ -43,4 +43,9 @@ Module MoleculeCluster
         Next
     End Sub
 
+    <ExportAPI("update_matrix")>
+    Public Sub updateMatrix(tree As molecule_tree, Optional page_size As Integer = 100)
+        Call GraphMatrix.ResolveMatrix(tree, page_size)
+    End Sub
+
 End Module
