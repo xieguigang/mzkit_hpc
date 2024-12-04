@@ -12,8 +12,8 @@ Public Class Cluster
         Me.tree = tree
     End Sub
 
-    Public Sub Add(meta As MetaboliteAnnotation, smiles As String)
-
+    Public Sub BuildTree()
+        ' the first
     End Sub
 
 End Class

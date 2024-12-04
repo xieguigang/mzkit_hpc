@@ -48,4 +48,9 @@ Module MoleculeCluster
         Call GraphMatrix.ResolveMatrix(tree, page_size)
     End Sub
 
+    <ExportAPI("make_clusterTree")>
+    Public Sub makeClusterTree(tree As molecule_tree)
+        Call New Cluster(tree).BuildTree()
+    End Sub
+
 End Module

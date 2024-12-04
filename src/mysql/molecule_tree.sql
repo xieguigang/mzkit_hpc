@@ -63,6 +63,25 @@ CREATE TABLE `graph` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `model`
+--
+
+DROP TABLE IF EXISTS `model`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `model` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT 'unnamed',
+  `cluster_cutoff` double NOT NULL DEFAULT '0.9' COMMENT 'cosine score cutoff for make cluster into one cluster node',
+  `right` double NOT NULL DEFAULT '0.6' COMMENT 'cosine score cutoff for put the node to right',
+  `add_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='cluster tree model parameters';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `molecule_atoms`
 --
 
@@ -112,6 +131,7 @@ DROP TABLE IF EXISTS `tree`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tree` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id of the edge',
+  `model_id` int unsigned NOT NULL,
   `parent_id` int unsigned NOT NULL COMMENT '[id] of the parent node of current node',
   `graph_id` int unsigned NOT NULL COMMENT 'the molecule structure graph reference id of current node',
   `cosine` double unsigned NOT NULL DEFAULT '0' COMMENT 'cosine similarity of current node when compares with the parent node',
@@ -131,4 +151,4 @@ CREATE TABLE `tree` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-04 16:45:57
+-- Dump completed on 2024-12-04 17:26:16
