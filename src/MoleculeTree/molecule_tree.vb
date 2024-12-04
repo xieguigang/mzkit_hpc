@@ -119,21 +119,32 @@ Public Class molecule_tree : Inherits db_models
 
     Public Function GetAtom(atom As ChemicalElement) As UInteger
         Dim refer As String = atom.elementName & If(atom.hydrogen > 0, "H" & atom.hydrogen, "") & If(atom.aromatic, "@aromatic", "")
-
-        Return atoms_cache.ComputeIfAbsent(refer,
+        Dim group = atoms_cache.ComputeIfAbsent(refer,
             lazyValue:=Function()
-                           Call atoms.add(
-                               field("unique_id") = refer,
-                               field("atom_group") = atom.group,
-                               field("element") = atom.elementName,
-                               field("aromatic") = If(atom.aromatic, 1, 0),
-                               field("hydrogen") = atom.hydrogen,
-                               field("charge") = atom.charge
-                           )
+                           Return LazyLoadAtoms(refer, atom)
+                       End Function)
 
-                           Return atoms.where(field("unique_id") = refer) _
-                               .order_by("id", desc:=True) _
-                               .find(Of treeModel.atoms)()
-                       End Function).id
+        Return group.id
+    End Function
+
+    Private Function LazyLoadAtoms(refer As String, atom As ChemicalElement) As treeModel.atoms
+        Dim check_atom = atoms.where(field("unique_id") = refer).find(Of treeModel.atoms)()
+
+        If check_atom Is Nothing Then
+            Call atoms.add(
+                field("unique_id") = refer,
+                field("atom_group") = atom.group,
+                field("element") = atom.elementName,
+                field("aromatic") = If(atom.aromatic, 1, 0),
+                field("hydrogen") = atom.hydrogen,
+                field("charge") = atom.charge
+            )
+        Else
+            Return check_atom
+        End If
+
+        Return atoms.where(field("unique_id") = refer) _
+            .order_by("id", desc:=True) _
+            .find(Of treeModel.atoms)()
     End Function
 End Class
