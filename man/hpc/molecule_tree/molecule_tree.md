@@ -12,3 +12,4 @@
 + [add_molecule](molecule_tree/add_molecule.1) add molecule model data into database pool
 + [update_matrix](molecule_tree/update_matrix.1) 
 + [make_clusterTree](molecule_tree/make_clusterTree.1) 
++ [fetch_tree](molecule_tree/fetch_tree.1) 

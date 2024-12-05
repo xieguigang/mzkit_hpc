@@ -25,6 +25,9 @@ declare namespace molecule_tree {
    */
    function add_molecule(tree: object, meta: object, smiles: any): ;
    /**
+   */
+   function fetch_tree(tree: object, model: string): object;
+   /**
      * @param cluster_cutoff default value Is ``null``.
      * @param right_cutoff default value Is ``null``.
    */
