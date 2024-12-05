@@ -46,9 +46,17 @@ Public Module GraphMatrix
         Loop
     End Sub
 
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="tree"></param>
+    ''' <param name="graph_id">
+    ''' id reference to the graph data table
+    ''' </param>
+    ''' <returns></returns>
     <Extension>
-    Public Function DecodeMatrix(tree As molecule_tree, id As UInteger) As Double()
-        Dim graph As treeModel.graph = tree.graph.where(field("id") = id).find(Of treeModel.graph)
+    Public Function DecodeMatrix(tree As molecule_tree, graph_id As UInteger) As Double()
+        Dim graph As treeModel.graph = tree.graph.where(field("id") = graph_id).find(Of treeModel.graph)
         Dim v As Double() = network.ParseDouble(graph.matrix)
         Return v
     End Function

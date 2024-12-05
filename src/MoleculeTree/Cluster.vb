@@ -3,11 +3,12 @@
 Public Class Cluster
 
     ReadOnly tree As molecule_tree
+    ReadOnly model As treeModel.models
+
     ''' <summary>
     ''' the root matrix
     ''' </summary>
-    ReadOnly root As Double()
-    ReadOnly model As treeModel.models
+    Dim root As Double()
 
     ''' <summary>
     ''' build model tree
@@ -50,7 +51,7 @@ Public Class Cluster
             End If
         Else
             ' create new 
-            tree.models.add(
+            Call tree.models.add(
                 field("name") = model,
                 field("cluster_cutoff") = cluster_cutoff,
                 field("right") = right_cutoff
@@ -74,11 +75,54 @@ Public Class Cluster
     ''' </summary>
     ''' <returns></returns>
     Private Function getRoot() As Double()
+        Dim rootNode As treeModel.tree = tree.tree _
+            .where(field("model_id") = model.id) _
+            .find(Of treeModel.tree)
 
+        If Not rootNode Is Nothing Then
+            root = tree.DecodeMatrix(rootNode.graph_id)
+        Else
+            ' try to use the first molecule as root
+            Dim firstMolecule = tree.molecules.find(Of treeModel.molecules)
+
+            If firstMolecule Is Nothing Then
+                Throw New InvalidProgramException("no molecules data for create tree!")
+            End If
+
+            Dim firstGraph = tree.graph _
+                .where(field("molecule_id") = firstMolecule.id) _
+                .find(Of treeModel.graph)
+
+            If firstGraph Is Nothing Then
+                Throw New InvalidProgramException($"in-consist database model: missing of the graph data for the first molecule: {firstMolecule.ToString}")
+            End If
+
+            ' add tree root
+            Call tree.tree.add(
+                field("model_id") = model.id,
+                field("parent_id") = 0,
+                field("graph_id") = firstGraph.id,
+                field("cosine") = 1)
+
+            rootNode = tree.tree _
+                .where(field("model_id") = model.id) _
+                .order_by("id", desc:=True) _
+                .find(Of treeModel.tree)
+
+            If Not rootNode Is Nothing Then
+                root = tree.DecodeMatrix(rootNode.graph_id)
+            Else
+                Throw New InvalidProgramException($"create root node of the tree model error: {tree.tree.GetLastErrorMessage}")
+            End If
+        End If
+
+        Return root
     End Function
 
+    ''' <summary>
+    ''' scan all molecule graph data and run tree clustering
+    ''' </summary>
     Public Sub BuildTree()
-        ' the first
-    End Sub
 
+    End Sub
 End Class
