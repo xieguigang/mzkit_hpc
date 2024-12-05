@@ -192,9 +192,11 @@ Public Class Cluster
                 If root.right = 0 Then
                     ' no right
                     ' create node as right based on current graph data
+                    root.right = CreateNode(root, page, cos, jac, test.TestValue, pval)
+
                     Call tree.tree.where(
                         field("id") = root.id
-                    ).save(field("right") = CreateNode(root, page, cos, jac, test.TestValue, pval))
+                    ).save(field("right") = root.right)
 
                     Exit Do
                 Else
@@ -205,9 +207,11 @@ Public Class Cluster
                 If root.left = 0 Then
                     ' no left
                     ' create node as left based on current graph data
+                    root.left = CreateNode(root, page, cos, jac, test.TestValue, pval)
+
                     Call tree.tree.where(
                         field("id") = root.id
-                    ).save(field("left") = CreateNode(root, page, cos, jac, test.TestValue, pval))
+                    ).save(field("left") = root.left)
 
                     Exit Do
                 Else
@@ -217,7 +221,11 @@ Public Class Cluster
         Loop
     End Sub
 
-    Private Function CreateNode(root As treeModel.tree, page As treeModel.graph, cos As Double, jac As Double, t As Double, pval As Double) As UInteger
+    Private Function CreateNode(root As treeModel.tree, page As treeModel.graph,
+                                cos As Double,
+                                jac As Double,
+                                t As Double,
+                                pval As Double) As UInteger
         Call tree.tree.add(
             field("model_id") = model.id,
             field("parent_id") = root.id,
