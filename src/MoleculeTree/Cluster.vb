@@ -1,4 +1,6 @@
 ﻿Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
+Imports Microsoft.VisualBasic.Math
+Imports Microsoft.VisualBasic.Math.Statistics.Hypothesis
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class Cluster
@@ -156,10 +158,78 @@ Public Class Cluster
 
     Private Sub BuildTreePage(page As treeModel.graph)
         Dim root As treeModel.tree = Me.root
-        Dim v As Double() = tree.DecodeMatrix(root.graph_id)
+        Dim u As Double() = tree.DecodeMatrix(page.id)
+
+        u = SIMD.Divide.f64_op_divide_f64_scalar(u, u.Max)
 
         Do While True
+            Dim v As Double() = tree.DecodeMatrix(root.graph_id)
+            ' compares with current
+            Dim cos As Double = SSM_SIMD(u, v)
+            Dim jac As Double = LinearAlgebra.JaccardIndex(u, v)
 
+            v = SIMD.Divide.f64_op_divide_f64_scalar(v, v.Max)
+
+            ' u is not equsls to v
+            ' but we check similarity at here
+            ' so pvalue is 1 - t-test pvalue
+            Dim test = t.Test(u, v, alternative:=Hypothesis.TwoSided)
+            Dim pval As Double = 1 - test.Pvalue
+            Dim score As Double = cos * jac
+
+            If score > model.cluster_cutoff Then
+                ' is member of current node 
+                ' create tree node and exit
+                Call CreateNode(root, page, cos, jac, test.TestValue, pval)
+                Exit Do
+            ElseIf score > model.right Then
+                ' visit right
+                If root.right = 0 Then
+                    ' no right
+                    ' create node as right based on current graph data
+                    Call tree.tree.where(
+                        field("id") = root.id
+                    ).save(field("right") = CreateNode(root, page, cos, jac, test.TestValue, pval))
+
+                    Exit Do
+                Else
+                    root = tree.tree.where(field("id") = root.right).find(Of treeModel.tree)
+                End If
+            Else
+                ' visit left
+                If root.left = 0 Then
+                    ' no left
+                    ' create node as left based on current graph data
+                    Call tree.tree.where(
+                        field("id") = root.id
+                    ).save(field("left") = CreateNode(root, page, cos, jac, test.TestValue, pval))
+
+                    Exit Do
+                Else
+                    root = tree.tree.where(field("id") = root.left).find(Of treeModel.tree)
+                End If
+            End If
         Loop
     End Sub
+
+    Private Function CreateNode(root As treeModel.tree, page As treeModel.graph, cos As Double, jac As Double, t As Double, pval As Double) As UInteger
+        Call tree.tree.add(
+            field("model_id") = model.id,
+            field("parent_id") = root.id,
+            field("graph_id") = page.id,
+            field("cosine") = cos,
+            field("jaccard") = jac,
+            field("t") = t,
+            field("pvalue") = pval,
+            field("left") = 0,
+            field("right") = 0
+        )
+
+        root = tree.tree.where(
+                field("model_id") = model.id,
+                field("graph_id") = page.id
+            ).find(Of treeModel.tree)
+
+        Return root.id
+    End Function
 End Class
