@@ -166,8 +166,11 @@ Public Class Cluster
     Private Sub BuildTreePage(page As treeModel.graph)
         Dim root As treeModel.tree = Me.root
         Dim u As Double() = tree.DecodeMatrix(page.id)
+        Dim max As Double = u.Max
 
-        u = SIMD.Divide.f64_op_divide_f64_scalar(u, u.Max)
+        If max <> 0.0 Then
+            u = SIMD.Divide.f64_op_divide_f64_scalar(u, max)
+        End If
 
         Do While True
             Dim v As Double() = tree.DecodeMatrix(root.graph_id)
@@ -175,7 +178,11 @@ Public Class Cluster
             Dim cos As Double = SSM_SIMD(u, v)
             Dim jac As Double = LinearAlgebra.JaccardIndex(u, v)
 
-            v = SIMD.Divide.f64_op_divide_f64_scalar(v, v.Max)
+            max = v.Max
+
+            If max <> 0.0 Then
+                v = SIMD.Divide.f64_op_divide_f64_scalar(v, max)
+            End If
 
             ' u is not equsls to v
             ' but we check similarity at here
