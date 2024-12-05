@@ -154,6 +154,11 @@ CREATE TABLE `tree` (
   `parent_id` int unsigned NOT NULL COMMENT '[id] of the parent node of current node',
   `graph_id` int unsigned NOT NULL COMMENT 'the molecule structure graph reference id of current node',
   `cosine` double unsigned NOT NULL DEFAULT '0' COMMENT 'cosine similarity of current node when compares with the parent node',
+  `jaccard` double unsigned NOT NULL DEFAULT '0' COMMENT 'jaccard similarity index of the current node when compares with the parent node',
+  `t` double unsigned NOT NULL,
+  `pvalue` double unsigned NOT NULL,
+  `left` int unsigned NOT NULL COMMENT 'tree node id of left\n',
+  `right` int unsigned NOT NULL COMMENT 'tree node id of right',
   `add_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time of current cluster node',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
@@ -170,4 +175,4 @@ CREATE TABLE `tree` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-05  8:38:24
+-- Dump completed on 2024-12-05  9:15:50
