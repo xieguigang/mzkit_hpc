@@ -1,6 +1,7 @@
 ﻿
 Imports BioNovoGene.BioDeep.Chemoinformatics
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.Data.visualize.Network.Graph
 Imports Microsoft.VisualBasic.Scripting.MetaData
 Imports MoleculeTree
 Imports SMRUCC.Rsharp.Runtime.Components
@@ -60,4 +61,8 @@ Module MoleculeCluster
         End If
     End Sub
 
+    <ExportAPI("fetch_tree")>
+    Public Function fetch_tree(tree As molecule_tree, model As String) As NetworkGraph
+        Return tree.FetchTree(model)
+    End Function
 End Module
