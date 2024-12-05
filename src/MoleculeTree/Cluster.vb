@@ -138,12 +138,17 @@ Public Class Cluster
             End If
 
             For Each molecule As treeModel.molecules In TqdmWrapper.Wrap(molecules)
-                Call BuildTreePage(tree.graph.where(field("molecule_id") = molecule.id).select(Of treeModel.graph))
+                For Each graph As treeModel.graph In tree.graph _
+                    .where(field("molecule_id") = molecule.id) _
+                    .select(Of treeModel.graph)
+
+                    Call BuildTreePage(graph)
+                Next
             Next
         Loop
     End Sub
 
-    Private Sub BuildTreePage(page As treeModel.graph())
+    Private Sub BuildTreePage(page As treeModel.graph)
 
     End Sub
 End Class
