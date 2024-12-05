@@ -9,39 +9,39 @@ Imports Oracle.LinuxCompatibility.MySQL.Uri
 
 Public Class molecule_tree : Inherits db_models
 
-    Public ReadOnly Property atoms As model
+    Public ReadOnly Property atoms As Model
         Get
             Return m_atoms
         End Get
     End Property
 
-    Public ReadOnly Property tree As model
+    Public ReadOnly Property tree As Model
         Get
             Return m_tree
         End Get
     End Property
 
-    Public ReadOnly Property graph As model
+    Public ReadOnly Property graph As Model
         Get
             Return m_graph
         End Get
     End Property
 
-    Public ReadOnly Property molecules As model
+    Public ReadOnly Property molecules As Model
         Get
             Return m_molecules
         End Get
     End Property
 
-    Public ReadOnly Property molecule_atoms As model
+    Public ReadOnly Property molecule_atoms As Model
         Get
             Return m_molecule_atoms
         End Get
     End Property
 
-    Public ReadOnly Property model As model
+    Public ReadOnly Property models As Model
         Get
-            Return m_model
+            Return m_models
         End Get
     End Property
 
