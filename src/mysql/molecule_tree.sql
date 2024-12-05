@@ -82,6 +82,25 @@ CREATE TABLE `model` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `models`
+--
+
+DROP TABLE IF EXISTS `models`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `models` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT 'unnamed',
+  `cluster_cutoff` double NOT NULL DEFAULT '0.9' COMMENT 'cosine score cutoff for make cluster into one cluster node',
+  `right` double NOT NULL DEFAULT '0.6' COMMENT 'cosine score cutoff for put the node to right',
+  `add_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='cluster tree model parameters';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `molecule_atoms`
 --
 
@@ -151,4 +170,4 @@ CREATE TABLE `tree` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-04 17:26:16
+-- Dump completed on 2024-12-05  8:38:24
