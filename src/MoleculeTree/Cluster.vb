@@ -140,6 +140,8 @@ Public Class Cluster
 
             If molecules.IsNullOrEmpty Then
                 Exit Do
+            Else
+                Call VBDebugger.EchoLine($"processing data page_{page - 1}")
             End If
 
             For Each molecule As treeModel.molecules In TqdmWrapper.Wrap(molecules)
