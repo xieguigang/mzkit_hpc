@@ -106,7 +106,12 @@ Public Class Cluster
             field("model_id") = model.id,
             field("parent_id") = 0,
             field("graph_id") = firstGraph.id,
-            field("cosine") = 1)
+            field("cosine") = 1,
+            field("jaccard") = 1,
+            field("t") = 1,
+            field("pvalue") = 0,
+            field("left") = 0,
+            field("right") = 0)
 
         rootNode = tree.tree _
             .where(field("model_id") = model.id) _
