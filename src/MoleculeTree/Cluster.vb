@@ -140,13 +140,26 @@ Public Class Cluster
                     .where(field("molecule_id") = molecule.id) _
                     .select(Of treeModel.graph)
 
-                    Call BuildTreePage(graph)
+                    ' check of the graph is already been existed
+                    If tree.tree.where(
+                            field("model_id") = model.id,
+                            field("graph_id") = graph.id
+                        ) _
+                        .find(Of treeModel.tree) Is Nothing Then
+
+                        Call BuildTreePage(graph)
+                    End If
                 Next
             Next
         Loop
     End Sub
 
     Private Sub BuildTreePage(page As treeModel.graph)
+        Dim root As treeModel.tree = Me.root
+        Dim v As Double() = tree.DecodeMatrix(root.graph_id)
 
+        Do While True
+
+        Loop
     End Sub
 End Class
