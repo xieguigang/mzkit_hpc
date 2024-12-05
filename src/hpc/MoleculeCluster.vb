@@ -49,8 +49,15 @@ Module MoleculeCluster
     End Sub
 
     <ExportAPI("make_clusterTree")>
-    Public Sub makeClusterTree(tree As molecule_tree)
-        Call New Cluster(tree).BuildTree()
+    Public Sub makeClusterTree(tree As molecule_tree, model As String,
+                               Optional cluster_cutoff As Double? = Nothing,
+                               Optional right_cutoff As Double? = Nothing)
+
+        If cluster_cutoff Is Nothing OrElse right_cutoff Is Nothing Then
+            Call New Cluster(tree, model).BuildTree()
+        Else
+            Call New Cluster(tree, model, cluster_cutoff, right_cutoff).BuildTree()
+        End If
     End Sub
 
 End Module
