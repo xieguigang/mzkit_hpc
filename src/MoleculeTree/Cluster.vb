@@ -1,4 +1,5 @@
-﻿Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
+﻿Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
+Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class Cluster
 
@@ -122,7 +123,27 @@ Public Class Cluster
     ''' <summary>
     ''' scan all molecule graph data and run tree clustering
     ''' </summary>
-    Public Sub BuildTree()
+    Public Sub BuildTree(Optional page_size As Integer = 100)
+        Dim offset As UInteger = 0
+        Dim page As Integer = 1
+        Dim molecules As treeModel.molecules()
+
+        Do While True
+            offset = (page - 1) * page_size
+            molecules = tree.molecules.limit(offset, page_size).select(Of treeModel.molecules)
+            page += 1
+
+            If molecules.IsNullOrEmpty Then
+                Exit Do
+            End If
+
+            For Each molecule As treeModel.molecules In TqdmWrapper.Wrap(molecules)
+                Call BuildTreePage(tree.graph.where(field("molecule_id") = molecule.id).select(Of treeModel.graph))
+            Next
+        Loop
+    End Sub
+
+    Private Sub BuildTreePage(page As treeModel.graph())
 
     End Sub
 End Class
