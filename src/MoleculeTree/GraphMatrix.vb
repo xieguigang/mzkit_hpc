@@ -75,7 +75,10 @@ Public Module GraphMatrix
         If m Is Nothing Then
             Throw New MissingPrimaryKeyException($"there is no cluster tree mode which is named '{model}' inside database!")
         Else
-
+            Call g.CreateNode("0", New NodeData With {
+                .label = "root",
+                .origID = "root"
+            })
         End If
 
         Dim data As TreeNode()
