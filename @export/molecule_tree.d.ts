@@ -25,6 +25,11 @@ declare namespace molecule_tree {
    */
    function add_molecule(tree: object, meta: object, smiles: any): ;
    /**
+     * @param cluster_cutoff default value Is ``null``.
+     * @param right_cutoff default value Is ``null``.
+   */
+   function make_clusterTree(tree: object, model: string, cluster_cutoff?: object, right_cutoff?: object): ;
+   /**
      * @param page_size default value Is ``100``.
    */
    function update_matrix(tree: object, page_size?: object): ;
