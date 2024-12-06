@@ -88,6 +88,7 @@ Public Module GraphMatrix
             data = tree.tree _
                 .left_join("graph").on(field("graph.id") = field("graph_id")) _
                 .left_join("molecules").on(field("molecule_id") = field("molecules.id")) _
+                .where(field("model_id") = m.id) _
                 .limit(offset, page_size) _
                 .select(Of TreeNode)(
                     "tree.id",
