@@ -107,6 +107,8 @@ Public Module GraphMatrix
 
             If data.IsNullOrEmpty Then
                 Exit Do
+            Else
+                Call VBDebugger.EchoLine($"fetch data -> offset[{offset},{offset + page_size}]!")
             End If
 
             For Each i As TreeNode In data
