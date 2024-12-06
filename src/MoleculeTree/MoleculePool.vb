@@ -1,7 +1,5 @@
 ﻿Imports System.Data
 Imports System.Runtime.CompilerServices
-Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
-Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 ''' <summary>
