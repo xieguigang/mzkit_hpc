@@ -170,6 +170,7 @@ Public Class Cluster
 
         If max <> 0.0 Then
             u = SIMD.Divide.f64_op_divide_f64_scalar(u, max)
+        Else
             u(0) += randf(0.00000001, 0.000001)
         End If
 
@@ -183,6 +184,7 @@ Public Class Cluster
 
             If max <> 0.0 Then
                 v = SIMD.Divide.f64_op_divide_f64_scalar(v, max)
+            Else
                 ' 20241206 for avoid the un-expected constant value error
                 v(0) += randf(0.00000001, 0.000001)
             End If
