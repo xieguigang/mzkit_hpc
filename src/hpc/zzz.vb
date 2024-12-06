@@ -62,6 +62,7 @@ Public Class zzz
 
     Public Shared Sub onLoad()
         Call MsImaging.Main()
+        Call MoleculeCluster.Main()
     End Sub
 End Class
 

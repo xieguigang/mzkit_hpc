@@ -65,7 +65,7 @@ Imports MZKit.IpcParallel.Comprehensive
 Imports SMRUCC.Rsharp.Runtime.Interop
 
 ''' <summary>
-''' MS-imaging rawdata processing in HPC parallel
+''' MS-imaging rawdata processing helper in HPC parallel
 ''' </summary>
 <Package("MsImaging")>
 Public Module MsImaging
