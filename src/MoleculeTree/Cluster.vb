@@ -163,6 +163,10 @@ Public Class Cluster
         Loop
     End Sub
 
+    Public Function Search()
+
+    End Function
+
     Private Sub BuildTreePage(page As treeModel.graph)
         Dim root As treeModel.tree = Me.root
         Dim u As Double() = tree.DecodeMatrix(page.id)
