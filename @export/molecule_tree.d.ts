@@ -5,6 +5,7 @@
 // ref=hpc.MoleculeCluster@hpc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 
 /**
+ * Create molecule tree via strucutre clustering for run unknown spectrum feature annotation
  * 
  * > steps for build molecule tree:
  * >  
@@ -25,6 +26,11 @@ declare namespace molecule_tree {
    */
    function add_molecule(tree: object, meta: object, smiles: any): ;
    /**
+    * Download the molecule tree graph from the database
+    * 
+    * 
+     * @param tree -
+     * @param model -
    */
    function fetch_tree(tree: object, model: string): object;
    /**
@@ -32,6 +38,16 @@ declare namespace molecule_tree {
      * @param right_cutoff default value Is ``null``.
    */
    function make_clusterTree(tree: object, model: string, cluster_cutoff?: object, right_cutoff?: object): ;
+   /**
+    * get a set of the molecule information in a given model
+    * 
+    * 
+     * @param tree -
+     * @param model the name reference to a specific model
+     * @param env 
+     * + default value Is ``null``.
+   */
+   function molecule_set(tree: object, model: string, env?: object): any;
    /**
      * @param page_size default value Is ``100``.
    */

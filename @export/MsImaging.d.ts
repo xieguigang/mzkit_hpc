@@ -5,7 +5,7 @@
 // ref=hpc.MsImaging@hpc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 
 /**
- * MS-imaging rawdata processing in HPC parallel
+ * MS-imaging rawdata processing helper in HPC parallel
  * 
 */
 declare namespace MsImaging {
