@@ -27,6 +27,7 @@ Imports RInternal = SMRUCC.Rsharp.Runtime.Internal
 ''' </remarks>
 <Package("molecule_tree")>
 <RTypeExport("molecule_tree", GetType(molecule_tree))>
+<RTypeExport("metabo_data", GetType(MetaboliteAnnotation))>
 Module MoleculeCluster
 
     Sub Main()
