@@ -167,6 +167,13 @@ Public Class Cluster
 
     End Function
 
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="page"></param>
+    ''' <remarks>
+    ''' the graph vector data has been normalized to [0,1]
+    ''' </remarks>
     Private Sub BuildTreePage(page As treeModel.graph)
         Dim root As treeModel.tree = Me.root
         Dim u As Double() = tree.DecodeMatrix(page.id)
