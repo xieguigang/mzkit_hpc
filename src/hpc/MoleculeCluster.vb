@@ -70,7 +70,10 @@ Module MoleculeCluster
     End Sub
 
     <ExportAPI("update_matrix")>
-    Public Sub updateMatrix(tree As molecule_tree, Optional page_size As Integer = 100)
+    Public Sub updateMatrix(tree As molecule_tree,
+                            Optional page_size As Integer = 100,
+                            Optional fast_check As Boolean = False)
+
         Call GraphMatrix.ResolveMatrix(tree, page_size)
     End Sub
 

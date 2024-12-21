@@ -15,7 +15,10 @@ Public Module GraphMatrix
     ReadOnly network As New NetworkByteOrderBuffer
 
     <Extension>
-    Public Sub ResolveMatrix(tree As molecule_tree, Optional page_size As Integer = 100)
+    Public Sub ResolveMatrix(tree As molecule_tree,
+                             Optional page_size As Integer = 100,
+                             Optional fast_check As Boolean = False)
+
         Dim page As Integer = 1
         Dim atoms As treeModel.atoms() = tree.atoms.select(Of treeModel.atoms) _
             .OrderBy(Function(a) a.unique_id) _
