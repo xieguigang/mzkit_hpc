@@ -254,3 +254,4 @@ paket-files/
 *.sln.iml
 /App
 .pkg/mzkit.zip
+.pkg/mzkit_hpc.zip

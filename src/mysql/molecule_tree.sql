@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `molecule_tree` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `molecule_tree`;
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 192.168.0.231    Database: molecule_tree
+-- Host: 192.168.3.233    Database: molecule_tree
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	9.0.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,7 +38,7 @@ CREATE TABLE `atoms` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `unique_id_UNIQUE` (`unique_id`) /*!80000 INVISIBLE */,
   KEY `find_reference` (`unique_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='atom group information data';
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb3 COMMENT='atom group information data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +59,7 @@ CREATE TABLE `graph` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `check_unique_graph` (`molecule_id`,`hashcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='the molecule structure graph';
+) ENGINE=InnoDB AUTO_INCREMENT=223710 DEFAULT CHARSET=utf8mb3 COMMENT='the molecule structure graph';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `models` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='cluster tree model parameters';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='cluster tree model parameters';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `molecule_atoms` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `check_atom_reference` (`molecule`,`index`,`atom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='relationship between a molecule and atom groups';
+) ENGINE=InnoDB AUTO_INCREMENT=6593004 DEFAULT CHARSET=utf8mb3 COMMENT='relationship between a molecule and atom groups';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +119,7 @@ CREATE TABLE `molecules` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `db_xref_UNIQUE` (`db_xref`),
   KEY `find_by_xref` (`db_xref`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='cache pool of external molecule data set';
+) ENGINE=InnoDB AUTO_INCREMENT=223710 DEFAULT CHARSET=utf8mb3 COMMENT='cache pool of external molecule data set';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,16 +136,25 @@ CREATE TABLE `tree` (
   `graph_id` int unsigned NOT NULL COMMENT 'the molecule structure graph reference id of current node',
   `cosine` double unsigned NOT NULL DEFAULT '0' COMMENT 'cosine similarity of current node when compares with the parent node',
   `jaccard` double unsigned NOT NULL DEFAULT '0' COMMENT 'jaccard similarity index of the current node when compares with the parent node',
-  `t` double unsigned NOT NULL,
+  `t` double NOT NULL COMMENT 'test value, maybe negative',
   `pvalue` double unsigned NOT NULL,
   `left` int unsigned NOT NULL COMMENT 'tree node id of left\n',
   `right` int unsigned NOT NULL COMMENT 'tree node id of right',
   `add_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time of current cluster node',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `graph_data_index` (`graph_id`)
+  KEY `graph_data_index` (`graph_id`),
+  KEY `find_node` (`model_id`,`graph_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='the cluster tree network data';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping events for database 'molecule_tree'
+--
+
+--
+-- Dumping routines for database 'molecule_tree'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -156,4 +165,4 @@ CREATE TABLE `tree` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-05  9:17:42
+-- Dump completed on 2024-12-21 23:33:12
