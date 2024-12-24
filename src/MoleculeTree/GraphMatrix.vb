@@ -61,9 +61,10 @@ Public Module GraphMatrix
     ''' </param>
     ''' <returns></returns>
     <Extension>
-    Public Function DecodeMatrix(tree As molecule_tree, graph_id As UInteger) As Double()
+    Public Function DecodeMatrix(tree As molecule_tree, graph_id As UInteger, Optional ByRef molecule_id As UInteger = Nothing) As Double()
         Dim graph As treeModel.graph = tree.graph.where(field("id") = graph_id).find(Of treeModel.graph)
         Dim v As Double() = network.ParseDouble(graph.matrix)
+        molecule_id = graph.molecule_id
         Return v
     End Function
 

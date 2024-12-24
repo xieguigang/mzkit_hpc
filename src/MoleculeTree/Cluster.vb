@@ -163,8 +163,78 @@ Public Class Cluster
         Loop
     End Sub
 
-    Public Function Search()
+    ''' <summary>
+    ''' make molecule structure similarity search 
+    ''' </summary>
+    ''' <param name="u"></param>
+    ''' <returns></returns>
+    Public Iterator Function Search(u As Double()) As IEnumerable(Of (molecule As treeModel.molecules, score As Double))
+        Dim root As treeModel.tree = Me.root
+        Dim max As Double = u.Max
 
+        If max <> 0.0 Then
+            u = SIMD.Divide.f64_op_divide_f64_scalar(u, max)
+        End If
+
+        Do While True
+            Dim v As Double() = tree.DecodeMatrix(root.graph_id)
+
+            max = v.Max
+
+            If max <> 0.0 Then
+                v = SIMD.Divide.f64_op_divide_f64_scalar(v, max)
+            End If
+
+            ' compares with current
+            Dim cos As Double = SSM_SIMD(u, v)
+            Dim jac As Double = LinearAlgebra.JaccardIndex(u, v)
+            Dim score As Double = cos * jac
+
+            If score > model.cluster_cutoff Then
+                ' populate cluster search result and break the loop
+                Dim cluster = tree.tree.where(field("parent_id") = root.id).select(Of treeModel.tree) _
+                    .Where(Function(a)
+                               ' filter [left,right]
+                               Return a.parent_id <> root.left AndAlso
+                                      a.parent_id <> root.right
+                           End Function) _
+                    .ToArray
+
+                For Each item In cluster _
+                    .Select(Function(t)
+                                Dim molecule_id As UInteger = 0
+                                Dim v1 As Double() = tree.DecodeMatrix(t.graph_id, molecule_id)
+                                Dim max1 = v1.Max
+
+                                If max1 <> 0.0 Then
+                                    v1 = SIMD.Divide.f64_op_divide_f64_scalar(v1, max1)
+                                End If
+
+                                Dim cos1 As Double = SSM_SIMD(u, v1)
+                                Dim jac1 As Double = LinearAlgebra.JaccardIndex(u, v1)
+                                Dim score1 As Double = cos1 * jac1
+
+                                Return (tree.molecules.where(field("id") = molecule_id).find(Of treeModel.molecules), score1)
+                            End Function) _
+                    .OrderByDescending(Function(a) a.score1)
+
+                    Yield item
+                Next
+
+                Exit Do
+            ElseIf score > model.right Then
+                ' visit right
+                If root.right = 0 Then
+                    ' reach the leaf of tree, break search tree 
+                    Exit Do
+                Else
+                    root = tree.tree.where(field("id") = root.right).find(Of treeModel.tree)
+                End If
+            Else
+                ' break search tree on left
+                Exit Do
+            End If
+        Loop
     End Function
 
     ''' <summary>
