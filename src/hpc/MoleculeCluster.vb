@@ -3,6 +3,7 @@ Imports BioNovoGene.BioDeep.Chemoinformatics
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Data.visualize.Network.Graph
 Imports Microsoft.VisualBasic.Scripting.MetaData
+Imports Microsoft.VisualBasic.Serialization.BinaryDumping
 Imports MoleculeTree
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports SMRUCC.Rsharp.Runtime
@@ -98,6 +99,32 @@ Module MoleculeCluster
     <ExportAPI("fetch_tree")>
     Public Function fetch_tree(tree As molecule_tree, model As String) As NetworkGraph
         Return tree.FetchTree(model)
+    End Function
+
+    <ExportAPI("fetch_matrix")>
+    Public Function fetch_matrix(tree As molecule_tree, <RRawVectorArgument> db_xrefs As Object, Optional prefix As String = Nothing) As Object
+        Dim mol_xrefs As String() = CLRVector.asCharacter(db_xrefs)
+        Dim list As New list
+
+        Static network As New NetworkByteOrderBuffer
+
+        For Each id As String In mol_xrefs
+            Dim fetch As String() = tree.graph _
+                .left_join("molecules") _
+                .on(field("`molecules`.id") = field("molecule_id")) _
+                .where(field("db_xref") = id) _
+                .limit(1) _
+                .project(Of String)("matrix")
+            Dim vec As Double() = network.ParseDouble(fetch(0))
+
+            If prefix Is Nothing Then
+                Call list.add(id, vec)
+            Else
+                Call list.add(prefix & id, vec)
+            End If
+        Next
+
+        Return list
     End Function
 
     ''' <summary>
