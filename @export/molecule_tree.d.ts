@@ -26,6 +26,10 @@ declare namespace molecule_tree {
    */
    function add_molecule(tree: object, meta: object, smiles: any): ;
    /**
+     * @param prefix default value Is ``null``.
+   */
+   function fetch_matrix(tree: object, db_xrefs: any, prefix?: string): any;
+   /**
     * Download the molecule tree graph from the database
     * 
     * 
@@ -50,6 +54,7 @@ declare namespace molecule_tree {
    function molecule_set(tree: object, model: string, env?: object): any;
    /**
      * @param page_size default value Is ``100``.
+     * @param fast_check default value Is ``false``.
    */
-   function update_matrix(tree: object, page_size?: object): ;
+   function update_matrix(tree: object, page_size?: object, fast_check?: boolean): ;
 }
