@@ -102,11 +102,20 @@ Module MoleculeCluster
     End Function
 
     <ExportAPI("fetch_matrix")>
-    Public Function fetch_matrix(tree As molecule_tree, <RRawVectorArgument> db_xrefs As Object, Optional prefix As String = Nothing) As Object
+    Public Function fetch_matrix(tree As molecule_tree, <RRawVectorArgument> db_xrefs As Object,
+                                 Optional prefix As String = Nothing,
+                                 Optional scalar As Boolean = False,
+                                 Optional base64 As Boolean = False) As Object
+
         Dim mol_xrefs As String() = CLRVector.asCharacter(db_xrefs)
         Dim list As New list
 
         Static network As New NetworkByteOrderBuffer
+
+        If mol_xrefs.IsNullOrEmpty Then
+            Call "no db_xref reference id for get molecule graph matrix!".Warning
+            Return Nothing
+        End If
 
         For Each id As String In mol_xrefs
             Dim fetch As String() = tree.graph _
@@ -115,7 +124,16 @@ Module MoleculeCluster
                 .where(field("db_xref") = id) _
                 .limit(1) _
                 .project(Of String)("matrix")
-            Dim vec As Double() = network.ParseDouble(fetch(0))
+
+            If scalar Then
+                If base64 Then
+                    Return fetch(0)
+                Else
+                    Return network.ParseDouble(fetch(0))
+                End If
+            End If
+
+            Dim vec As Object = If(base64, fetch(0), network.ParseDouble(fetch(0)))
 
             If prefix Is Nothing Then
                 Call list.add(id, vec)
