@@ -101,6 +101,17 @@ Module MoleculeCluster
         Return tree.FetchTree(model)
     End Function
 
+    ''' <summary>
+    ''' get molecule graph matrix data
+    ''' </summary>
+    ''' <param name="tree"></param>
+    ''' <param name="db_xrefs"></param>
+    ''' <param name="prefix"></param>
+    ''' <param name="scalar">
+    ''' the function returns a scalar molecule result: a numeric vector if not base64, or the raw base64 string of the matrix.
+    ''' </param>
+    ''' <param name="base64"></param>
+    ''' <returns></returns>
     <ExportAPI("fetch_matrix")>
     Public Function fetch_matrix(tree As molecule_tree, <RRawVectorArgument> db_xrefs As Object,
                                  Optional prefix As String = Nothing,

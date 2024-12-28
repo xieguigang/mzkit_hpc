@@ -26,9 +26,22 @@ declare namespace molecule_tree {
    */
    function add_molecule(tree: object, meta: object, smiles: any): ;
    /**
-     * @param prefix default value Is ``null``.
+    * get molecule graph matrix data
+    * 
+    * 
+     * @param tree -
+     * @param db_xrefs -
+     * @param prefix -
+     * 
+     * + default value Is ``null``.
+     * @param scalar the function returns a scalar molecule result: a numeric vector if not base64, or the raw base64 string of the matrix.
+     * 
+     * + default value Is ``false``.
+     * @param base64 -
+     * 
+     * + default value Is ``false``.
    */
-   function fetch_matrix(tree: object, db_xrefs: any, prefix?: string): any;
+   function fetch_matrix(tree: object, db_xrefs: any, prefix?: string, scalar?: boolean, base64?: boolean): any;
    /**
     * Download the molecule tree graph from the database
     * 

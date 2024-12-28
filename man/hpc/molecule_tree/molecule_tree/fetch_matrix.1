@@ -1,11 +1,35 @@
 .\" man page create by R# package system.
 .TH MOLECULE_TREE 1 2000-Jan "fetch_matrix" "fetch_matrix"
 .SH NAME
-fetch_matrix \- 
+fetch_matrix \- get molecule graph matrix data
 .SH SYNOPSIS
 \fIfetch_matrix(\fBtree\fR as <generic> molecule_tree, 
 \fBdb_xrefs\fR as any, 
-\fBprefix\fR as string = \fB<NULL>\fR);\fR
+\fBprefix\fR as string = \fB<NULL>\fR, 
+\fBscalar\fR as boolean = FALSE, 
+\fBbase64\fR as boolean = FALSE);\fR
+.SH DESCRIPTION
+.PP
+get molecule graph matrix data
+.PP
+.SH OPTIONS
+.PP
+\fBtree\fB \fR\- -. 
+.PP
+.PP
+\fBdb_xrefs\fB \fR\- -. 
+.PP
+.PP
+\fBprefix\fB \fR\- -. 
+.PP
+.PP
+\fBscalar\fB \fR\- 
+ the function returns a scalar molecule result: a numeric vector if not base64, or the raw base64 string of the matrix.
+. 
+.PP
+.PP
+\fBbase64\fB \fR\- -. 
+.PP
 .SH SEE ALSO
 molecule_tree
 .SH FILES

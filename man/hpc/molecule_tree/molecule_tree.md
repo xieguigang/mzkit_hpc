@@ -13,5 +13,5 @@ Create molecule tree via strucutre clustering for run unknown spectrum feature a
 + [update_matrix](molecule_tree/update_matrix.1) 
 + [make_clusterTree](molecule_tree/make_clusterTree.1) 
 + [fetch_tree](molecule_tree/fetch_tree.1) Download the molecule tree graph from the database
-+ [fetch_matrix](molecule_tree/fetch_matrix.1) 
++ [fetch_matrix](molecule_tree/fetch_matrix.1) get molecule graph matrix data
 + [molecule_set](molecule_tree/molecule_set.1) get a set of the molecule information in a given model

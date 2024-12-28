@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>fetch_matrix</title>
+    <title>get molecule graph matrix data</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <link rel="stylesheet" type="text/css" href="https://mzkit.org/assets/js/page.css">
@@ -18,23 +18,44 @@
             </tr>
         </table>
 
-        <h2>fetch_matrix</h2>
+        <h2>get molecule graph matrix data</h2>
 
         <h3>Description</h3>
 
-        fetch_matrix
+        
 
         <h3>Usage</h3>
 
         <div style="width: 100%; padding-left: 3%; color: black;">
             <pre><code class='language-R' style="color: black; font-weight:normal;"><strong>fetch_matrix</strong>(<i>tree</i>, <i>db.xrefs</i>,
-    <i>prefix</i> = <span style='color: blue !important;'>NULL</span>);</code></pre>
+    <i>prefix</i> = <span style='color: blue !important;'>NULL</span>,
+    <i>scalar</i> = <span style='color: blue !important;'>FALSE</span>,
+    <i>base64</i> = <span style='color: blue !important;'>FALSE</span>);</code></pre>
         </div>
 
         <h3>Arguments</h3>
 
         <table>
             
+<dt>tree</dt>
+<dd><p>[as <a href="/vignettes/clr/MoleculeTree/molecule_tree.html">molecule_tree</a>]</p></dd>
+
+
+<dt>db.xrefs</dt>
+<dd><p>-</p></dd>
+
+
+<dt>prefix</dt>
+<dd><p>[as string]</p></dd>
+
+
+<dt>scalar</dt>
+<dd><p>the function returns a scalar molecule result: a numeric vector if not base64, or the raw base64 string of the matrix. [as boolean]</p></dd>
+
+
+<dt>base64</dt>
+<dd><p>[as boolean]</p></dd>
+
         </table>
 
 
