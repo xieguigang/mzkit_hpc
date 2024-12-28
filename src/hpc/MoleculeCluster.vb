@@ -136,6 +136,11 @@ Module MoleculeCluster
                 .limit(1) _
                 .project(Of String)("matrix")
 
+            If fetch.IsNullOrEmpty Then
+                fetch = {Nothing}
+                Call $"no reference from the external db_xrefs: {id}".Warning
+            End If
+
             If scalar Then
                 If base64 Then
                     Return fetch(0)
