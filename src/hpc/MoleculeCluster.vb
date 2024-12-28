@@ -144,12 +144,14 @@ Module MoleculeCluster
             If scalar Then
                 If base64 Then
                     Return fetch(0)
+                ElseIf fetch(0) Is Nothing Then
+                    Return Nothing
                 Else
                     Return network.ParseDouble(fetch(0))
                 End If
             End If
 
-            Dim vec As Object = If(base64, fetch(0), network.ParseDouble(fetch(0)))
+            Dim vec As Object = If(base64, fetch(0), If(fetch(0) Is Nothing, Nothing, network.ParseDouble(fetch(0))))
 
             If prefix Is Nothing Then
                 Call list.add(id, vec)
