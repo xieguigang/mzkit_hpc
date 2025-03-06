@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::e11b2f3a3fce85ad6c55b4eba43a6582, Rscript\Library\mzkit_hpc\src\IpcParallel\Comprehensive\HEStainProcessor.vb"
+﻿#Region "Microsoft.VisualBasic::e5cd67d901e91e849b0109e6d74b3915, Rscript\Library\mzkit_hpc\src\IpcParallel\Comprehensive\HEStainProcessor.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 0.00%
     ' 
     '   Blank Lines: 1 (33.33%)
-    '     File Size: 44 B
+    '     File Size: 42 B
 
 
     ' Class HEStainProcessor
@@ -57,4 +57,3 @@
 Public Class HEStainProcessor
 
 End Class
-

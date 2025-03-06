@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::742a4eb01fe2df2b9e8a31a973fbdef2, Rscript\Library\mzkit_hpc\src\hpc\deconvolution.vb"
+﻿#Region "Microsoft.VisualBasic::e8aae5003b2f7a45dff7144513a029e8, Rscript\Library\mzkit_hpc\src\hpc\deconvolution.vb"
 
     ' Author:
     ' 
@@ -37,12 +37,12 @@
 
     ' Code Statistics:
 
-    '   Total Lines: 64
-    '    Code Lines: 41 (64.06%)
-    ' Comment Lines: 16 (25.00%)
+    '   Total Lines: 63
+    '    Code Lines: 41 (65.08%)
+    ' Comment Lines: 16 (25.40%)
     '    - Xml Docs: 93.75%
     ' 
-    '   Blank Lines: 7 (10.94%)
+    '   Blank Lines: 6 (9.52%)
     '     File Size: 2.58 KB
 
 
@@ -53,7 +53,6 @@
     ' /********************************************************************************/
 
 #End Region
-
 
 Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
@@ -118,4 +117,3 @@ Module deconvolution
     End Function
 
 End Module
-

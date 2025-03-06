@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::ede3f767b8f2018dd950dc26ae852591, Rscript\Library\mzkit_hpc\src\hpc\zzz.vb"
+﻿#Region "Microsoft.VisualBasic::3dbfef0275cf310489bcb3458c80acd5, Rscript\Library\mzkit_hpc\src\hpc\zzz.vb"
 
     ' Author:
     ' 
@@ -37,13 +37,13 @@
 
     ' Code Statistics:
 
-    '   Total Lines: 10
-    '    Code Lines: 7 (70.00%)
+    '   Total Lines: 11
+    '    Code Lines: 8 (72.73%)
     ' Comment Lines: 0 (0.00%)
     '    - Xml Docs: 0.00%
     ' 
-    '   Blank Lines: 3 (30.00%)
-    '     File Size: 178 B
+    '   Blank Lines: 3 (27.27%)
+    '     File Size: 213 B
 
 
     ' Class zzz
@@ -65,4 +65,3 @@ Public Class zzz
         Call MoleculeCluster.Main()
     End Sub
 End Class
-

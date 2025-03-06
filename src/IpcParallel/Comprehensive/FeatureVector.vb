@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::0614c68c0e97877d290f1657ecf0916b, Rscript\Library\mzkit_hpc\src\IpcParallel\Comprehensive\FeatureVector.vb"
+﻿#Region "Microsoft.VisualBasic::720f776b0d3decb89b1110a4162d00cd, Rscript\Library\mzkit_hpc\src\IpcParallel\Comprehensive\FeatureVector.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 0.00%
     ' 
     '   Blank Lines: 13 (10.08%)
-    '     File Size: 5.50 KB
+    '     File Size: 5.51 KB
 
 
     '     Class FeatureVector

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::28204424c569ba796def0e02e9207c21, Rscript\Library\mzkit_hpc\src\hpc\MsImaging.vb"
+﻿#Region "Microsoft.VisualBasic::a22baacb882f0c045be965353e50be6f, Rscript\Library\mzkit_hpc\src\hpc\MsImaging.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 100.00%
     ' 
     '   Blank Lines: 6 (10.91%)
-    '     File Size: 2.02 KB
+    '     File Size: 2.03 KB
 
 
     ' Module MsImaging
@@ -111,4 +111,3 @@ Public Module MsImaging
 
     End Function
 End Module
-
