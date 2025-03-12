@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::9494d113ecc7bf3c98cf606b11ec9030, Rscript\Library\mzkit_hpc\src\MoleculeTree\molecule_tree.vb"
+﻿#Region "Microsoft.VisualBasic::21f70a6da2562a9c198a85fe6a5875f6, Rscript\Library\mzkit_hpc\src\MoleculeTree\molecule_tree.vb"
 
     ' Author:
     ' 
@@ -217,4 +217,3 @@ Public Class molecule_tree : Inherits db_models
             .find(Of treeModel.atoms)()
     End Function
 End Class
-

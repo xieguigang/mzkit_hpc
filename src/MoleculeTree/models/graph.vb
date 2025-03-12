@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::89d89eda2c48da0e89d4670e0e0ee2d1, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\graph.vb"
+﻿#Region "Microsoft.VisualBasic::e5777ca1b70dea257e13752f1328e287, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\graph.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 96.94%
     ' 
     '   Blank Lines: 22 (10.68%)
-    '     File Size: 9.64 KB
+    '     File Size: 9.63 KB
 
 
     ' Class graph
@@ -265,4 +265,3 @@ End Class
 
 
 End Namespace
-

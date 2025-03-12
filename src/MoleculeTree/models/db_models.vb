@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::1261e60f64cc49bd27a24f5e0956c9e9, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\db_models.vb"
+﻿#Region "Microsoft.VisualBasic::02d225cd95a2fdc37afec9b0893b280d, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\db_models.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 0.00%
     ' 
     '   Blank Lines: 4 (15.38%)
-    '     File Size: 783 B
+    '     File Size: 781 B
 
 
     ' Class db_models
@@ -81,4 +81,3 @@ End Sub
 End Class
 
 End Namespace
-

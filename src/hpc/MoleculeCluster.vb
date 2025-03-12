@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::b8231bf4fb5a16d1f6ecb64e40ec02e9, Rscript\Library\mzkit_hpc\src\hpc\MoleculeCluster.vb"
+﻿#Region "Microsoft.VisualBasic::c7e3ef9a3787ea0d3a03de8183fe4613, Rscript\Library\mzkit_hpc\src\hpc\MoleculeCluster.vb"
 
     ' Author:
     ' 
@@ -37,12 +37,12 @@
 
     ' Code Statistics:
 
-    '   Total Lines: 184
-    '    Code Lines: 113 (61.41%)
-    ' Comment Lines: 44 (23.91%)
+    '   Total Lines: 183
+    '    Code Lines: 113 (61.75%)
+    ' Comment Lines: 44 (24.04%)
     '    - Xml Docs: 95.45%
     ' 
-    '   Blank Lines: 27 (14.67%)
+    '   Blank Lines: 26 (14.21%)
     '     File Size: 7.23 KB
 
 
@@ -55,7 +55,6 @@
     ' /********************************************************************************/
 
 #End Region
-
 
 Imports BioNovoGene.BioDeep.Chemoinformatics
 Imports Microsoft.VisualBasic.CommandLine.Reflection
@@ -240,4 +239,3 @@ Module MoleculeCluster
         Return MoleculeCluster.CastDataframe(tree.TreeMoleculeSet(pars).ToArray, list.empty, env)
     End Function
 End Module
-
