@@ -19,4 +19,9 @@ declare namespace mzkit_hpc {
      * @param peak.width default value Is ``[3, 90]``.
    */
    function ms1_peaktable(files: any, mzbins: any, mzdiff?: any, peak.width?: any): object;
+   /**
+     * @param host default value Is ``127.0.0.1``.
+     * @param port default value Is ``3306``.
+   */
+   function open_mnlink(user: any, passwd: any, host?: any, port?: any): object;
 }
