@@ -147,15 +147,15 @@ Public Class mysqlRepository : Inherits MetadataProxy
     End Function
 
     Public Overrides Sub Add(id As String, metadata As Metadata)
-        Throw New NotImplementedException()
+
     End Sub
 
     Public Overrides Sub Add(id As String, score As Double, align As AlignmentOutput, pval As Double)
-        Throw New NotImplementedException()
+
     End Sub
 
     Public Overrides Sub SetRootId(hashcode As String)
-        Throw New NotImplementedException()
+
     End Sub
 
     Public Overrides Function HasGuid(id As String) As Boolean
