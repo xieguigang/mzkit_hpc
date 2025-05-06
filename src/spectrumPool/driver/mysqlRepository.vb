@@ -1,6 +1,6 @@
 ﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.Xml
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
-Imports Microsoft.VisualBasic.My.JavaScript
+Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlRepository : Inherits MetadataProxy
 
@@ -9,7 +9,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' </summary>
     Dim local_cache As Dictionary(Of String, Metadata)
     Dim hash_index As String
-    Dim cluster_data As JavaScriptObject
+    Dim cluster_data As clusterModels.cluster
     Dim model_id As String
 
     Dim m_depth As Integer = 0
@@ -20,9 +20,9 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' the cluster id in the database
     ''' </summary>
     ''' <returns></returns>
-    Public ReadOnly Property guid As Long
+    Public ReadOnly Property guid As UInteger
         Get
-            Return Val(cluster_data!id)
+            Return cluster_data.id
         End Get
     End Property
 
@@ -49,9 +49,9 @@ Public Class mysqlRepository : Inherits MetadataProxy
     Public Overrides ReadOnly Property RootId As String
         Get
             If m_rootId.StringEmpty Then
-                Dim root = cluster_data!root
+                Dim root = cluster_data.root
 
-                If root Is Nothing Then
+                If root = 0 Then
                     Return Nothing
                 Else
                     m_rootId = CStr(root)
@@ -95,17 +95,19 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' </summary>
     ''' <param name="http"></param>
     ''' <param name="cluster_id"></param>
-    Sub New(http As mysqlFs, cluster_id As Integer)
+    Sub New(http As mysqlFs, cluster_id As UInteger)
         Me.New(http)
 
-        Dim obj As Restful ' = Restful.ParseJSON(json)
+        Dim obj As clusterModels.cluster = http.mysql.cluster _
+            .where(field("id") = cluster_id) _
+            .find(Of clusterModels.cluster)
 
-        If obj.code <> 0 Then
+        If obj Is Nothing Then
             Throw New MissingMemberException($"No cluster which its id is: '{cluster_id}'!")
         Else
-            Me.cluster_data = obj.info
-            Me.m_depth = Val((cluster_data!depth).ToString)
-            Me.hash_index = CStr(cluster_data!hash_index)
+            Me.cluster_data = obj
+            Me.m_depth = cluster_data.depth
+            Me.hash_index = cluster_data.hash_index
         End If
     End Sub
 

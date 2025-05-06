@@ -20,6 +20,12 @@ Public Class mysqlFs : Inherits PoolFs
         End Get
     End Property
 
+    Public ReadOnly Property mysql As dataPool
+        Get
+            Return db
+        End Get
+    End Property
+
     Sub New(db As dataPool, model_id As UInteger)
         Me.db = db
         Me.model = db.graph_model _
