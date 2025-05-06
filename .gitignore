@@ -255,3 +255,4 @@ paket-files/
 /App
 .pkg/mzkit.zip
 .pkg/mzkit_hpc.zip
+src/mysql/sample_pool.mwb.bak
