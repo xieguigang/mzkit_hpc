@@ -38,7 +38,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
 
     Public Overrides ReadOnly Property AllClusterMembers As IEnumerable(Of Metadata)
         Get
-            Return FetchClusterData(url_get, hash_index, model_id)
+            Return FetchClusterData(hash_index, model_id)
         End Get
     End Property
 
@@ -98,9 +98,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
     Sub New(http As mysqlFs, cluster_id As Integer)
         Me.New(http)
 
-        Dim url As String = $"{http.base}/get/cluster/?id={cluster_id}&model_id={http.model_id}"
-        Dim json As String = url.GET
-        Dim obj As Restful = Restful.ParseJSON(json)
+        Dim obj As Restful ' = Restful.ParseJSON(json)
 
         If obj.code <> 0 Then
             Throw New MissingMemberException($"No cluster which its id is: '{cluster_id}'!")
@@ -119,33 +117,33 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' <param name="model_id"></param>
     ''' <returns></returns>
     Public Iterator Function FetchClusterData(hash_index As String, model_id As String) As IEnumerable(Of Metadata)
-        Dim url As String = $"{url_get}?id={hash_index}&is_cluster=true&model_id={model_id}"
-        Dim json As String = url.GET
-        Dim list As Restful = Restful.ParseJSON(json)
+        'Dim url As String = $"{url_get}?id={hash_index}&is_cluster=true&model_id={model_id}"
+        'Dim json As String = url.GET
+        'Dim list As Restful = Restful.ParseJSON(json)
 
-        If list.code <> 0 Then
-            Return
-        End If
+        'If list.code <> 0 Then
+        '    Return
+        'End If
 
-        Dim info As JavaScriptObject = list.info
-        Dim array As Array = info!metabolites
+        'Dim info As JavaScriptObject = list.info
+        'Dim array As Array = info!metabolites
 
-        For i As Integer = 0 To array.Length - 1
-            Yield ParseMetadata(array(i))
-        Next
+        'For i As Integer = 0 To array.Length - 1
+        '    Yield ParseMetadata(array(i))
+        'Next
     End Function
 
     Public Function GetMetadataByHashKey(hash As String) As Metadata
-        Dim url As String = $"{url_get}?id={hash}&model_id={model_id}&cluster_id={guid}"
-        Dim json As String = url.GET
-        Dim obj As Restful = Restful.ParseJSON(json)
+        'Dim url As String = $"{url_get}?id={hash}&model_id={model_id}&cluster_id={guid}"
+        'Dim json As String = url.GET
+        'Dim obj As Restful = Restful.ParseJSON(json)
 
-        If obj.code <> 0 Then
-            Call VBDebugger.EchoLine(obj.debug)
-            Return Nothing
-        Else
-            Return ParseMetadata(fetch:=obj.info)
-        End If
+        'If obj.code <> 0 Then
+        '    Call VBDebugger.EchoLine(obj.debug)
+        '    Return Nothing
+        'Else
+        '    Return ParseMetadata(fetch:=obj.info)
+        'End If
     End Function
 
     Public Overrides Sub Add(id As String, metadata As Metadata)
