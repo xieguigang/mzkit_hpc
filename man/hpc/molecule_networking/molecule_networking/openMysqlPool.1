@@ -1,0 +1,33 @@
+.\" man page create by R# package system.
+.TH MOLECULE_NETWORKING 1 2000-Jan "openMysqlPool" "openMysqlPool"
+.SH NAME
+openMysqlPool \- open the spectrum pool from a given resource link
+.SH SYNOPSIS
+\fIopenMysqlPool(\fBrepo\fR as <generic> dataPool, 
+\fBmodel_id\fR as string = \fB<NULL>\fR, 
+\fBscore_overrides\fR as <generic> Double = \fB<NULL>\fR, 
+[\fB<Environment>\fR]);\fR
+.SH DESCRIPTION
+.PP
+open the spectrum pool from a given resource link
+.PP
+.SH OPTIONS
+.PP
+\fBmodel_id\fB \fR\- 
+ the model id, this parameter works for open the model in the cloud service
+. 
+.PP
+.PP
+\fBscore_overrides\fB \fR\- 
+ WARNING: this optional parameter will overrides the mode score 
+ level when this parameter has a positive numeric value in 
+ range \fB(0,1]\fR. it is dangers to overrides the score parameter
+ in the exists model.
+. 
+.PP
+.SH SEE ALSO
+molecule_networking
+.SH FILES
+.PP
+hpc.dll
+.PP
