@@ -1,6 +1,24 @@
 ﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlFs : Inherits PoolFs
+
+    ReadOnly db As dataPool
+    ReadOnly model_id As clusterModels.graph_model
+
+    Sub New(db As dataPool, model_id As UInteger)
+        Me.db = db
+        Me.model_id = db.graph_model _
+            .where(field("id") = model_id) _
+            .find(Of clusterModels.graph_model)
+    End Sub
+
+    Sub New(db As dataPool, model_id As String)
+        Me.db = db
+        Me.model_id = db.graph_model _
+            .where(field("name") = model_id Or field("name") = model_id) _
+            .find(Of clusterModels.graph_model)
+    End Sub
 
     Public Overrides Sub CommitMetadata(path As String, data As MetadataProxy)
         Throw New NotImplementedException()

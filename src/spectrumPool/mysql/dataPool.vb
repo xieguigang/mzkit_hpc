@@ -81,20 +81,13 @@ Public Class dataPool : Inherits clusterModels.db_models
         MyBase.New(mysqli)
     End Sub
 
+    Private Function CreateModel(name$, desc$, level As Double, split As Integer) As UInteger
+
+    End Function
+
     ''' <summary>
     ''' open root folder
     ''' </summary>
-    ''' <param name="link">
-    ''' ### for local filesystem
-    ''' 
-    ''' contains multiple files:
-    ''' 
-    ''' 1. cluster.pack  contains the metadata and structure information of the cluster tree
-    ''' 2. spectrum.dat  contains the spectrum data
-    ''' 
-    ''' ### for web filesystem
-    ''' 
-    ''' </param>
     ''' <param name="level"></param>
     ''' <param name="split"></param>
     ''' <returns></returns>
@@ -103,8 +96,8 @@ Public Class dataPool : Inherits clusterModels.db_models
                            Optional name As String = "no_named",
                            Optional desc As String = "no_information") As BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool
 
-        Dim fs As PoolFs = PoolFs.CreateAuto(link, level, split, name, desc)
-        Dim pool As New spectrumPool(fs, "/")
+        Dim fs As New mysqlFs(Me, CreateModel(name, desc, level, split))
+        Dim pool As New BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool(fs, "/")
 
         Call fs.SetLevel(level, split)
         Call fs.SetScore(0.3, 0.05)
@@ -115,7 +108,6 @@ Public Class dataPool : Inherits clusterModels.db_models
     ''' <summary>
     ''' 
     ''' </summary>
-    ''' <param name="link"></param>
     ''' <param name="model_id"></param>
     ''' <param name="score">
     ''' WARNING: this optional parameter will overrides the mode score 
@@ -124,8 +116,8 @@ Public Class dataPool : Inherits clusterModels.db_models
     ''' </param>
     ''' <returns></returns>
     Public Function Open(Optional model_id As String = Nothing, Optional score As Double? = Nothing) As BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool
-        Dim fs As PoolFs = PoolFs.OpenAuto(link, model_id)
-        Dim pool As New spectrumPool(fs, "/")
+        Dim fs As New mysqlFs(Me, model_id)
+        Dim pool As New BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool(fs, "/")
 
         If score IsNot Nothing AndAlso
             score > 0 AndAlso
