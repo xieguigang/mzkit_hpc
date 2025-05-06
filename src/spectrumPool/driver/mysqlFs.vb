@@ -1,19 +1,28 @@
 ﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.My.JavaScript
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlFs : Inherits PoolFs
+    Implements IReadOnlyId
 
     ReadOnly db As dataPool
-    Friend ReadOnly model_id As clusterModels.graph_model
+
+    Friend ReadOnly model As clusterModels.graph_model
 
     Friend ReadOnly root_id As UInteger
     Friend ReadOnly metadata_pool As New Dictionary(Of String, mysqlRepository)
     Friend ReadOnly cluster_data As New Dictionary(Of String, JavaScriptObject)
 
+    Public ReadOnly Property model_id As String Implements IReadOnlyId.Identity
+        Get
+            Return model.id.ToString
+        End Get
+    End Property
+
     Sub New(db As dataPool, model_id As UInteger)
         Me.db = db
-        Me.model_id = db.graph_model _
+        Me.model = db.graph_model _
             .where(field("id") = model_id) _
             .find(Of clusterModels.graph_model)
 
@@ -22,7 +31,7 @@ Public Class mysqlFs : Inherits PoolFs
 
     Sub New(db As dataPool, model_id As String)
         Me.db = db
-        Me.model_id = db.graph_model _
+        Me.model = db.graph_model _
             .where(field("name") = model_id Or field("name") = model_id) _
             .find(Of clusterModels.graph_model)
 

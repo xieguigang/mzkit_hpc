@@ -86,7 +86,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' </summary>
     ''' <param name="http"></param>
     Private Sub New(http As mysqlFs)
-        Me.model_id = http.model_id.id.ToString
+        Me.model_id = http.model.id.ToString
         Me.local_cache = New Dictionary(Of String, Metadata)
     End Sub
 
