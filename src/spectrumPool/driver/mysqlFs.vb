@@ -1,4 +1,5 @@
-﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.My.JavaScript
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
@@ -112,11 +113,35 @@ Public Class mysqlFs : Inherits PoolFs
         Return metadata_pool(key).RootId
     End Function
 
-    Public Overrides Function ReadSpectrum(p As Metadata) As BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.PeakMs2
+    Public Overrides Function ReadSpectrum(p As Metadata) As PeakMs2
+        Dim q = mysql.spectrum_pool.where(field("id") = p.block.position).find(Of clusterModels.spectrum_pool)
 
+        If q Is Nothing Then
+            Return Nothing
+        End If
+
+        Dim mz As Double() = HttpTreeFs.decode(q.mz)
+        Dim into As Double() = HttpTreeFs.decode(q.into)
+
+        If q.npeaks <> mz.Length Then
+            Return Nothing
+        ElseIf q.npeaks <> into.Length Then
+            Return Nothing
+        End If
+
+        Dim spectral As ms2() = mz _
+            .Select(Function(mzi, i)
+                        Return New ms2 With {.mz = mzi, .intensity = into(i)}
+                    End Function) _
+            .ToArray
+
+        Return New PeakMs2 With {
+            .lib_guid = q.hashcode,
+            .mzInto = spectral
+        }
     End Function
 
-    Public Overrides Function WriteSpectrum(spectral As BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.PeakMs2) As Metadata
+    Public Overrides Function WriteSpectrum(spectral As PeakMs2) As Metadata
 
     End Function
 End Class

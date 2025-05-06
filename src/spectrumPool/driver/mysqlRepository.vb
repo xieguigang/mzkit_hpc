@@ -85,6 +85,8 @@ Public Class mysqlRepository : Inherits MetadataProxy
             .find(Of clusterModels.cluster)
 
         If cluster_data Is Nothing Then
+            Dim split As String() = path.Split("/"c)
+
             ' create new?
             http.mysql.cluster.add(
                 field("model_id") = http.model_id,
@@ -94,7 +96,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
                 field("n_spectrum") = 0,
                 field("root") = 0,
                 field("hash_index") = hash_index,
-                field("depth") = path.Split("/"c).Length
+                field("depth") = split.Length - 1
             )
 
             cluster_data = http.mysql.cluster _
