@@ -1,4 +1,5 @@
-﻿Imports Oracle.LinuxCompatibility.MySQL
+﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports Oracle.LinuxCompatibility.MySQL
 Imports Oracle.LinuxCompatibility.MySQL.Uri
 Imports spectrumPool.clusterModels
 
@@ -52,7 +53,7 @@ Public Class dataPool : Inherits clusterModels.db_models
         End Get
     End Property
 
-    Public ReadOnly Property metadata As TableModel(Of metadata)
+    Public ReadOnly Property metadata As TableModel(Of Metadata)
         Get
             Return m_metadata
         End Get
@@ -79,4 +80,64 @@ Public Class dataPool : Inherits clusterModels.db_models
     Public Sub New(mysqli As ConnectionUri)
         MyBase.New(mysqli)
     End Sub
+
+    ''' <summary>
+    ''' open root folder
+    ''' </summary>
+    ''' <param name="link">
+    ''' ### for local filesystem
+    ''' 
+    ''' contains multiple files:
+    ''' 
+    ''' 1. cluster.pack  contains the metadata and structure information of the cluster tree
+    ''' 2. spectrum.dat  contains the spectrum data
+    ''' 
+    ''' ### for web filesystem
+    ''' 
+    ''' </param>
+    ''' <param name="level"></param>
+    ''' <param name="split"></param>
+    ''' <returns></returns>
+    Public Function Create(Optional level As Double = 0.85,
+                           Optional split As Integer = 3,
+                           Optional name As String = "no_named",
+                           Optional desc As String = "no_information") As BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool
+
+        Dim fs As PoolFs = PoolFs.CreateAuto(link, level, split, name, desc)
+        Dim pool As New spectrumPool(fs, "/")
+
+        Call fs.SetLevel(level, split)
+        Call fs.SetScore(0.3, 0.05)
+
+        Return pool
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="link"></param>
+    ''' <param name="model_id"></param>
+    ''' <param name="score">
+    ''' WARNING: this optional parameter will overrides the mode score 
+    ''' level when this parameter has a positive numeric value in 
+    ''' range ``(0,1]``.
+    ''' </param>
+    ''' <returns></returns>
+    Public Function Open(Optional model_id As String = Nothing, Optional score As Double? = Nothing) As BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData.SpectrumPool
+        Dim fs As PoolFs = PoolFs.OpenAuto(link, model_id)
+        Dim pool As New spectrumPool(fs, "/")
+
+        If score IsNot Nothing AndAlso
+            score > 0 AndAlso
+            score < 1 Then
+
+            Call fs.SetLevel(score, fs.split)
+        Else
+            Call fs.SetLevel(fs.level, fs.split)
+        End If
+
+        Call fs.SetScore(0.3, 0.05)
+
+        Return pool
+    End Function
 End Class
