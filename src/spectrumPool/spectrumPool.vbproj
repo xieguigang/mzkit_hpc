@@ -14,6 +14,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\GCModeller\src\runtime\sciBASIC#\Microsoft.VisualBasic.Core\src\Core.vbproj" />
     <ProjectReference Include="..\..\..\..\..\..\graphQL\src\mysqli\LibMySQL\LibMySQL.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\assembly\SpectrumTree\spectrumTree.NETCore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\mzmath\MoleculeNetworking\MoleculeNetworking.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\mzmath\ms2_math-core\mzmath-netcore5.vbproj" />
   </ItemGroup>
 
 </Project>
