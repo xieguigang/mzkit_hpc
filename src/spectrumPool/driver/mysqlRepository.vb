@@ -1,5 +1,6 @@
 ﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.Xml
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports Microsoft.VisualBasic.Data.IO
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlRepository : Inherits MetadataProxy
@@ -149,7 +150,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
                 .adducts = q.adducts,
                 .biodeep_id = q.xref_id,
                 .formula = q.formula,
-                .guid = q.id,
+                .guid = q.hashcode,
                 .instrument = q.instrument,
                 .intensity = q.intensity,
                 .mz = q.mz,
@@ -158,7 +159,8 @@ Public Class mysqlRepository : Inherits MetadataProxy
                 .organism = q.organism,
                 .rt = q.rt,
                 .sample_source = q.biosample,
-                .source_file = q.filename
+                .source_file = q.filename,
+                .block = New BufferRegion(q.spectral_id, 0)
             }
         End If
     End Function
