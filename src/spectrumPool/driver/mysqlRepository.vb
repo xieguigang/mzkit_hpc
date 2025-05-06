@@ -79,7 +79,36 @@ Public Class mysqlRepository : Inherits MetadataProxy
         Me.New(http)
         Me.hash_index = HttpTreeFs.ClusterHashIndex(path)
 
+        cluster_data = http.mysql.cluster _
+            .where(field("model_id") = http.model_id,
+                   field("hash_index") = hash_index) _
+            .find(Of clusterModels.cluster)
 
+        If cluster_data Is Nothing Then
+            ' create new?
+            http.mysql.cluster.add(
+                field("model_id") = http.model_id,
+                field("key") = path.BaseName,
+                field("parent_id") = parentId,
+                field("n_childs") = 0,
+                field("n_spectrum") = 0,
+                field("root") = 0,
+                field("hash_index") = hash_index,
+                field("depth") = path.Split("/"c).Length
+            )
+
+            cluster_data = http.mysql.cluster _
+                .where(field("model_id") = http.model_id,
+                       field("hash_index") = hash_index) _
+                .order_by("id", desc:=True) _
+                .find(Of clusterModels.cluster)
+        End If
+
+        If cluster_data Is Nothing Then
+            Throw New InvalidProgramException("initialize of the cluster data error!")
+        Else
+            Me.m_depth = cluster_data.depth
+        End If
     End Sub
 
     ''' <summary>
