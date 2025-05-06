@@ -75,11 +75,31 @@ Public Class mysqlFs : Inherits PoolFs
     End Function
 
     Public Overrides Function LoadMetadata(path As String) As MetadataProxy
+        Dim key As String = HttpTreeFs.ClusterHashIndex(path)
 
+        If Not metadata_pool.ContainsKey(key) Then
+            Dim meta As New mysqlRepository(Me, path, getParentId(path))
+            metadata_pool.Add(key, meta)
+            Return meta
+        Else
+            Return metadata_pool(key)
+        End If
+    End Function
+
+    Private Function getParentId(path As String) As UInteger
+        If path = "/" Then
+            Return 0
+        Else
+            Dim parent As String = path.ParentPath(full:=False)
+            Dim parentHashKey As String = HttpTreeFs.ClusterHashIndex(parent)
+            Dim meta = metadata_pool(parentHashKey)
+
+            Return meta.guid
+        End If
     End Function
 
     Public Overrides Function LoadMetadata(id As Integer) As MetadataProxy
-
+        Return New mysqlRepository(Me, id)
     End Function
 
     Public Overrides Function FindRootId(path As String) As String
