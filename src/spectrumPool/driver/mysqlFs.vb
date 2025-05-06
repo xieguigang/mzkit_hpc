@@ -1,4 +1,5 @@
 ﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports Microsoft.VisualBasic.My.JavaScript
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlFs : Inherits PoolFs
@@ -6,11 +7,17 @@ Public Class mysqlFs : Inherits PoolFs
     ReadOnly db As dataPool
     ReadOnly model_id As clusterModels.graph_model
 
+    Friend ReadOnly root_id As UInteger
+    Friend ReadOnly metadata_pool As New Dictionary(Of String, mysqlRepository)
+    Friend ReadOnly cluster_data As New Dictionary(Of String, JavaScriptObject)
+
     Sub New(db As dataPool, model_id As UInteger)
         Me.db = db
         Me.model_id = db.graph_model _
             .where(field("id") = model_id) _
             .find(Of clusterModels.graph_model)
+
+        Call init(root_id)
     End Sub
 
     Sub New(db As dataPool, model_id As String)
@@ -18,6 +25,12 @@ Public Class mysqlFs : Inherits PoolFs
         Me.model_id = db.graph_model _
             .where(field("name") = model_id Or field("name") = model_id) _
             .find(Of clusterModels.graph_model)
+
+        Call init(root_id)
+    End Sub
+
+    Private Sub init(ByRef root_id As UInteger)
+
     End Sub
 
     Public Overrides Sub CommitMetadata(path As String, data As MetadataProxy)

@@ -81,7 +81,7 @@ Public Class dataPool : Inherits clusterModels.db_models
         MyBase.New(mysqli)
     End Sub
 
-    Private Function CreateModel(name$, desc$, level As Double, split As Integer) As UInteger
+    Private Overloads Function CreateModel(name$, desc$, level As Double, split As Integer) As UInteger
 
     End Function
 
