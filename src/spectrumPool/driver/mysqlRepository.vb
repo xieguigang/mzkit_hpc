@@ -1,6 +1,8 @@
 ﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.Xml
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.Data.IO
+Imports Microsoft.VisualBasic.Linq
+Imports Microsoft.VisualBasic.Net.Http
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlRepository : Inherits MetadataProxy
@@ -197,14 +199,70 @@ Public Class mysqlRepository : Inherits MetadataProxy
     End Function
 
     Public Overrides Sub Add(id As String, metadata As Metadata)
-
+        Call fs.mysql.metadata.add(
+            field("hashcode") = id,
+            field("mz") = metadata.mz,
+            field("rt") = metadata.rt,
+            field("intensity") = metadata.intensity,
+            field("filename") = metadata.source_file,
+            field("cluster_id") = cluster_data.id,
+            field("rawfile") = 0,
+            field("spectral_id") = metadata.block.position,
+            field("model_id") = model_id,
+            field("project_id") = 0,
+            field("project") = metadata.project,
+            field("biosample") = metadata.sample_source,
+            field("organism") = metadata.organism,
+            field("xref_id") = metadata.biodeep_id,
+            field("name") = metadata.name,
+            field("formula") = metadata.formula,
+            field("adducts") = metadata.adducts,
+            field("instrument") = metadata.instrument
+        )
     End Sub
 
     Public Overrides Sub Add(id As String, score As Double, align As AlignmentOutput, pval As Double)
+        Dim metadata As Metadata = local_cache(id)
+        Dim data As New List(Of FieldAssert)
+        Dim meta_id = fs.mysql.metadata.where(field("hashcode") = metadata.guid, field("model_id") = model_id).find(Of clusterModels.metadata)
 
+        If align Is Nothing Then
+            ' config for root
+            Call data.Add("n_hits", 0)
+            Call data.Add("consensus", "*")
+            Call data.Add("forward", 1)
+            Call data.Add("reverse", 1)
+            Call data.Add("jaccard", 1)
+            Call data.Add("entropy", 1)
+        Else
+            ' member spectrum align with root spectrum 
+            ' of current cluster
+            Dim consensus As Double() = align.alignments _
+                .Where(Function(a) a.query > 0 AndAlso a.ref > 0) _
+                .Select(Function(a) a.mz) _
+                .ToArray
+
+            Call data.Add("n_hits", consensus.Length)
+            Call data.Add("consensus", consensus.Select(AddressOf NetworkByteOrderBitConvertor.GetBytes).IteratesALL.ToBase64String)
+            Call data.Add("forward", align.forward)
+            Call data.Add("reverse", align.reverse)
+            Call data.Add("jaccard", align.jaccard)
+            Call data.Add("entropy", align.entropy)
+        End If
+
+        Call data.Add("p_value", pval)
+        Call data.Add("score", score)
+        Call data.Add("spectral_id", metadata.block.position)
+        Call data.Add("cluster_id", Me.guid)
+        Call data.Add("model_id", model_id)
+        Call data.Add("metadata_id", meta_id.id)
+
+        Call fs.mysql.cluster_data.add(data.ToArray)
     End Sub
 
     Public Overrides Sub SetRootId(hashcode As String)
+        m_rootId = hashcode
+
 
     End Sub
 
