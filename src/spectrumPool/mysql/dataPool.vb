@@ -1,5 +1,6 @@
-﻿Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+﻿Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL
+Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Uri
 Imports spectrumPool.clusterModels
 
@@ -82,7 +83,28 @@ Public Class dataPool : Inherits clusterModels.db_models
     End Sub
 
     Private Overloads Function CreateModel(name$, desc$, level As Double, split As Integer) As UInteger
+        Dim args As New Dictionary(Of String, String) From {
+            {NameOf(level), level},
+            {NameOf(split), split}
+        }
 
+        Call graph_model.add(
+            field("name") = name,
+            field("parameters") = args.GetJson,
+            field("description") = desc,
+            field("flag") = 0
+        )
+
+        Dim ctor As clusterModels.graph_model = graph_model _
+            .where(field("name") = name) _
+            .order_by("id", desc:=True) _
+            .find(Of clusterModels.graph_model)
+
+        If ctor Is Nothing Then
+            Throw New InvalidOperationException("Create spectrum cluster model error: " & graph_model.GetLastErrorMessage)
+        Else
+            Return ctor.id
+        End If
     End Function
 
     ''' <summary>
