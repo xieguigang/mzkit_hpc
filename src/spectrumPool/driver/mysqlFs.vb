@@ -103,7 +103,13 @@ Public Class mysqlFs : Inherits PoolFs
     End Function
 
     Public Overrides Function FindRootId(path As String) As String
+        Dim key As String = HttpTreeFs.ClusterHashIndex(path)
 
+        If Not metadata_pool.ContainsKey(key) Then
+            Return Nothing
+        End If
+
+        Return metadata_pool(key).RootId
     End Function
 
     Public Overrides Function ReadSpectrum(p As Metadata) As BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.PeakMs2
