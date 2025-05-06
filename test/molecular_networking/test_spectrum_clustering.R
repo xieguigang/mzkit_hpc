@@ -1,6 +1,8 @@
 require(mzkit_hpc);
 require(graphQL);
 
+imports "spectrumPool" from "mzDIA";
+
 let repo = open_mnlink(user = "xieguigang", passwd = 123456, host = "192.168.3.15", port = 3306);
 
 print(repo);

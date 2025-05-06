@@ -38,14 +38,20 @@ Public Class mysqlFs : Inherits PoolFs
     Sub New(db As dataPool, model_id As String)
         Me.db = db
         Me.model = db.graph_model _
-            .where(field("name") = model_id Or field("name") = model_id) _
+            .where(field("name") = model_id Or field("id") = model_id) _
             .find(Of clusterModels.graph_model)
 
         Call init(root_id)
     End Sub
 
     Private Sub init(ByRef root_id As UInteger)
+        Dim root = db.cluster.where(field("model_id") = model.id, field("key") = "/").find(Of clusterModels.cluster)
 
+        If root Is Nothing Then
+            root_id = 0
+        Else
+            root_id = root.id
+        End If
     End Sub
 
     Public Overrides Sub CommitMetadata(path As String, data As MetadataProxy)
