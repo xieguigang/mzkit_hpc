@@ -1,6 +1,8 @@
 ﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.SplashID
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
+Imports Microsoft.VisualBasic.Data.IO
 Imports Microsoft.VisualBasic.My.JavaScript
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
@@ -142,6 +144,33 @@ Public Class mysqlFs : Inherits PoolFs
     End Function
 
     Public Overrides Function WriteSpectrum(spectral As PeakMs2) As Metadata
+        Dim metadata As Metadata = TreeFs.GetMetadata(spectral)
+        Dim mz As String = HttpTreeFs.encode(spectral.mzInto.Select(Function(m) m.mz))
+        Dim into As String = HttpTreeFs.encode(spectral.mzInto.Select(Function(m) m.intensity))
 
+        Call mysql.spectrum_pool.add(
+            field("npeaks") = spectral.mzInto.Length,
+            field("entropy") = SpectralEntropy.Entropy(spectral),
+            field("splash_id") = Splash.MSSplash.CalcSplashID(spectral),
+            field("hashcode") = spectral.lib_guid,
+            field("model_id") = model.id,
+            field("mz") = mz,
+            field("into") = into
+        )
+
+        Dim insert = mysql.spectrum_pool _
+            .where(field("hashcode") = spectral.lib_guid, field("model_id") = model.id) _
+            .order_by("id", desc:=True) _
+            .find(Of clusterModels.spectrum_pool)
+
+        If insert Is Nothing Then
+            Throw New InvalidProgramException("add spectrum data into database error!")
+        Else
+            metadata.block = New BufferRegion With {
+                .position = insert.id
+            }
+        End If
+
+        Return metadata
     End Function
 End Class
