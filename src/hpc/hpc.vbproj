@@ -45,6 +45,7 @@
     <ProjectReference Include="..\..\..\..\..\src\mzmath\SpatialMath\SpatialMath.vbproj" />
     <ProjectReference Include="..\IpcParallel\IpcParallel.vbproj" />
     <ProjectReference Include="..\MoleculeTree\MoleculeTree.vbproj" />
+    <ProjectReference Include="..\spectrumPool\spectrumPool.vbproj" />
   </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rsharp_app_release|x64'">
