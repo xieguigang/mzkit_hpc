@@ -11,10 +11,10 @@ Public Class mysqlRepository : Inherits MetadataProxy
     Dim hash_index As String
     Dim cluster_data As clusterModels.cluster
     Dim model_id As String
+    Dim fs As mysqlFs
 
     Dim m_depth As Integer = 0
     Dim m_rootId As String = Nothing
-
 
     ''' <summary>
     ''' the cluster id in the database
@@ -84,10 +84,11 @@ Public Class mysqlRepository : Inherits MetadataProxy
     ''' <summary>
     ''' common pathway for initialize the cluster node data pool
     ''' </summary>
-    ''' <param name="http"></param>
-    Private Sub New(http As mysqlFs)
-        Me.model_id = http.model.id.ToString
+    ''' <param name="fs"></param>
+    Private Sub New(fs As mysqlFs)
+        Me.model_id = fs.model.id.ToString
         Me.local_cache = New Dictionary(Of String, Metadata)
+        Me.fs = fs
     End Sub
 
     ''' <summary>
@@ -136,16 +137,30 @@ Public Class mysqlRepository : Inherits MetadataProxy
     End Function
 
     Public Function GetMetadataByHashKey(hash As String) As Metadata
-        'Dim url As String = $"{url_get}?id={hash}&model_id={model_id}&cluster_id={guid}"
-        'Dim json As String = url.GET
-        'Dim obj As Restful = Restful.ParseJSON(json)
+        Dim q = fs.mysql.metadata _
+            .where(field("model_id") = model_id,
+                   field("hashcode") = hash) _
+            .find(Of clusterModels.metadata)
 
-        'If obj.code <> 0 Then
-        '    Call VBDebugger.EchoLine(obj.debug)
-        '    Return Nothing
-        'Else
-        '    Return ParseMetadata(fetch:=obj.info)
-        'End If
+        If q Is Nothing Then
+            Return Nothing
+        Else
+            Return New Metadata With {
+                .adducts = q.adducts,
+                .biodeep_id = q.xref_id,
+                .formula = q.formula,
+                .guid = q.id,
+                .instrument = q.instrument,
+                .intensity = q.intensity,
+                .mz = q.mz,
+                .name = q.name,
+                .project = q.project,
+                .organism = q.organism,
+                .rt = q.rt,
+                .sample_source = q.biosample,
+                .source_file = q.filename
+            }
+        End If
     End Function
 
     Public Overrides Sub Add(id As String, metadata As Metadata)
