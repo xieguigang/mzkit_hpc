@@ -53,7 +53,7 @@ Public Class dataPool : Inherits clusterModels.db_models
         End Get
     End Property
 
-    Public ReadOnly Property metadata As TableModel(Of Metadata)
+    Public ReadOnly Property metadata As TableModel(Of clusterModels.metadata)
         Get
             Return m_metadata
         End Get
