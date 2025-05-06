@@ -69,7 +69,13 @@ Public Class mysqlFs : Inherits PoolFs
 
     End Sub
 
-    Public Overrides Function CheckExists(spectral As BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.PeakMs2) As Boolean
+    Public Overrides Function CheckExists(spectral As PeakMs2) As Boolean
+        Dim hashcode As String = spectral.lib_guid
+        Dim filename As String = spectral.file
+        Dim model_id As String = Me.model_id
+        Dim project As String = spectral.meta.TryGetValue("project", [default]:="unknown project")
+        Dim biodeep_id As String = spectral.meta.TryGetValue("biodeep_id", [default]:="unknown conserved")
+
 
     End Function
 
