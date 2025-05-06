@@ -219,6 +219,8 @@ Public Class mysqlRepository : Inherits MetadataProxy
             field("adducts") = metadata.adducts,
             field("instrument") = metadata.instrument
         )
+
+        local_cache(id) = metadata
     End Sub
 
     Public Overrides Sub Add(id As String, score As Double, align As AlignmentOutput, pval As Double)
