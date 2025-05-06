@@ -5,7 +5,7 @@ Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Public Class mysqlFs : Inherits PoolFs
 
     ReadOnly db As dataPool
-    ReadOnly model_id As clusterModels.graph_model
+    Friend ReadOnly model_id As clusterModels.graph_model
 
     Friend ReadOnly root_id As UInteger
     Friend ReadOnly metadata_pool As New Dictionary(Of String, mysqlRepository)
