@@ -4,6 +4,7 @@ Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.Data.IO
 Imports Microsoft.VisualBasic.My.JavaScript
+Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Class mysqlFs : Inherits PoolFs
@@ -48,13 +49,22 @@ Public Class mysqlFs : Inherits PoolFs
     End Sub
 
     Private Sub init(ByRef root_id As UInteger)
-        Dim root = db.cluster.where(field("model_id") = model.id, field("key") = "/").find(Of clusterModels.cluster)
+        Dim root = db.cluster _
+            .where(field("model_id") = model.id,
+                   field("key") = "/") _
+            .find(Of clusterModels.cluster)
 
         If root Is Nothing Then
             root_id = 0
         Else
             root_id = root.id
         End If
+
+        Dim pars As Dictionary(Of String, Double) = model.parameters _
+            .LoadJSON(Of Dictionary(Of String, Double))
+
+        m_level = pars!level
+        m_split = pars!split
     End Sub
 
     Public Overrides Sub CommitMetadata(path As String, data As MetadataProxy)
