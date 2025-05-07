@@ -1,3 +1,27 @@
+#' Open a connection to the MySQL database for the spectrum data pool system
+#' 
+#' @description Establishes a connection to the MySQL database used for storing spectral data and 
+#'              molecular networking information. Requires the graphQL package and MySQL driver.
+#' 
+#' @param user Character string specifying the MySQL username for authentication.
+#' @param passwd Character string containing the password for the MySQL user.
+#' @param host Character string specifying the host address of the MySQL server. 
+#'             Default is "127.0.0.1" (localhost).
+#' @param port Integer specifying the port number for the MySQL connection. 
+#'            Default is 3306 (standard MySQL port).
+#'
+#' @return Returns a MySQL connection object (CLR object) that can be used for subsequent database 
+#'         operations. The connection is configured to use the "sample_pool" database.
+#'
+#' @details This function loads required packages (graphQL and hpc) and initializes a connection 
+#'          using the specified credentials. Ensure MySQL service is running at the target host/port.
+#'
+#' @examples
+#' \dontrun{
+#'   conn <- open_mnlink(user = "admin", passwd = "password", host = "db.server.com")
+#' }
+#'
+#' @seealso \code{\link[graphQL]{mysql}} for MySQL connection management
 const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
     require(graphQL);
 
@@ -13,16 +37,61 @@ const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
     );
 }
 
-#' Make metabolights project imports into the spectrum data pool system
+#' Import MetaboLights project data into the spectrum data pool system
 #' 
-#' @param sample_metadata the file path to the sample files' metadata text file.
-#' @param repo a mysql connection to the spectrum data pool system, should be a clr object that constructed via the ``open_mnlink`` function.
-#' @param investigation the file path to the metabolights project ``i_Investigation.txt`` metadata file. for extract of the metadata of the study.
-#' @param model_name a tuple list of the spectrum cluster model for extract the current project rawdata its msn spectrum into the given spectrum cluster model.
-#'     should be a tuple list that contains two model name reference: positive/negative for the positive and negative polarity mode of the spectrum data.
-#'     or it could be a character name of the model, the POS/NEG suffix for the corresponding positive/negative polarity spectrum cluster model will be 
-#'     tagged to the model character name and construct a tuple list for the function.
+#' @description Processes MetaboLights study data including sample metadata and investigation files,
+#'              then imports mass spectrometry data into specified clustering models in the database.
 #' 
+#' @param sample_metadata Character string specifying the file path to the sample metadata 
+#'                        (e.g., s_*.txt from MetaboLights). Should contain biosample information.
+#' @param investigation Character string specifying the file path to the MetaboLights investigation
+#'                      file (i_Investigation.txt). Used to extract study-level metadata.
+#' @param model_name Either a named list or character string specifying spectral clustering models:
+#'                   * If a named list, must contain "positive" and "negative" elements specifying 
+#'                     model names for each polarity mode
+#'                   * If a character string, models will be auto-generated with "_POS" and "_NEG" 
+#'                     suffixes for respective polarities
+#'                   Default: list(positive = "xxx_pos", negative = "xxx_neg")
+#' @param repo MySQL connection object created by \code{open_mnlink}. Default uses placeholder 
+#'             credentials (replace for production use).
+#' 
+#' @return Invisibly returns NULL. Main effects include:
+#'         * Uploads study metadata to MySQL database
+#'         * Imports raw spectra into specified clustering models
+#'         * Updates file metadata in the repository
+#' 
+#' @details Requires MetaboLights package for study file parsing and JSON package for data handling.
+#'          Raw data files are expected in [investigation_dir]/FILES/[polarity]/[sample_name].raw.
+#'          The function performs:
+#'          1. Study metadata parsing and database registration
+#'          2. Polarity-specific data insertion into clustering models
+#'          3. Biosample-instrument associations
+#' 
+#' @section Parameter Specialization:
+#' When using character input for \code{model_name}, the function automatically appends "_POS" and 
+#' "_NEG" to create model names. For example, input "my_model" becomes list(positive = "my_model_POS", 
+#' negative = "my_model_NEG").
+#'
+#' @examples
+#' \dontrun{
+#'   # Using explicit model list
+#'   imports_metabolights(
+#'     sample_metadata = "s_study.txt",
+#'     investigation = "i_Investigation.txt",
+#'     model_name = list(positive = "metab_pos", negative = "metab_neg"),
+#'     repo = open_mnlink(user = "admin", passwd = "secret")
+#'   )
+#'   
+#'   # Using auto-generated model names
+#'   imports_metabolights(
+#'     sample_metadata = "s_study.txt",
+#'     investigation = "i_Investigation.txt",
+#'     model_name = "global_model"
+#'   )
+#' }
+#'
+#' @seealso \code{\link{open_mnlink}} for connection creation, 
+#'          \code{\link[MetaboLights]{MTBLSStudy}} for study parsing
 const imports_metabolights = function(sample_metadata, investigation, 
                                       model_name = list(positive = "xxx_pos", negative = "xxx_neg"), 
                                       repo = open_mnlink(user = "xxx", passwd = "xxx", host = "127.0.0.1", port = 3306)) {
