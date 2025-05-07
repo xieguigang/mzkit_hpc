@@ -122,7 +122,9 @@ Public Class mysqlFs : Inherits PoolFs
     End Function
 
     Public Overrides Function ReadSpectrum(p As Metadata) As PeakMs2
-        Dim q = mysql.spectrum_pool.where(field("id") = p.block.position).find(Of clusterModels.spectrum_pool)
+        Dim q = mysql.spectrum_pool _
+            .where(field("id") = p.block.position) _
+            .find(Of clusterModels.spectrum_pool)
 
         If q Is Nothing Then
             Return Nothing

@@ -78,9 +78,58 @@ Public Class dataPool : Inherits clusterModels.db_models
         End Get
     End Property
 
+    Dim project_data As clusterModels.project
+
     Public Sub New(mysqli As ConnectionUri)
         MyBase.New(mysqli)
     End Sub
+
+    Public Sub setProjectReference(project_id As String, name As String, desc As String)
+        project_data = project _
+            .where(field("project_id") = project_id) _
+            .find(Of clusterModels.project)
+
+        If project_data Is Nothing Then
+            project.add(
+                field("project_id") = project,
+                field("project_name") = name,
+                field("note") = desc,
+                field("sample_groups") = 0,
+                field("sample_files") = 0
+            )
+        Else
+            project.where(field("id") = project_data.id).save(
+                field("project_name") = name,
+                field("note") = desc
+            )
+        End If
+    End Sub
+
+    Public Sub setFileReference(filepath As String, Optional sample_group As String = Nothing)
+        Dim ref As UInteger = getFileReference(filepath.BaseName)
+
+        If ref = 0 Then
+
+        End If
+    End Sub
+
+    Public Function getFileReference(filename As String) As UInteger
+        Dim q As FieldAssert()
+
+        If project_data Is Nothing Then
+            q = {field("filename") = filename}
+        Else
+            q = {field("filename") = filename, field("project_id") = project_data.id}
+        End If
+
+        Dim file As clusterModels.rawfiles = rawfiles.where(q).find(Of clusterModels.rawfiles)
+
+        If file Is Nothing Then
+            Return 0
+        Else
+            Return file.id
+        End If
+    End Function
 
     Private Overloads Function CreateModel(name$, desc$, level As Double, split As Integer) As UInteger
         Dim args As New Dictionary(Of String, String) From {
