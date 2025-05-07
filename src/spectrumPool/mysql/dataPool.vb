@@ -98,6 +98,11 @@ Public Class dataPool : Inherits clusterModels.db_models
                 field("sample_groups") = 0,
                 field("sample_files") = 0
             )
+
+            _project_data = project _
+                .where(field("project_id") = project_id) _
+                .order_by("id", desc:=True) _
+                .find(Of clusterModels.project)
         Else
             project.where(field("id") = project_data.id).save(
                 field("project_name") = name,
