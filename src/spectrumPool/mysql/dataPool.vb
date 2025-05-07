@@ -91,7 +91,7 @@ Public Class dataPool : Inherits clusterModels.db_models
 
         If project_data Is Nothing Then
             project.add(
-                field("project_id") = project,
+                field("project_id") = project_id,
                 field("project_name") = name,
                 field("note") = desc,
                 field("sample_groups") = 0,
