@@ -118,7 +118,10 @@ Public Class mysqlFs : Inherits PoolFs
             Return Nothing
         End If
 
-        Return metadata_pool(key).RootId
+        Dim spec_id = metadata_pool(key).RootId
+        Dim spec = mysql.spectrum_pool.where(field("id") = spec_id).find(Of clusterModels.spectrum_pool)
+
+        Return spec.hashcode
     End Function
 
     Public Overrides Function ReadSpectrum(p As Metadata) As PeakMs2
