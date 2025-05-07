@@ -27,6 +27,7 @@ Public Module exportsData
     "xref_id",
     "`name`",
     "formula",
+    "splash_id",
     "adducts",
     "instrument")
 
