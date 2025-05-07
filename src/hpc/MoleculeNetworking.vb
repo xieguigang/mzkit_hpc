@@ -1,4 +1,5 @@
-﻿Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
+﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Scripting.MetaData
 Imports SMRUCC.Rsharp.Runtime
@@ -80,5 +81,11 @@ Module MoleculeNetworking
     Public Function setFileInfo(repo As dataPool, filepath As String, Optional group As String = Nothing) As Object
         Call repo.setFileReference(filepath, group)
         Return repo
+    End Function
+
+    <ExportAPI("cluster_spectrum")>
+    <RApiReturn(GetType(PeakMs2))>
+    Public Function getClusterSpectrum(repo As dataPool, cluster_id As String) As Object
+        Return repo.ExportClusterSpectrum(UInteger.Parse(cluster_id)).ToArray
     End Function
 End Module
