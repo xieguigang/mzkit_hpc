@@ -119,12 +119,12 @@ Public Class dataPool : Inherits clusterModels.db_models
 
         If group_data Is Nothing Then
             sample_groups.add(q.JoinIterates({field("organism") = organism,
-                field("bio_sample") = bio_sample,
+                field("bio_samples") = bio_sample,
                 field("repo_path") = repo_dir}).ToArray)
         Else
             sample_groups.where(field("id") = group_data.id).save(
                 field("organism") = organism,
-                field("bio_sample") = bio_sample,
+                field("bio_samples") = bio_sample,
                 field("repo_path") = repo_dir
             )
         End If
