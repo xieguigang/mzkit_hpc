@@ -57,7 +57,7 @@ Public Module exportsData
                 .file = q.filename,
                 .mzInto = spectral,
                 .precursor_type = q.adducts,
-                .lib_guid = q.splash_id,
+                .lib_guid = q.splash_id & " " & $"{q.precursor.ToString("F4")}@{(q.rt / 60).ToString("F2")}min",
                 .meta = New Dictionary(Of String, String) From {
                     {NameOf(q.biosample), q.biosample},
                     {NameOf(q.name), q.name},
