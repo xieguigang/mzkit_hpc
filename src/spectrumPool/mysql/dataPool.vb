@@ -105,11 +105,60 @@ Public Class dataPool : Inherits clusterModels.db_models
         End If
     End Sub
 
+    Public Sub setGroupReference(group As String, organism As String, bio_sample As String, repo_dir As String)
+        Dim q As FieldAssert()
+
+        If project_data Is Nothing Then
+            q = {field("group_name") = group}
+        Else
+            q = {field("group_name") = group, field("project_id") = project_data.id}
+        End If
+
+        Dim group_data As clusterModels.sample_groups = sample_groups.where(q).find(Of clusterModels.sample_groups)
+
+        If group_data Is Nothing Then
+            sample_groups.add(q)
+            group_data = sample_groups.where(q).find(Of clusterModels.sample_groups)
+        End If
+
+        If group_data IsNot Nothing Then
+            sample_groups.where(field("id") = group_data.id).save(
+                field("organism") = organism,
+                field("bio_sample") = bio_sample,
+                field("repo_path") = repo_dir
+            )
+        End If
+    End Sub
+
+    Public Function getGroupID(group As String) As clusterModels.sample_groups
+        Dim q As FieldAssert()
+
+        If group.StringEmpty Then
+            Return Nothing
+        End If
+
+        If project_data Is Nothing Then
+            q = {field("group_name") = group}
+        Else
+            q = {field("group_name") = group, field("project_id") = project_data.id}
+        End If
+
+        Return sample_groups.where(q).find(Of clusterModels.sample_groups)
+    End Function
+
     Public Sub setFileReference(filepath As String, Optional sample_group As String = Nothing)
         Dim ref As UInteger = getFileReference(filepath.BaseName)
 
         If ref = 0 Then
+            Dim groupId As clusterModels.sample_groups = getGroupID(sample_group)
 
+            ' create new
+            rawfiles.add(
+                field("filename") = filepath.BaseName,
+                field("size_bytes") = filepath.FileLength,
+                field("project_id") = If(project_data Is Nothing, 0, project_data.id),
+                field("sample_group") = If(groupId Is Nothing, 0, groupId.id)
+            )
         End If
     End Sub
 
