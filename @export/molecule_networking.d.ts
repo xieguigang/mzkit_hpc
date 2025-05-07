@@ -10,6 +10,9 @@
 */
 declare namespace molecule_networking {
    /**
+   */
+   function cluster_spectrum(repo: object, cluster_id: string): object;
+   /**
     * create a new spectrum clustering data pool
     * 
     * 
