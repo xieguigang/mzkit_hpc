@@ -68,6 +68,7 @@ const imports_metabolights = function(sample_metadata, investigation,
     }
 
     if (!is.list(model_name)) {
+        # is character name, convert to a tuple list
         model_name = list(
             positive = `${model_name}_POS`,
             negative = `${model_name}_NEG`
