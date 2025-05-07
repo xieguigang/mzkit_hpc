@@ -129,7 +129,14 @@ Public Class mysqlFs : Inherits PoolFs
         End If
 
         Dim spec_id = metadata_pool(key).RootId
-        Dim spec = mysql.spectrum_pool.where(field("id") = spec_id).find(Of clusterModels.spectrum_pool)
+
+        If spec_id.StringEmpty Then
+            Return Nothing
+        End If
+
+        Dim spec = mysql.spectrum_pool _
+            .where(field("id") = spec_id) _
+            .find(Of clusterModels.spectrum_pool)
 
         Return spec.hashcode
     End Function
