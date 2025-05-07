@@ -1,5 +1,6 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 
 Public Module exportsData
@@ -9,6 +10,63 @@ Public Module exportsData
         Dim spectral_id As UInteger() = data.cluster_data _
             .where(field("cluster_id") = cluster_id) _
             .project(Of UInteger)("spectral_id")
+        Dim spectrumData As spectrumData() = data.spectrum_pool _
+            .left_join("metadata") _
+            .on(field("`metadata`.`spectral_id`") = field("`spectrum_pool`.`id`")) _
+            .where(field("`spectrum_pool`.`id`").in(spectral_id)) _
+            .select(Of spectrumData)("npeaks",
+    "spectrum_pool.mz",
+    "`into`",
+    "metadata.mz AS precursor",
+    "rt",
+    "intensity",
+    "filename",
+    "project",
+    "biosample",
+    "organism",
+    "xref_id",
+    "`name`",
+    "formula",
+    "adducts",
+    "instrument")
 
+        For Each q As spectrumData In spectrumData
+            Dim mz As Double() = HttpTreeFs.decode(q.mz)
+            Dim into As Double() = HttpTreeFs.decode(q.into)
+
+            If q.npeaks <> mz.Length Then
+                Continue For
+            ElseIf q.npeaks <> into.Length Then
+                Continue For
+            End If
+
+            Dim spectral As ms2() = mz _
+                .Select(Function(mzi, i)
+                            Return New ms2 With {
+                                .mz = mzi,
+                                .intensity = into(i)
+                            }
+                        End Function) _
+                .ToArray
+
+            Yield New PeakMs2 With {
+                .intensity = q.intensity,
+                .mz = q.precursor,
+                .rt = q.rt,
+                .file = q.filename,
+                .mzInto = spectral,
+                .precursor_type = q.adducts,
+                .lib_guid = q.splash_id,
+                .meta = New Dictionary(Of String, String) From {
+                    {NameOf(q.biosample), q.biosample},
+                    {NameOf(q.name), q.name},
+                    {NameOf(q.formula), q.formula},
+                    {NameOf(q.instrument), q.instrument},
+                    {NameOf(q.organism), q.organism},
+                    {NameOf(q.project), q.project},
+                    {NameOf(q.xref_id), q.xref_id}
+                }
+            }
+        Next
     End Function
 End Module
