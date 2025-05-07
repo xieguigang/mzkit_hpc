@@ -57,4 +57,28 @@ Module MoleculeNetworking
 
         Return repo.Create(level, split:=split, name:=name, desc:=desc)
     End Function
+
+    <ExportAPI("project_context")>
+    <RApiReturn(GetType(dataPool))>
+    Public Function setProjectContext(repo As dataPool, project_id As String, Optional name As String = Nothing, Optional desc As String = Nothing) As Object
+        Call repo.setProjectReference(project_id, If(name, project_id), desc)
+        Return repo
+    End Function
+
+    <ExportAPI("group_info")>
+    <RApiReturn(GetType(dataPool))>
+    Public Function setGroupInfo(repo As dataPool, group As String,
+                                 Optional organism As String = "Unknown",
+                                 Optional bio_sample As String = "Unknown",
+                                 Optional repo_dir As String = "") As Object
+        Call repo.setGroupReference(group, organism, bio_sample, repo_dir)
+        Return repo
+    End Function
+
+    <ExportAPI("file_info")>
+    <RApiReturn(GetType(dataPool))>
+    Public Function setFileInfo(repo As dataPool, filepath As String, Optional group As String = Nothing) As Object
+        Call repo.setFileReference(filepath, group)
+        Return repo
+    End Function
 End Module

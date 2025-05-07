@@ -78,14 +78,14 @@ Public Class dataPool : Inherits clusterModels.db_models
         End Get
     End Property
 
-    Dim project_data As clusterModels.project
+    Public ReadOnly Property project_data As clusterModels.project
 
     Public Sub New(mysqli As ConnectionUri)
         MyBase.New(mysqli)
     End Sub
 
     Public Sub setProjectReference(project_id As String, name As String, desc As String)
-        project_data = project _
+        _project_data = project _
             .where(field("project_id") = project_id) _
             .find(Of clusterModels.project)
 
