@@ -265,7 +265,9 @@ Public Class mysqlRepository : Inherits MetadataProxy
     Public Overrides Sub SetRootId(hashcode As String)
         m_rootId = hashcode
 
-
+        Call fs.mysql.cluster _
+            .where(field("id") = cluster_data.id) _
+            .save(field("root") = hashcode)
     End Sub
 
     Public Overrides Function HasGuid(id As String) As Boolean
