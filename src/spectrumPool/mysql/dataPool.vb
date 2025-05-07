@@ -1,4 +1,5 @@
-﻿Imports Microsoft.VisualBasic.Serialization.JSON
+﻿Imports Microsoft.VisualBasic.Linq
+Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Uri
@@ -117,11 +118,10 @@ Public Class dataPool : Inherits clusterModels.db_models
         Dim group_data As clusterModels.sample_groups = sample_groups.where(q).find(Of clusterModels.sample_groups)
 
         If group_data Is Nothing Then
-            sample_groups.add(q)
-            group_data = sample_groups.where(q).find(Of clusterModels.sample_groups)
-        End If
-
-        If group_data IsNot Nothing Then
+            sample_groups.add(q.JoinIterates({field("organism") = organism,
+                field("bio_sample") = bio_sample,
+                field("repo_path") = repo_dir}).ToArray)
+        Else
             sample_groups.where(field("id") = group_data.id).save(
                 field("organism") = organism,
                 field("bio_sample") = bio_sample,
