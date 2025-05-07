@@ -26,6 +26,16 @@ declare namespace molecule_networking {
    */
    function createMysqlPool(repo: object, level?: number, split?: object, name?: string, desc?: string): object;
    /**
+     * @param group default value Is ``null``.
+   */
+   function file_info(repo: object, filepath: string, group?: string): object;
+   /**
+     * @param organism default value Is ``'Unknown'``.
+     * @param bio_sample default value Is ``'Unknown'``.
+     * @param repo_dir default value Is ``''``.
+   */
+   function group_info(repo: object, group: string, organism?: string, bio_sample?: string, repo_dir?: string): object;
+   /**
     * open the spectrum pool from a given resource link
     * 
     * 
@@ -42,4 +52,9 @@ declare namespace molecule_networking {
      * + default value Is ``null``.
    */
    function openMysqlPool(repo: object, model_id?: string, score_overrides?: object, env?: object): object;
+   /**
+     * @param name default value Is ``null``.
+     * @param desc default value Is ``null``.
+   */
+   function project_context(repo: object, project_id: string, name?: string, desc?: string): object;
 }
