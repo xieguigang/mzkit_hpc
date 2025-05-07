@@ -11,6 +11,12 @@ let model = repo |> openMysqlPool(model_id = 1);
 let rawfilepath = "G:\\lxy-CID30.mzML";
 let rawdata = open.mzpack(rawfilepath);
 
+repo 
+|> project_context("XXXXXXXXXX")
+|> group_info("XXXX")
+|> file_info(rawfilepath)
+;
+
 model |> addPool( x = ms2_peaks(rawdata),
                          biosample  = "unknown",
                          organism  = "unknown",
