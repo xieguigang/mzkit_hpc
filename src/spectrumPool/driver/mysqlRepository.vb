@@ -92,7 +92,7 @@ Public Class mysqlRepository : Inherits MetadataProxy
             ' create new?
             http.mysql.cluster.add(
                 field("model_id") = http.model_id,
-                field("key") = path.BaseName,
+                field("key") = If(path = "/", "/", path.BaseName),
                 field("parent_id") = parentId,
                 field("n_childs") = 0,
                 field("n_spectrum") = 0,
