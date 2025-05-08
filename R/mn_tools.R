@@ -44,8 +44,6 @@ const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
 #' 
 #' @param sample_metadata Character string specifying the file path to the sample metadata 
 #'                        (e.g., s_*.txt from MetaboLights). Should contain biosample information.
-#' @param investigation Character string specifying the file path to the MetaboLights investigation
-#'                      file (i_Investigation.txt). Used to extract study-level metadata.
 #' @param model_name Either a named list or character string specifying spectral clustering models:
 #'                   * If a named list, must contain "positive" and "negative" elements specifying 
 #'                     model names for each polarity mode
@@ -66,6 +64,10 @@ const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
 #'          1. Study metadata parsing and database registration
 #'          2. Polarity-specific data insertion into clustering models
 #'          3. Biosample-instrument associations
+#'          
+#'          the folder that contains the given ``sample_metadata`` input file that should contains the files of:
+#' 
+#'          i_Investigation.txt MetaboLights investigation file (i_Investigation.txt). Used to extract study-level metadata.
 #' 
 #' @section Parameter Specialization:
 #' When using character input for \code{model_name}, the function automatically appends "_POS" and 
@@ -77,7 +79,6 @@ const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
 #'   # Using explicit model list
 #'   imports_metabolights(
 #'     sample_metadata = "s_study.txt",
-#'     investigation = "i_Investigation.txt",
 #'     model_name = list(positive = "metab_pos", negative = "metab_neg"),
 #'     repo = open_mnlink(user = "admin", passwd = "secret")
 #'   )
@@ -85,19 +86,20 @@ const open_mnlink = function(user, passwd, host = "127.0.0.1", port = 3306) {
 #'   # Using auto-generated model names
 #'   imports_metabolights(
 #'     sample_metadata = "s_study.txt",
-#'     investigation = "i_Investigation.txt",
 #'     model_name = "global_model"
 #'   )
 #' }
 #'
 #' @seealso \code{\link{open_mnlink}} for connection creation, 
 #'          \code{\link[MetaboLights]{MTBLSStudy}} for study parsing
-const imports_metabolights = function(sample_metadata, investigation, 
+const imports_metabolights = function(sample_metadata,  
+                                      instrument_name = "Thermo Scientific Q Exactive",  
                                       model_name = list(positive = "xxx_pos", negative = "xxx_neg"), 
                                       repo = open_mnlink(user = "xxx", passwd = "xxx", host = "127.0.0.1", port = 3306)) {
     require(MetaboLights);
     require(JSON);
 
+    let investigation = file.path(dirname(sample_metadata),"i_Investigation.txt");
     let metadata = MTBLSStudy::read.study_source(file = sample_metadata);
     let studyinfo = MTBLSStudy::read.study_metadata(file = investigation);
     let sampleinfo = as.data.frame(metadata); 
@@ -130,7 +132,7 @@ const imports_metabolights = function(sample_metadata, investigation,
                 biosample  = sample[["Characteristics[Organism part]"]],
                 organism  = sample[["Characteristics[Organism]"]],
                 project = studyinfo[["Study Identifier"]],
-                instrument  = "unknown",
+                instrument  = instrument_name,
                 file = basename(filepath),
                 filename_overrides = TRUE);
         }      
