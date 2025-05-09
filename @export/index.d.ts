@@ -15,6 +15,15 @@ declare namespace mzkit_hpc {
    */
    function deconvolution(rawdata: any, outputdir?: any, mzdiff?: any, peak.width?: any): object;
    /**
+     * @param instrument_name default value Is ``Thermo Scientific Q Exactive``.
+     * @param model_name default value Is ``Call "list"("positive" <- "xxx_pos", "negative" <- "xxx_neg")``.
+     * @param repo default value Is ``Call "open_mnlink"("user" <- "xxx",
+     *       "passwd" <- "xxx",
+     *       "host" <- "127.0.0.1",
+     *       "port" <- 3306)``.
+   */
+   function imports_metabolights(sample_metadata: any, instrument_name?: any, model_name?: any, repo?: any): object;
+   /**
      * @param mzdiff default value Is ``0.005``.
      * @param peak.width default value Is ``[3, 90]``.
    */

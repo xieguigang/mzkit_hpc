@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Import MetaboLights project data into the spectrum data pool system</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <link rel="stylesheet" type="text/css" href="https://mzkit.org/assets/js/page.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <table style="width: 100%;">
+            <tr>
+                <td>imports_metabolights {mzkit_hpc}</td>
+                <td style="text-align: right;">R Documentation</td>
+            </tr>
+        </table>
+
+        <h2>Import MetaboLights project data into the spectrum data pool system</h2>
+
+        <h3>Description</h3>
+
+        <p>Processes MetaboLights study data including sample metadata and investigation files, then imports mass spectrometry data into specified clustering models in the database.</p>
+
+        <h3>Usage</h3>
+
+        <div style="width: 100%; padding-left: 3%; color: black;">
+            <pre><code class='language-R' style="color: black; font-weight:normal;"><strong>imports_metabolights</strong>(<i>sample.metadata</i>,
+    <i>instrument.name</i> = <span style='color: brown;'><strong>'Thermo Scientific Q Exactive'</strong></span>,
+    <i>model.name</i> = 'list'('positive' = 'xxx_pos', 'negative' = 'xxx_neg'),
+    <i>repo</i> = 'open_mnlink'('user' = 'xxx', 'passwd' = 'xxx', 'host' = '127.0.0.1', 'port' = 3306));</code></pre>
+        </div>
+
+        <h3>Arguments</h3>
+
+        <table>
+            
+<dt>sample.metadata</dt>
+<dd><p><p>Character string specifying the file path to the sample metadata (e.g., s_*.txt from MetaboLights). Should contain biosample information.</p></p></dd>
+
+
+<dt>model.name</dt>
+<dd><p><p>Either a named list or character string specifying spectral clustering models: <em> If a named list, must contain "positive" and "negative" elements specifying model names for each polarity mode </em> If a character string, models will be auto-generated with "<em>POS" and "</em>NEG" suffixes for respective polarities Default: list(positive = "xxx<em>pos", negative = "xxx</em>neg")</p></p></dd>
+
+
+<dt>repo</dt>
+<dd><p><p>MySQL connection object created by \code{open_mnlink}. Default uses placeholder credentials (replace for production use).</p></p></dd>
+
+        </table>
+
+
+        <h3 style="display: block;">Details</h3>
+
+        <p>Requires MetaboLights package for study file parsing and JSON package for data handling. Raw data files are expected in [investigation<em>dir]/FILES/[polarity]/[sample</em>name].raw. The function performs: 1. Study metadata parsing and database registration 2. Polarity-specific data insertion into clustering models 3. Biosample-instrument associations the folder that contains the given <code>sample_metadata</code> input file that should contains the files of: i<em>Investigation.txt MetaboLights investigation file (i</em>Investigation.txt). Used to extract study-level metadata.</p>
+
+        <h3 style="display: block">Authors</h3>
+
+        xieguigang
+
+        <h3>Value</h3>
+
+        <p>Invisibly returns NULL. Main effects include: <em> Uploads study metadata to MySQL database </em> Imports raw spectra into specified clustering models * Updates file metadata in the repository</p>
+
+        <h3 style="display: none;">Examples</h3>
+
+        
+
+        <hr />
+        <div style="text-align: center;">[Package <em>mzkit_hpc</em> version 3.2.56.56444 <a
+                href="../mzkit_hpc.html">Index</a>]
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="https://mzkit.org/assets/js/R_syntax.js"></script>
+<script type="text/javascript" src="https://mzkit.org/assets/js/highlights.js"></script>
+<script type="text/javascript">r_highlights("example_r");</script>
+
+</html>

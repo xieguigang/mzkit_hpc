@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>open_mnlink</title>
+    <title>Open a connection to the MySQL database for the spectrum data pool system</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <link rel="stylesheet" type="text/css" href="https://mzkit.org/assets/js/page.css">
@@ -18,11 +18,11 @@
             </tr>
         </table>
 
-        <h2>open_mnlink</h2>
+        <h2>Open a connection to the MySQL database for the spectrum data pool system</h2>
 
         <h3>Description</h3>
 
-        
+        <p>Establishes a connection to the MySQL database used for storing spectral data and molecular networking information. Requires the graphQL package and MySQL driver.</p>
 
         <h3>Usage</h3>
 
@@ -36,12 +36,27 @@
 
         <table>
             
+<dt>user</dt>
+<dd><p><p>Character string specifying the MySQL username for authentication.</p></p></dd>
+
+
+<dt>passwd</dt>
+<dd><p><p>Character string containing the password for the MySQL user.</p></p></dd>
+
+
+<dt>host</dt>
+<dd><p><p>Character string specifying the host address of the MySQL server. Default is "127.0.0.1" (localhost).</p></p></dd>
+
+
+<dt>port</dt>
+<dd><p><p>Integer specifying the port number for the MySQL connection. Default is 3306 (standard MySQL port).</p></p></dd>
+
         </table>
 
 
-        <h3 style="display: none;">Details</h3>
+        <h3 style="display: block;">Details</h3>
 
-        
+        <p>This function loads required packages (graphQL and hpc) and initializes a connection using the specified credentials. Ensure MySQL service is running at the target host/port.</p>
 
         <h3 style="display: block">Authors</h3>
 
@@ -49,7 +64,7 @@
 
         <h3>Value</h3>
 
-        This function has no value returns.
+        <p>Returns a MySQL connection object (CLR object) that can be used for subsequent database operations. The connection is configured to use the "sample_pool" database.</p>
 
         <h3 style="display: none;">Examples</h3>
 
