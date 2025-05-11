@@ -85,8 +85,16 @@ Public Class mysqlFs : Inherits PoolFs
         Dim model_id As String = Me.model_id
         Dim project As String = spectral.meta.TryGetValue("project", [default]:="unknown project")
         Dim biodeep_id As String = spectral.meta.TryGetValue("biodeep_id", [default]:="unknown conserved")
+        ' check of the metadata
+        Dim check As clusterModels.metadata = mysql.metadata _
+            .where(field("hashcode") = hashcode,
+                   field("filename") = filename,
+                   field("model_id") = model_id,
+                   field("project") = project,
+                   field("xref_id") = biodeep_id) _
+            .find(Of clusterModels.metadata)
 
-
+        Return Not check Is Nothing
     End Function
 
     Public Overrides Function GetTreeChilds(path As String) As IEnumerable(Of String)
