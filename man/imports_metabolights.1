@@ -1,0 +1,42 @@
+﻿.TH IMPORTS_METABOLIGHTS 1 2025-May "" "Import MetaboLights project data into the spectrum data pool system"
+.SH NAME
+imports_metabolights \- imports_metabolights(sample.metadata,
+    <i>instrument.name</i> = <span style='color: brown;'><strong>'Thermo Scientific Q Exactive'</strong></span>,
+    <i>model.name</i> = 'list'('positive' = 'xxx_pos', 'negative' = 'xxx_neg'),
+    <i>repo</i> = 'open_mnlink'('user' = 'xxx', 'passwd' = 'xxx', 'host' = '127.0.0.1', 'port' = 3306))
+.SH SYNOPSIS
+\fIimports_metabolights(sample.metadata,
+    <i>instrument.name</i> = <span style='color: brown;'><strong>'Thermo Scientific Q Exactive'</strong></span>,
+    <i>model.name</i> = 'list'('positive' = 'xxx_pos', 'negative' = 'xxx_neg'),
+    <i>repo</i> = 'open_mnlink'('user' = 'xxx', 'passwd' = 'xxx', 'host' = '127.0.0.1', 'port' = 3306))\fR
+.SH DESCRIPTION
+.PP
+Processes MetaboLights study data including sample metadata and investigation files, then imports mass spectrometry data into specified clustering models in the database.
+.PP
+.SH OPTIONS
+.PP
+\fBsample.metadata\fB \fR\- . 
+.PP
+.PP
+\fBinstrument.name\fB \fR\- 'Thermo Scientific Q Exactive'. 
+.PP
+.PP
+\fBmodel.name\fB \fR\- 'list'('positive' = 'xxx_pos', 'negative' = 'xxx_neg'). 
+.PP
+.PP
+\fBrepo\fB \fR\- 'open_mnlink'('user' = 'xxx', 'passwd' = 'xxx', 'host' = '127.0.0.1', 'port' = 3306). MySQL connection object created by \code{open_mnlink}. Default uses placeholder credentials (replace for production use).
+.PP
+.SH VALUE
+.PP
+Invisibly returns NULL. Main effects include: * Uploads study metadata to MySQL database * Imports raw spectra into specified clustering models * Updates file metadata in the repository
+.PP
+.SH DETAILS
+.PP
+Requires MetaboLights package for study file parsing and JSON package for data handling. Raw data files are expected in [investigation_dir]/FILES/[polarity]/[sample_name].raw. The function performs: 1. Study metadata parsing and database registration 2. Polarity-specific data insertion into clustering models 3. Biosample-instrument associations the folder that contains the given ``sample_metadata`` input file that should contains the files of: i_Investigation.txt MetaboLights investigation file (i_Investigation.txt). Used to extract study-level metadata.
+.PP
+.SH FILES
+.PP
+SMRUCC/R#.declare_function.imports_metabolights at mn_tools.R:line 95
+.PP
+.SH COPYRIGHT
+Copyright © xieguigang, MIT Licensed 2025
