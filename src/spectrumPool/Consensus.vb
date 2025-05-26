@@ -1,6 +1,8 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
+Imports Microsoft.VisualBasic.Linq
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
 
@@ -56,9 +58,24 @@ Public Module Consensus
                         "intensity AS `into`",
                         "spectrum_pool.mz",
                         "`into` AS intensity")
-                Dim decodeSpectrum As PeakMs2() = spectrumData.Select(Function(sdata)
+                Dim decodeSpectrum As PeakMs2() = spectrumData _
+                    .Select(Function(sdata)
+                                Dim spectrum As ms2() = HttpTreeFs.decodeSpectrum(sdata.mz, sdata.intensity) _
+                                    .SafeQuery _
+                                    .ToArray
 
-                                                                      End Function)
+                                If spectrum.Length = 0 Then
+                                    Return Nothing
+                                Else
+                                    Return New PeakMs2 With {
+                                        .mzInto = spectrum,
+                                        .mz = sdata.precursor,
+                                        .rt = sdata.rt
+                                    }
+                                End If
+                            End Function) _
+                    .Where(Function(s) Not s Is Nothing) _
+                    .ToArray
 
             Next
         Next
