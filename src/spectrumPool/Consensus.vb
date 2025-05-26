@@ -90,7 +90,10 @@ Public Module Consensus
                     .ToArray
                 Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
                 Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
-                Dim peak_ranking As ms2() = consens.Select(Function(m) Val(m.name)).consens_peakRanking(decodeSpectrum, mzdiff).ToArray
+                Dim peak_ranking As ms2() = consens _
+                    .Select(Function(m) Val(m.name)) _
+                    .consens_peakRanking(decodeSpectrum, mzdiff) _
+                    .ToArray
 
             Next
         Next
