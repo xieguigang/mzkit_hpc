@@ -1,5 +1,7 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
+Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
 
 Public Module Consensus
 
@@ -32,5 +34,38 @@ Public Module Consensus
             .find(Of clusterModels.consensus_model)
     End Function
 
-    Public Function 
+    <Extension>
+    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model, Optional page_size As Integer = 1000)
+        For page As Integer = 0 To Integer.MaxValue
+            Dim offset As UInteger = (page - 1) * page_size
+            Dim pagedata = mysql.cluster.where(field("model_id") = args.model_id).limit(offset, page_size).select(Of clusterModels.cluster)
+
+            If pagedata.IsNullOrEmpty Then
+                Exit For
+            End If
+
+            For Each cluster As clusterModels.cluster In TqdmWrapper.Wrap(pagedata)
+                Dim spectrumData As clusterSpectrumData() = mysql.cluster_data _
+                    .left_join("metadata").on(field("`metadata`.id") = field("metadata_id")) _
+                    .left_join("spectrum_pool").on(field("`spectrum_pool`.id") = field("`metadata`.spectral_id")) _
+                    .where(field("`cluster_data`.cluster_id") = cluster.id) _
+                    .select(Of clusterSpectrumData)(
+                        "metadata.mz as precursor",
+                        "rt",
+                        "intensity AS `into`",
+                        "spectrum_pool.mz",
+                        "`into` AS intensity")
+            Next
+        Next
+    End Sub
 End Module
+
+Public Class clusterSpectrumData
+
+    <DatabaseField> Public Property precursor As Double
+    <DatabaseField> Public Property rt As Double
+    <DatabaseField> Public Property into As Double
+    <DatabaseField> Public Property mz As String
+    <DatabaseField> Public Property intensity As String
+
+End Class
