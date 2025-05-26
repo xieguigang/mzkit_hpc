@@ -1,8 +1,11 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
+Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
+Imports Microsoft.VisualBasic.Math
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
 
@@ -38,7 +41,9 @@ Public Module Consensus
     End Function
 
     <Extension>
-    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model, Optional page_size As Integer = 1000)
+    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model, Optional page_size As Integer = 1000, Optional top As Integer = 30)
+        Dim mzdiff As Tolerance = Tolerance.DeltaMass(0.3)
+
         For page As Integer = 0 To Integer.MaxValue
             Dim offset As UInteger = (page - 1) * page_size
             Dim pagedata = mysql.cluster.where(field("model_id") = args.model_id).limit(offset, page_size).select(Of clusterModels.cluster)
@@ -76,10 +81,25 @@ Public Module Consensus
                             End Function) _
                     .Where(Function(s) Not s Is Nothing) _
                     .ToArray
+                Dim consens As NamedCollection(Of ms2)() = decodeSpectrum _
+                    .Select(Function(s) s.mzInto) _
+                    .IteratesALL _
+                    .GroupBy(mzdiff) _
+                    .OrderByDescending(Function(peak) peak.Length) _
+                    .Take(top) _
+                    .ToArray
+                Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
+                Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
+                Dim peak_ranking As ms2() = consens.Select(Function(m) Val(m.name)).consens_peakRanking(decodeSpectrum).ToArray
 
             Next
         Next
     End Sub
+
+    <Extension>
+    Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double), clusterdata As PeakMs2()) As IEnumerable(Of ms2)
+
+    End Function
 End Module
 
 Public Class clusterSpectrumData
