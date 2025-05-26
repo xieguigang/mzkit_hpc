@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
@@ -55,6 +56,10 @@ Public Module Consensus
                         "intensity AS `into`",
                         "spectrum_pool.mz",
                         "`into` AS intensity")
+                Dim decodeSpectrum As PeakMs2() = spectrumData.Select(Function(sdata)
+
+                                                                      End Function)
+
             Next
         Next
     End Sub

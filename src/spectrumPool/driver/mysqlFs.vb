@@ -3,6 +3,7 @@ Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra.SplashID
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.Data.IO
+Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.My.JavaScript
 Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
@@ -97,7 +98,7 @@ Public Class mysqlFs : Inherits PoolFs
         Return Not check Is Nothing
     End Function
 
-    Public Overrides Function GetTreeChilds(path As String) As IEnumerable(Of String)
+    Public Overrides Iterator Function GetTreeChilds(path As String) As IEnumerable(Of String)
 
     End Function
 
@@ -158,20 +159,13 @@ Public Class mysqlFs : Inherits PoolFs
             Return Nothing
         End If
 
-        Dim mz As Double() = HttpTreeFs.decode(q.mz)
-        Dim into As Double() = HttpTreeFs.decode(q.into)
+        Dim spectral As ms2() = HttpTreeFs.decodeSpectrum(q.mz, q.into, q.npeaks) _
+            .SafeQuery _
+            .ToArray
 
-        If q.npeaks <> mz.Length Then
-            Return Nothing
-        ElseIf q.npeaks <> into.Length Then
+        If spectral.Length <> q.npeaks Then
             Return Nothing
         End If
-
-        Dim spectral As ms2() = mz _
-            .Select(Function(mzi, i)
-                        Return New ms2 With {.mz = mzi, .intensity = into(i)}
-                    End Function) _
-            .ToArray
 
         Return New PeakMs2 With {
             .lib_guid = q.hashcode,
