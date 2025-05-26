@@ -31,4 +31,6 @@ Public Module Consensus
             .order_by("id", desc:=True) _
             .find(Of clusterModels.consensus_model)
     End Function
+
+    Public Function 
 End Module
