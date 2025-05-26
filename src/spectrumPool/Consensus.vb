@@ -42,7 +42,7 @@ Public Module Consensus
 
     <Extension>
     Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model, Optional page_size As Integer = 1000, Optional top As Integer = 30)
-        Dim mzdiff As Tolerance = Tolerance.DeltaMass(0.3)
+        Dim mzdiff As Tolerance = Tolerance.DeltaMass(0.1)
 
         For page As Integer = 0 To Integer.MaxValue
             Dim offset As UInteger = (page - 1) * page_size
@@ -90,15 +90,26 @@ Public Module Consensus
                     .ToArray
                 Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
                 Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
-                Dim peak_ranking As ms2() = consens.Select(Function(m) Val(m.name)).consens_peakRanking(decodeSpectrum).ToArray
+                Dim peak_ranking As ms2() = consens.Select(Function(m) Val(m.name)).consens_peakRanking(decodeSpectrum, mzdiff).ToArray
 
             Next
         Next
     End Sub
 
     <Extension>
-    Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double), clusterdata As PeakMs2()) As IEnumerable(Of ms2)
+    Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double), clusterdata As PeakMs2(), mzdiff As Tolerance) As IEnumerable(Of ms2)
+        For Each mz As Double In consensus_mz
+            Dim count As Integer = clusterdata _
+                .AsParallel _
+                .Where(Function(s) s.GetIntensity(mz, mzdiff) > 0) _
+                .Count
 
+            Yield New ms2 With {
+                .mz = mz,
+                .intensity = count / clusterdata.Length,
+                .Annotation = ""
+            }
+        Next
     End Function
 End Module
 
