@@ -162,19 +162,7 @@ Public Module Consensus
         Dim consensusSpectrum As New PeakMs2("", consens.Select(Function(i) New ms2(Val(i.name), i.Average(Function(a) a.intensity))))
         Dim entropy As Double = consensusSpectrum.Entropy
         Dim splash_id As String = SplashID.MsSplashId(consensusSpectrum)
-        Dim names = metabolites _
-            .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula.formula AndAlso a.adducts = topFormula.adducts.AdductIonName) _
-            .Select(Function(a) a.name) _
-            .Distinct _
-            .ToArray
-
-        If names.IsNullOrEmpty Then
-            names = {"unknown conserved[" & consensusSpectrum.mzInto _
-                    .OrderByDescending(Function(m) m.intensity) _
-                    .Take(5) _
-                    .Select(Function(mzi) mzi.mz.ToString("F2")) _
-                    .JoinBy("/") & "]"}
-        End If
+        Dim cluster_name As String = metabolites.buildClusterName(topFormula.formula, topFormula.adducts.AdductIonName, consensusSpectrum)
 
         If checkSpectrum Is Nothing Then
             ' add new
@@ -186,7 +174,7 @@ Public Module Consensus
                 field("precursor_entropy") = precursor_entropy,
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
-                field("name") = names.JoinBy("/"),
+                field("name") = cluster_name,
                 field("formula") = topFormula.formula.EmpiricalFormula,
                 field("adducts") = topFormula.adducts.AdductIonName,
                 field("rt") = ref_rt,
@@ -203,7 +191,7 @@ Public Module Consensus
                 field("precursor_entropy") = precursor_entropy,
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
-                field("name") = names.JoinBy("/"),
+                field("name") = cluster_name,
                 field("formula") = topFormula.formula.EmpiricalFormula,
                 field("adducts") = topFormula.adducts.AdductIonName,
                 field("rt") = ref_rt,
@@ -217,6 +205,45 @@ Public Module Consensus
             .where(field("cluster_id") = cluster.id,
                    field("parameter_id") = args.id) _
             .find(Of clusterModels.consensus_spectrum)
+    End Function
+
+    <Extension>
+    Private Function buildClusterName(metabolites As clusterSpectrumData(), topFormula As Formula, adducts As String, consensusSpectrum As PeakMs2) As String
+        Dim names = metabolites _
+            .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula AndAlso adducts = a.adducts) _
+            .Select(Function(a) a.name) _
+            .Distinct _
+            .ToArray
+
+        If Not names.IsNullOrEmpty Then
+            If names.Length = 1 Then
+                Return names(0)
+            Else
+                Return $"Isomer[{names.JoinBy("; ")}]"
+            End If
+        End If
+
+        If names.IsNullOrEmpty Then
+            names = metabolites _
+                .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula) _
+                .Select(Function(a) a.name) _
+                .Distinct _
+                .ToArray
+        End If
+
+        If Not names.IsNullOrEmpty Then
+            If names.Length = 1 Then
+                Return $"{names(0)}*"
+            Else
+                Return $"Candidate Isomer[{names.JoinBy("; ")}]"
+            End If
+        End If
+
+        Return "unknown conserved[" & consensusSpectrum.mzInto _
+            .OrderByDescending(Function(m) m.intensity) _
+            .Take(5) _
+            .Select(Function(mzi) mzi.mz.ToString("F2")) _
+            .JoinBy("/") & "]"
     End Function
 
     <Extension>
