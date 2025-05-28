@@ -8,3 +8,6 @@ make clustering and networking of the lc-ms ms2 spectrum data
 + [group_info](molecule_networking/group_info.1) 
 + [file_info](molecule_networking/file_info.1) 
 + [cluster_spectrum](molecule_networking/cluster_spectrum.1) 
++ [consensus_annotation](molecule_networking/consensus_annotation.1) 
++ [consensus_model](molecule_networking/consensus_model.1) 
++ [scan_consensus](molecule_networking/scan_consensus.1) 

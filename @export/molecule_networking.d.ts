@@ -13,6 +13,15 @@ declare namespace molecule_networking {
    */
    function cluster_spectrum(repo: object, cluster_id: string): object;
    /**
+   */
+   function consensus_annotation(repo: object, model: object, cluster_id: string): any;
+   /**
+     * @param dims default value Is ``9``.
+     * @param knn default value Is ``64``.
+     * @param cutoff default value Is ``0.8``.
+   */
+   function consensus_model(repo: object, model_id: string, dims?: object, knn?: object, cutoff?: number): object;
+   /**
     * create a new spectrum clustering data pool
     * 
     * 
@@ -60,4 +69,9 @@ declare namespace molecule_networking {
      * @param desc default value Is ``null``.
    */
    function project_context(repo: object, project_id: string, name?: string, desc?: string): object;
+   /**
+     * @param page_size default value Is ``1000``.
+     * @param top default value Is ``30``.
+   */
+   function scan_consensus(mysql: object, args: object, page_size?: object, top?: object): ;
 }
