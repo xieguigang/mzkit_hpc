@@ -14,6 +14,7 @@ Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
 Imports spectrumPool.clusterModels
+Imports std = System.Math
 
 Public Module Consensus
 
@@ -131,7 +132,7 @@ Public Module Consensus
         Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
         Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
         Dim metabolites = spectrumData _
-            .Where(Function(s) s.formula <> "NA") _
+            .Where(Function(s) s.formula <> "NA" AndAlso std.Abs(s.precursor - precursor_mz) < 0.5) _
             .ToArray
         Dim formulaSet As Dictionary(Of String, Integer) = metabolites _
             .Select(Function(s) s.formula) _
@@ -165,7 +166,7 @@ Public Module Consensus
         Dim cluster_name As String = metabolites.buildClusterName(topFormula.formula, topFormula.adducts.AdductIonName, consensusSpectrum)
 
         If topFormula.formula Is Nothing OrElse topFormula.adducts.AdductIonName Is Nothing Then
-
+            ' deal wit hthe missing formula data
         End If
 
         If checkSpectrum Is Nothing Then
