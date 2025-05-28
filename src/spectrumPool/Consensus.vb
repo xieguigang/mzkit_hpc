@@ -9,6 +9,8 @@ Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Math
+Imports Microsoft.VisualBasic.Math.Distributions
+Imports Microsoft.VisualBasic.Serialization.JSON
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
 Imports spectrumPool.clusterModels
@@ -71,9 +73,12 @@ Public Module Consensus
                                       args As clusterModels.consensus_model,
                                       cluster As clusterModels.cluster,
                                       Optional ms2da As Double = 0.1,
-                                      Optional top As Integer = 30)
+                                      Optional top As Integer = 30) As clusterModels.consensus_spectrum
 
-        Dim mzdiff As Tolerance = Tolerance.DeltaMass(ms2da)
+        Dim checkSpectrum = mysql.consensus_spectrum _
+            .where(field("cluster_id") = cluster.id,
+                   field("parameter_id") = args.id) _
+            .find(Of clusterModels.consensus_spectrum)
         Dim spectrumData As clusterSpectrumData() = mysql.cluster_data _
             .left_join("metadata").on(field("`metadata`.id") = field("metadata_id")) _
             .left_join("spectrum_pool").on(field("`spectrum_pool`.id") = field("`metadata`.spectral_id")) _
@@ -87,6 +92,11 @@ Public Module Consensus
                 "intensity AS `into`",
                 "spectrum_pool.mz",
                 "`into` AS intensity")
+
+        If checkSpectrum IsNot Nothing AndAlso spectrumData.Length = checkSpectrum.source_size Then
+            Return checkSpectrum
+        End If
+
         Dim decodeSpectrum As PeakMs2() = spectrumData _
             .Select(Function(sdata)
                         Dim spectrum As ms2() = HttpTreeFs.decodeSpectrum(sdata.mz, sdata.intensity) _
@@ -110,6 +120,7 @@ Public Module Consensus
             .OrderByDescending(Function(p) p.Length) _
             .ToArray
         Dim precursor_mz As Double = Val(precursor_groups(0).name)
+        Dim mzdiff As Tolerance = Tolerance.DeltaMass(ms2da)
         Dim consens As NamedCollection(Of ms2)() = decodeSpectrum _
             .Select(Function(s) s.mzInto) _
             .IteratesALL _
@@ -141,12 +152,58 @@ Public Module Consensus
                                    Return f.replicates * f.scores.Average
                                End Function) _
             .FirstOrDefault
+        Dim ref_rt As Double = spectrumData.Select(Function(a) a.rt).TabulateMode(topBin:=True, bags:=9)
         Dim peak_ranking As ms2() = consens _
             .Select(Function(m) Val(m.name)) _
             .consens_peakRanking(decodeSpectrum, precursor_mz, topFormula.adducts, topFormula.formula, mzdiff) _
             .ToArray
+        Dim precursor_entropy As Double = New PeakMs2("", precursor_groups.Select(Function(i) New ms2(Val(i.name), Val(i.Length)))).Entropy
+        Dim consensusSpectrum As New PeakMs2("", consens.Select(Function(i) New ms2(Val(i.name), i.Average(Function(a) a.intensity))))
+        Dim entropy As Double = consensusSpectrum.Entropy
+        Dim splash_id As String = SplashID.MsSplashId(consensusSpectrum)
+        Dim names = spectrumData.Where(Function(a) a.formula <> "NA" AndAlso FormulaScanner.ScanFormula(a.formula) = topFormula.formula AndAlso a.adducts = topFormula.adducts.AdductIonName).Select(Function(a) a.name).Distinct.JoinBy("/")
 
+        If checkSpectrum Is Nothing Then
+            ' add new
+            Call mysql.consensus_spectrum.add(
+                field("cluster_id") = cluster.id,
+                field("parameter_id") = args.id,
+                field("source_size") = spectrumData.Length,
+                field("precursor") = precursor_mz,
+                field("precursor_entropy") = precursor_entropy,
+                field("consensus_entropy") = entropy,
+                field("splash_id") = splash_id,
+                field("name") = "",
+                field("formula") = topFormula.formula.EmpiricalFormula,
+                field("adducts") = topFormula.adducts.AdductIonName,
+                field("rt") = ref_rt,
+                field("mz") = mz_str,
+                field("intensity") = intensity_str,
+                field("peak_ranking") = peak_ranking.GetJson,
+                field("umap") = ""
+            )
+        Else
+            ' make updates
+            Call mysql.consensus_spectrum.where(field("id") = checkSpectrum.id).save(
+                field("source_size") = spectrumData.Length,
+                field("precursor") = precursor_mz,
+                field("precursor_entropy") = precursor_entropy,
+                field("consensus_entropy") = entropy,
+                field("splash_id") = splash_id,
+                field("name") = "",
+                field("formula") = topFormula.formula.EmpiricalFormula,
+                field("adducts") = topFormula.adducts.AdductIonName,
+                field("rt") = ref_rt,
+                field("mz") = mz_str,
+                field("intensity") = intensity_str,
+                field("peak_ranking") = peak_ranking.GetJson
+            )
+        End If
 
+        Return mysql.consensus_spectrum _
+            .where(field("cluster_id") = cluster.id,
+                   field("parameter_id") = args.id) _
+            .find(Of clusterModels.consensus_spectrum)
     End Function
 
     <Extension>
