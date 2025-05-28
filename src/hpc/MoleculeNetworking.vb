@@ -111,4 +111,12 @@ Module MoleculeNetworking
 
         Return Consensus.CreateModelParameters(repo, model_id, dims, knn, cutoff)
     End Function
+
+    <ExportAPI("scan_consensus")>
+    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model,
+                             Optional page_size As Integer = 1000,
+                             Optional top As Integer = 30)
+
+        Call Consensus.ScanConsensus(mysql, args, page_size, top)
+    End Sub
 End Module
