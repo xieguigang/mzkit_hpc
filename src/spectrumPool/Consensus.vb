@@ -14,8 +14,8 @@ Public Module Consensus
     <Extension>
     Public Function CreateModelParameters(mysql As dataPool,
                                           model As String,
-                                          dimensions As Integer,
-                                          knn As Integer,
+                                          Optional dimensions As Integer = 10,
+                                          Optional knn As Integer = 64,
                                           Optional cutoff As Double = 0.8) As clusterModels.consensus_model
 
         Dim modelObj As clusterModels.graph_model = mysql.graph_model _
@@ -41,63 +41,79 @@ Public Module Consensus
     End Function
 
     <Extension>
-    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model, Optional page_size As Integer = 1000, Optional top As Integer = 30)
-        Dim mzdiff As Tolerance = Tolerance.DeltaMass(0.1)
+    Public Sub ScanConsensus(mysql As dataPool, args As clusterModels.consensus_model,
+                             Optional page_size As Integer = 1000,
+                             Optional top As Integer = 30)
 
         For page As Integer = 0 To Integer.MaxValue
             Dim offset As UInteger = (page - 1) * page_size
-            Dim pagedata = mysql.cluster.where(field("model_id") = args.model_id).limit(offset, page_size).select(Of clusterModels.cluster)
+            Dim pagedata As clusterModels.cluster() = mysql.cluster _
+                .where(field("model_id") = args.model_id) _
+                .limit(offset, page_size) _
+                .select(Of clusterModels.cluster)
 
             If pagedata.IsNullOrEmpty Then
                 Exit For
             End If
 
             For Each cluster As clusterModels.cluster In TqdmWrapper.Wrap(pagedata)
-                Dim spectrumData As clusterSpectrumData() = mysql.cluster_data _
-                    .left_join("metadata").on(field("`metadata`.id") = field("metadata_id")) _
-                    .left_join("spectrum_pool").on(field("`spectrum_pool`.id") = field("`metadata`.spectral_id")) _
-                    .where(field("`cluster_data`.cluster_id") = cluster.id) _
-                    .select(Of clusterSpectrumData)(
-                        "metadata.mz as precursor",
-                        "rt",
-                        "intensity AS `into`",
-                        "spectrum_pool.mz",
-                        "`into` AS intensity")
-                Dim decodeSpectrum As PeakMs2() = spectrumData _
-                    .Select(Function(sdata)
-                                Dim spectrum As ms2() = HttpTreeFs.decodeSpectrum(sdata.mz, sdata.intensity) _
-                                    .SafeQuery _
-                                    .ToArray
-
-                                If spectrum.Length = 0 Then
-                                    Return Nothing
-                                Else
-                                    Return New PeakMs2 With {
-                                        .mzInto = spectrum,
-                                        .mz = sdata.precursor,
-                                        .rt = sdata.rt
-                                    }
-                                End If
-                            End Function) _
-                    .Where(Function(s) Not s Is Nothing) _
-                    .ToArray
-                Dim consens As NamedCollection(Of ms2)() = decodeSpectrum _
-                    .Select(Function(s) s.mzInto) _
-                    .IteratesALL _
-                    .GroupBy(mzdiff) _
-                    .OrderByDescending(Function(peak) peak.Length) _
-                    .Take(top) _
-                    .ToArray
-                Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
-                Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
-                Dim peak_ranking As ms2() = consens _
-                    .Select(Function(m) Val(m.name)) _
-                    .consens_peakRanking(decodeSpectrum, mzdiff) _
-                    .ToArray
-
+                Call mysql.ClusterAnnotation(args, cluster, , top)
             Next
         Next
     End Sub
+
+    <Extension>
+    Public Function ClusterAnnotation(mysql As dataPool,
+                                      args As clusterModels.consensus_model,
+                                      cluster As clusterModels.cluster,
+                                      Optional ms2da As Double = 0.1,
+                                      Optional top As Integer = 30)
+
+        Dim mzdiff As Tolerance = Tolerance.DeltaMass(ms2da)
+        Dim spectrumData As clusterSpectrumData() = mysql.cluster_data _
+            .left_join("metadata").on(field("`metadata`.id") = field("metadata_id")) _
+            .left_join("spectrum_pool").on(field("`spectrum_pool`.id") = field("`metadata`.spectral_id")) _
+            .where(field("`cluster_data`.cluster_id") = cluster.id) _
+            .select(Of clusterSpectrumData)(
+                "metadata.mz as precursor",
+                "rt",
+                "intensity AS `into`",
+                "spectrum_pool.mz",
+                "`into` AS intensity")
+        Dim decodeSpectrum As PeakMs2() = spectrumData _
+            .Select(Function(sdata)
+                        Dim spectrum As ms2() = HttpTreeFs.decodeSpectrum(sdata.mz, sdata.intensity) _
+                            .SafeQuery _
+                            .ToArray
+
+                        If spectrum.Length = 0 Then
+                            Return Nothing
+                        Else
+                            Return New PeakMs2 With {
+                                .mzInto = spectrum,
+                                .mz = sdata.precursor,
+                                .rt = sdata.rt
+                            }
+                        End If
+                    End Function) _
+            .Where(Function(s) Not s Is Nothing) _
+            .ToArray
+        Dim consens As NamedCollection(Of ms2)() = decodeSpectrum _
+            .Select(Function(s) s.mzInto) _
+            .IteratesALL _
+            .GroupBy(mzdiff) _
+            .OrderByDescending(Function(peak) peak.Length) _
+            .Take(top) _
+            .ToArray
+        Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
+        Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
+        Dim peak_ranking As ms2() = consens _
+            .Select(Function(m) Val(m.name)) _
+            .consens_peakRanking(decodeSpectrum, mzdiff) _
+            .ToArray
+
+
+    End Function
 
     <Extension>
     Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double), clusterdata As PeakMs2(), mzdiff As Tolerance) As IEnumerable(Of ms2)

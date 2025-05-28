@@ -88,4 +88,18 @@ Module MoleculeNetworking
     Public Function getClusterSpectrum(repo As dataPool, cluster_id As String) As Object
         Return repo.ExportClusterSpectrum(UInteger.Parse(cluster_id)).ToArray
     End Function
+
+    <ExportAPI("consensus_annotation")>
+    Public Function consensus_annotation(repo As dataPool, model As clusterModels.consensus_model, cluster_id As String) As Object
+
+    End Function
+
+    <ExportAPI("consensus_model")>
+    Public Function consensus_model(repo As dataPool, model_id As String,
+                                    Optional dims As Integer = 9,
+                                    Optional knn As Integer = 64,
+                                    Optional cutoff As Double = 0.8) As clusterModels.consensus_model
+
+        Return Consensus.CreateModelParameters(repo, model_id, dims, knn, cutoff)
+    End Function
 End Module
