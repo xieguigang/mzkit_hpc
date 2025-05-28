@@ -132,7 +132,7 @@ Public Module Consensus
         Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
         Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
         Dim metabolites = spectrumData _
-            .Where(Function(s) s.formula <> "NA" AndAlso std.Abs(s.precursor - precursor_mz) < 0.5) _
+            .Where(Function(s) s.formula <> "NA") _
             .ToArray
         Dim formulaSet As Dictionary(Of String, Integer) = metabolites _
             .Select(Function(s) s.formula) _
@@ -163,7 +163,9 @@ Public Module Consensus
         Dim consensusSpectrum As New PeakMs2("", consens.Select(Function(i) New ms2(Val(i.name), i.Average(Function(a) a.intensity))))
         Dim entropy As Double = consensusSpectrum.Entropy
         Dim splash_id As String = SplashID.MsSplashId(consensusSpectrum)
-        Dim cluster_name As String = metabolites.buildClusterName(topFormula.formula, topFormula.adducts.AdductIonName, consensusSpectrum)
+        Dim cluster_name As String = metabolites.buildClusterName(topFormula.formula,
+                                                                  topFormula.adducts?.AdductIonName,
+                                                                  consensusSpectrum)
 
         If topFormula.formula Is Nothing OrElse topFormula.adducts.AdductIonName Is Nothing Then
             ' deal wit hthe missing formula data
