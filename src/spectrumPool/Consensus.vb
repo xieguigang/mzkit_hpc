@@ -185,7 +185,15 @@ Public Module Consensus
             If find Is Nothing Then
                 Yield New ms2(peak)
             Else
-                Yield New ms2(find)
+                Dim name As String = find.Name
+
+                If find.Comment <> "FragmentFormula" Then
+                    name = {find.Name, find.ShortName}.Distinct.JoinBy(" ") & "(" & find.Formula.EmpiricalFormula & ")"
+                End If
+
+                Yield New ms2(peak) With {
+                    .Annotation = name
+                }
             End If
         Next
     End Function
