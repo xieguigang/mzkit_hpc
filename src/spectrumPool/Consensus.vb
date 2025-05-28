@@ -51,7 +51,7 @@ Public Module Consensus
                              Optional page_size As Integer = 1000,
                              Optional top As Integer = 30)
 
-        For page As Integer = 0 To Integer.MaxValue
+        For page As Integer = 1 To Integer.MaxValue
             Dim offset As UInteger = (page - 1) * page_size
             Dim pagedata As clusterModels.cluster() = mysql.cluster _
                 .where(field("model_id") = args.model_id) _
