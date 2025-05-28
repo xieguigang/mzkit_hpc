@@ -156,6 +156,7 @@ Public Module Consensus
                                                   adducts As AdductIon,
                                                   formula As Formula,
                                                   mzdiff As Tolerance) As IEnumerable(Of ms2)
+
         Dim annotation As FragmentAssigner = FragmentAssigner.Default
         Dim peaks As New List(Of SpectrumPeak)
 
@@ -172,7 +173,21 @@ Public Module Consensus
             }))
         Next
 
+        Dim checkPpm As Tolerance = Tolerance.PPM(15)
         Dim annotated = annotation.FastFragmnetAssigner(peaks, formula, adducts)
+
+        For Each peak As SpectrumPeak In peaks
+            Dim find As ProductIon = annotated _
+                .Where(Function(a) checkPpm(a.Mass, peak.mz)) _
+                .OrderBy(Function(a) PPMmethod.PPM(a.Mass, peak.mz)) _
+                .FirstOrDefault
+
+            If find Is Nothing Then
+                Yield New ms2(peak)
+            Else
+                Yield New ms2(find)
+            End If
+        Next
     End Function
 
     Private Function RankFormula(f_str As KeyValuePair(Of String, Integer),
@@ -187,21 +202,22 @@ Public Module Consensus
             Return Nothing
         End If
 
-        Dim annotations As New List(Of Double)
-        Dim precursor_type As New AdductIon(adduct_type.adducts)
-
         Static annotation As FragmentAssigner = FragmentAssigner.Default
 
-        For Each spec As PeakMs2 In clusterdata
-            Dim result = annotation.FastFragmnetAssigner(spec.GetPeaks.AsList, formula, precursor_type)
-            Dim fragments = result.Where(Function(s) Not s.Comment.StringEmpty(, True)).Count
+        Dim precursor_type As New AdductIon(adduct_type.adducts)
+        Dim annotations As Double() = clusterdata _
+            .AsParallel _
+            .Select(Function(spec)
+                        Dim result = annotation.FastFragmnetAssigner(spec.GetPeaks.AsList, formula, precursor_type)
+                        Dim fragments = result.Where(Function(s) Not s.Name.StringEmpty(, True)).Count
 
-            Call annotations.Add(fragments / spec.mzInto.Length)
-        Next
+                        Return fragments / spec.mzInto.Length
+                    End Function) _
+            .ToArray
 
         Return (formula,
             replicates:=f_str.Value,
-            scores:=annotations.ToArray,
+            scores:=annotations,
             adducts:=precursor_type
         )
     End Function
