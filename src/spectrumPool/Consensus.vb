@@ -167,8 +167,16 @@ Public Module Consensus
                                                                   topFormula.adducts?.AdductIonName,
                                                                   consensusSpectrum)
 
+        Dim formula_str As String
+        Dim adducts_str As String
+
         If topFormula.formula Is Nothing OrElse topFormula.adducts.AdductIonName Is Nothing Then
             ' deal wit hthe missing formula data
+            formula_str = "*"
+            adducts_str = "*"
+        Else
+            formula_str = topFormula.formula.EmpiricalFormula
+            adducts_str = topFormula.adducts.AdductIonName
         End If
 
         If checkSpectrum Is Nothing Then
@@ -182,8 +190,8 @@ Public Module Consensus
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
                 field("name") = cluster_name,
-                field("formula") = topFormula.formula.EmpiricalFormula,
-                field("adducts") = topFormula.adducts.AdductIonName,
+                field("formula") = formula_str,
+                field("adducts") = adducts_str,
                 field("rt") = ref_rt,
                 field("mz") = mz_str,
                 field("intensity") = intensity_str,
@@ -199,8 +207,8 @@ Public Module Consensus
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
                 field("name") = cluster_name,
-                field("formula") = topFormula.formula.EmpiricalFormula,
-                field("adducts") = topFormula.adducts.AdductIonName,
+                field("formula") = formula_str,
+                field("adducts") = adducts_str,
                 field("rt") = ref_rt,
                 field("mz") = mz_str,
                 field("intensity") = intensity_str,
