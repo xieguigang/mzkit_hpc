@@ -130,16 +130,17 @@ Public Module Consensus
             .ToArray
         Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
         Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
-        Dim formulaSet As Dictionary(Of String, Integer) = spectrumData _
+        Dim metabolites = spectrumData _
             .Where(Function(s) s.formula <> "NA") _
+            .ToArray
+        Dim formulaSet As Dictionary(Of String, Integer) = metabolites _
             .Select(Function(s) s.formula) _
             .GroupBy(Function(s) s) _
             .ToDictionary(Function(s) s.Key,
                           Function(s)
                               Return s.Count
                           End Function)
-        Dim adducts As String() = spectrumData _
-            .Where(Function(s) s.adducts <> "NA") _
+        Dim adducts As String() = metabolites _
             .Select(Function(s) s.adducts) _
             .Distinct _
             .ToArray
@@ -161,7 +162,19 @@ Public Module Consensus
         Dim consensusSpectrum As New PeakMs2("", consens.Select(Function(i) New ms2(Val(i.name), i.Average(Function(a) a.intensity))))
         Dim entropy As Double = consensusSpectrum.Entropy
         Dim splash_id As String = SplashID.MsSplashId(consensusSpectrum)
-        Dim names = spectrumData.Where(Function(a) a.formula <> "NA" AndAlso FormulaScanner.ScanFormula(a.formula) = topFormula.formula AndAlso a.adducts = topFormula.adducts.AdductIonName).Select(Function(a) a.name).Distinct.JoinBy("/")
+        Dim names = metabolites _
+            .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula.formula AndAlso a.adducts = topFormula.adducts.AdductIonName) _
+            .Select(Function(a) a.name) _
+            .Distinct _
+            .ToArray
+
+        If names.IsNullOrEmpty Then
+            names = {"unknown conserved[" & consensusSpectrum.mzInto _
+                    .OrderByDescending(Function(m) m.intensity) _
+                    .Take(5) _
+                    .Select(Function(mzi) mzi.mz.ToString("F2")) _
+                    .JoinBy("/") & "]"}
+        End If
 
         If checkSpectrum Is Nothing Then
             ' add new
@@ -173,7 +186,7 @@ Public Module Consensus
                 field("precursor_entropy") = precursor_entropy,
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
-                field("name") = "",
+                field("name") = names.JoinBy("/"),
                 field("formula") = topFormula.formula.EmpiricalFormula,
                 field("adducts") = topFormula.adducts.AdductIonName,
                 field("rt") = ref_rt,
@@ -190,7 +203,7 @@ Public Module Consensus
                 field("precursor_entropy") = precursor_entropy,
                 field("consensus_entropy") = entropy,
                 field("splash_id") = splash_id,
-                field("name") = "",
+                field("name") = names.JoinBy("/"),
                 field("formula") = topFormula.formula.EmpiricalFormula,
                 field("adducts") = topFormula.adducts.AdductIonName,
                 field("rt") = ref_rt,
