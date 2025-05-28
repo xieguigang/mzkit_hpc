@@ -187,7 +187,7 @@ Public Module Consensus
         Dim annotations As New List(Of Double)
         Dim precursor_type As New AdductIon(adduct_type.adducts)
 
-        Static annotation = FragmentAssigner.Default
+        Static annotation As FragmentAssigner = FragmentAssigner.Default
 
         For Each spec As PeakMs2 In clusterdata
             Dim result = annotation.FastFragmnetAssigner(spec.GetPeaks.AsList, formula, precursor_type)
