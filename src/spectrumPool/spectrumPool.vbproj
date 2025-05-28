@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\..\..\src\assembly\SpectrumTree\spectrumTree.NETCore5.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\MoleculeNetworking\MoleculeNetworking.vbproj" />
     <ProjectReference Include="..\..\..\..\..\src\mzmath\ms2_math-core\mzmath-netcore5.vbproj" />
+    <ProjectReference Include="..\..\..\..\..\src\mzmath\MSFinder\MSFinder.vbproj" />
   </ItemGroup>
 
 </Project>

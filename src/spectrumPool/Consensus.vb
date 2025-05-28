@@ -1,13 +1,17 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+Imports BioNovoGene.BioDeep.Chemoinformatics.Formula
+Imports BioNovoGene.BioDeep.Chemoinformatics.Formula.MS
 Imports BioNovoGene.BioDeep.MassSpectrometry.MoleculeNetworking.PoolData
+Imports BioNovoGene.BioDeep.MSFinder
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar.Tqdm
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Math
 Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports Oracle.LinuxCompatibility.MySQL.Reflection.DbAttributes
+Imports spectrumPool.clusterModels
 
 Public Module Consensus
 
@@ -77,6 +81,8 @@ Public Module Consensus
             .select(Of clusterSpectrumData)(
                 "metadata.mz as precursor",
                 "rt",
+                "formula",
+                "adducts",
                 "intensity AS `into`",
                 "spectrum_pool.mz",
                 "`into` AS intensity")
@@ -98,6 +104,11 @@ Public Module Consensus
                     End Function) _
             .Where(Function(s) Not s Is Nothing) _
             .ToArray
+        Dim precursor_groups = spectrumData.Select(Function(s) s.precursor) _
+            .GroupBy(Tolerance.DeltaMass(0.3)) _
+            .OrderByDescending(Function(p) p.Length) _
+            .ToArray
+        Dim precursor_mz As Double = Val(precursor_groups(0).name)
         Dim consens As NamedCollection(Of ms2)() = decodeSpectrum _
             .Select(Function(s) s.mzInto) _
             .IteratesALL _
@@ -107,16 +118,43 @@ Public Module Consensus
             .ToArray
         Dim mz_str As String = HttpTreeFs.encode(consens.Select(Function(m) Val(m.name)))
         Dim intensity_str As String = HttpTreeFs.encode(consens.Select(Function(m) m.Average(Function(i) i.intensity)))
+        Dim formulaSet As Dictionary(Of String, Integer) = spectrumData _
+            .Where(Function(s) s.formula <> "NA") _
+            .Select(Function(s) s.formula) _
+            .GroupBy(Function(s) s) _
+            .ToDictionary(Function(s) s.Key,
+                          Function(s)
+                              Return s.Count
+                          End Function)
+        Dim adducts As String() = spectrumData.Where(Function(s) s.adducts <> "NA").Select(Function(s) s.adducts).Distinct.ToArray
         Dim peak_ranking As ms2() = consens _
             .Select(Function(m) Val(m.name)) _
-            .consens_peakRanking(decodeSpectrum, mzdiff) _
+            .consens_peakRanking(decodeSpectrum, precursor_mz, adducts, formulaSet, mzdiff) _
             .ToArray
 
 
     End Function
 
     <Extension>
-    Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double), clusterdata As PeakMs2(), mzdiff As Tolerance) As IEnumerable(Of ms2)
+    Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double),
+                                                  clusterdata As PeakMs2(),
+                                                  precursor As Double,
+                                                  adducts As String(),
+                                                  formulaSet As Dictionary(Of String, Integer),
+                                                  mzdiff As Tolerance) As IEnumerable(Of ms2)
+
+        Dim formulaRank = formulaSet _
+            .Select(Function(f_str)
+                        Return RankFormula(f_str, clusterdata, precursor, adducts)
+                    End Function) _
+            .Where(Function(c) Not c.formula Is Nothing) _
+            .OrderByDescending(Function(f)
+                                   Return f.replicates * f.scores.Average
+                               End Function) _
+            .FirstOrDefault
+
+        Dim annotation = FragmentAssigner.Default
+
         For Each mz As Double In consensus_mz
             Dim count As Integer = clusterdata _
                 .AsParallel _
@@ -130,6 +168,33 @@ Public Module Consensus
             }
         Next
     End Function
+
+    Private Function RankFormula(f_str As KeyValuePair(Of String, Integer),
+                                 clusterdata As PeakMs2(),
+                                 precursor As Double,
+                                 adducts As String()) As (formula As Formula, replicates As Integer, scores As Double())
+
+        Dim formula As Formula = FormulaScanner.ScanFormula(f_str.Key)
+        Dim adduct_type = PrecursorType.FindPrecursorType(formula.ExactMass, precursor, adducts, Tolerance.DeltaMass(0.5))
+
+        If adduct_type.errors.IsNaNImaginary Then
+            Return Nothing
+        End If
+
+        Dim annotations As New List(Of Double)
+        Dim precursor_type As New AdductIon(adduct_type.adducts)
+
+        Static annotation = FragmentAssigner.Default
+
+        For Each spec As PeakMs2 In clusterdata
+            Dim result = annotation.FastFragmnetAssigner(spec.GetPeaks.AsList, formula, precursor_type)
+            Dim fragments = result.Where(Function(s) Not s.Comment.StringEmpty(, True)).Count
+
+            Call annotations.Add(fragments / spec.mzInto.Length)
+        Next
+
+        Return (formula, replicates:=f_str.Value, scores:=annotations.ToArray)
+    End Function
 End Module
 
 Public Class clusterSpectrumData
@@ -139,5 +204,7 @@ Public Class clusterSpectrumData
     <DatabaseField> Public Property into As Double
     <DatabaseField> Public Property mz As String
     <DatabaseField> Public Property intensity As String
+    <DatabaseField> Public Property formula As String
+    <DatabaseField> Public Property adducts As String
 
 End Class
