@@ -2,6 +2,7 @@
 Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Scripting.MetaData
+Imports Oracle.LinuxCompatibility.MySQL.MySqlBuilder
 Imports SMRUCC.Rsharp.Runtime
 Imports SMRUCC.Rsharp.Runtime.Interop
 Imports spectrumPool
@@ -91,7 +92,15 @@ Module MoleculeNetworking
 
     <ExportAPI("consensus_annotation")>
     Public Function consensus_annotation(repo As dataPool, model As clusterModels.consensus_model, cluster_id As String) As Object
+        Dim cluster As clusterModels.cluster = repo.cluster _
+           .where(field("model_id") = model.model_id And field("id") = cluster_id) _
+           .find(Of clusterModels.cluster)
 
+        If cluster Is Nothing Then
+            Throw New ArgumentException($"Cluster with ID '{cluster_id}' not found in model '{model.model_id}'.")
+        End If
+
+        Return repo.ClusterAnnotation(model, cluster)
     End Function
 
     <ExportAPI("consensus_model")>
