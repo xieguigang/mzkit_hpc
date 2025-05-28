@@ -82,6 +82,7 @@ Public Module Consensus
                 "metadata.mz as precursor",
                 "rt",
                 "formula",
+                "name",
                 "adducts",
                 "intensity AS `into`",
                 "spectrum_pool.mz",
@@ -126,10 +127,23 @@ Public Module Consensus
                           Function(s)
                               Return s.Count
                           End Function)
-        Dim adducts As String() = spectrumData.Where(Function(s) s.adducts <> "NA").Select(Function(s) s.adducts).Distinct.ToArray
+        Dim adducts As String() = spectrumData _
+            .Where(Function(s) s.adducts <> "NA") _
+            .Select(Function(s) s.adducts) _
+            .Distinct _
+            .ToArray
+        Dim topFormula = formulaSet _
+            .Select(Function(f_str)
+                        Return RankFormula(f_str, decodeSpectrum, precursor_mz, adducts)
+                    End Function) _
+            .Where(Function(c) Not c.formula Is Nothing) _
+            .OrderByDescending(Function(f)
+                                   Return f.replicates * f.scores.Average
+                               End Function) _
+            .FirstOrDefault
         Dim peak_ranking As ms2() = consens _
             .Select(Function(m) Val(m.name)) _
-            .consens_peakRanking(decodeSpectrum, precursor_mz, adducts, formulaSet, mzdiff) _
+            .consens_peakRanking(decodeSpectrum, precursor_mz, adducts, topFormula.formula, mzdiff) _
             .ToArray
 
 
@@ -140,19 +154,8 @@ Public Module Consensus
                                                   clusterdata As PeakMs2(),
                                                   precursor As Double,
                                                   adducts As String(),
-                                                  formulaSet As Dictionary(Of String, Integer),
+                                                  formula As Formula,
                                                   mzdiff As Tolerance) As IEnumerable(Of ms2)
-
-        Dim formulaRank = formulaSet _
-            .Select(Function(f_str)
-                        Return RankFormula(f_str, clusterdata, precursor, adducts)
-                    End Function) _
-            .Where(Function(c) Not c.formula Is Nothing) _
-            .OrderByDescending(Function(f)
-                                   Return f.replicates * f.scores.Average
-                               End Function) _
-            .FirstOrDefault
-
         Dim annotation = FragmentAssigner.Default
 
         For Each mz As Double In consensus_mz
@@ -206,5 +209,6 @@ Public Class clusterSpectrumData
     <DatabaseField> Public Property intensity As String
     <DatabaseField> Public Property formula As String
     <DatabaseField> Public Property adducts As String
+    <DatabaseField> Public Property name As String
 
 End Class
