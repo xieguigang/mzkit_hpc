@@ -143,7 +143,7 @@ Public Module Consensus
             .FirstOrDefault
         Dim peak_ranking As ms2() = consens _
             .Select(Function(m) Val(m.name)) _
-            .consens_peakRanking(decodeSpectrum, precursor_mz, adducts, topFormula.formula, mzdiff) _
+            .consens_peakRanking(decodeSpectrum, precursor_mz, topFormula.adducts, topFormula.formula, mzdiff) _
             .ToArray
 
 
@@ -153,10 +153,11 @@ Public Module Consensus
     Private Iterator Function consens_peakRanking(consensus_mz As IEnumerable(Of Double),
                                                   clusterdata As PeakMs2(),
                                                   precursor As Double,
-                                                  adducts As String(),
+                                                  adducts As AdductIon,
                                                   formula As Formula,
                                                   mzdiff As Tolerance) As IEnumerable(Of ms2)
-        Dim annotation = FragmentAssigner.Default
+        Dim annotation As FragmentAssigner = FragmentAssigner.Default
+        Dim peaks As New List(Of SpectrumPeak)
 
         For Each mz As Double In consensus_mz
             Dim count As Integer = clusterdata _
@@ -164,18 +165,20 @@ Public Module Consensus
                 .Where(Function(s) s.GetIntensity(mz, mzdiff) > 0) _
                 .Count
 
-            Yield New ms2 With {
+            Call peaks.Add(New SpectrumPeak(New ms2 With {
                 .mz = mz,
                 .intensity = count / clusterdata.Length,
                 .Annotation = ""
-            }
+            }))
         Next
+
+        Dim annotated = annotation.FastFragmnetAssigner(peaks, formula, adducts)
     End Function
 
     Private Function RankFormula(f_str As KeyValuePair(Of String, Integer),
                                  clusterdata As PeakMs2(),
                                  precursor As Double,
-                                 adducts As String()) As (formula As Formula, replicates As Integer, scores As Double())
+                                 adducts As String()) As (formula As Formula, replicates As Integer, scores As Double(), adducts As AdductIon)
 
         Dim formula As Formula = FormulaScanner.ScanFormula(f_str.Key)
         Dim adduct_type = PrecursorType.FindPrecursorType(formula.ExactMass, precursor, adducts, Tolerance.DeltaMass(0.5))
@@ -196,7 +199,11 @@ Public Module Consensus
             Call annotations.Add(fragments / spec.mzInto.Length)
         Next
 
-        Return (formula, replicates:=f_str.Value, scores:=annotations.ToArray)
+        Return (formula,
+            replicates:=f_str.Value,
+            scores:=annotations.ToArray,
+            adducts:=precursor_type
+        )
     End Function
 End Module
 
