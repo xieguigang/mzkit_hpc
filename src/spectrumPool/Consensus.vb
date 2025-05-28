@@ -164,6 +164,10 @@ Public Module Consensus
         Dim splash_id As String = SplashID.MsSplashId(consensusSpectrum)
         Dim cluster_name As String = metabolites.buildClusterName(topFormula.formula, topFormula.adducts.AdductIonName, consensusSpectrum)
 
+        If topFormula.formula Is Nothing OrElse topFormula.adducts.AdductIonName Is Nothing Then
+
+        End If
+
         If checkSpectrum Is Nothing Then
             ' add new
             Call mysql.consensus_spectrum.add(
