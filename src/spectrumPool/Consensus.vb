@@ -209,33 +209,35 @@ Public Module Consensus
 
     <Extension>
     Private Function buildClusterName(metabolites As clusterSpectrumData(), topFormula As Formula, adducts As String, consensusSpectrum As PeakMs2) As String
-        Dim names = metabolites _
-            .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula AndAlso adducts = a.adducts) _
-            .Select(Function(a) a.name) _
-            .Distinct _
-            .ToArray
-
-        If Not names.IsNullOrEmpty Then
-            If names.Length = 1 Then
-                Return names(0)
-            Else
-                Return $"Isomer[{names.JoinBy("; ")}]"
-            End If
-        End If
-
-        If names.IsNullOrEmpty Then
-            names = metabolites _
-                .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula) _
+        If topFormula IsNot Nothing AndAlso adducts IsNot Nothing Then
+            Dim names = metabolites _
+                .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula AndAlso adducts = a.adducts) _
                 .Select(Function(a) a.name) _
                 .Distinct _
                 .ToArray
-        End If
 
-        If Not names.IsNullOrEmpty Then
-            If names.Length = 1 Then
-                Return $"{names(0)}*"
-            Else
-                Return $"Candidate Isomer[{names.JoinBy("; ")}]"
+            If Not names.IsNullOrEmpty Then
+                If names.Length = 1 Then
+                    Return names(0)
+                Else
+                    Return $"Isomer[{names.JoinBy("; ")}]"
+                End If
+            End If
+
+            If names.IsNullOrEmpty Then
+                names = metabolites _
+                    .Where(Function(a) FormulaScanner.ScanFormula(a.formula) = topFormula) _
+                    .Select(Function(a) a.name) _
+                    .Distinct _
+                    .ToArray
+            End If
+
+            If Not names.IsNullOrEmpty Then
+                If names.Length = 1 Then
+                    Return $"{names(0)}*"
+                Else
+                    Return $"Candidate Isomer[{names.JoinBy("; ")}]"
+                End If
             End If
         End If
 
@@ -269,6 +271,14 @@ Public Module Consensus
                 .Annotation = ""
             }))
         Next
+
+        If formula Is Nothing OrElse adducts Is Nothing Then
+            For Each peak As SpectrumPeak In peaks
+                Yield New ms2(peak)
+            Next
+
+            Return
+        End If
 
         Dim checkPpm As Tolerance = Tolerance.PPM(15)
         Dim annotated = annotation.FastFragmnetAssigner(peaks, formula, adducts)
