@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.CompilerServices
+﻿Imports System.Drawing
+Imports System.Runtime.CompilerServices
 Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1.PrecursorType
@@ -107,6 +108,7 @@ Public Module Consensus
                 "metadata.mz as precursor",
                 "rt",
                 "formula",
+                "xref_id",
                 "name",
                 "adducts",
                 "intensity AS `into`",
@@ -153,12 +155,16 @@ Public Module Consensus
         Dim metabolites = spectrumData _
             .Where(Function(s) s.formula <> "NA") _
             .ToArray
-        Dim formulaSet As Dictionary(Of String, Integer) = metabolites _
-            .Select(Function(s) s.formula) _
-            .GroupBy(Function(s) s) _
+        Dim formulaSet As Dictionary(Of String, (src As NamedValue(Of String)(), size%)) = metabolites _
+            .GroupBy(Function(s) s.formula) _
             .ToDictionary(Function(s) s.Key,
                           Function(s)
-                              Return s.Count
+                              Return (s _
+                                  .GroupBy(Function(i) i.xref_id) _
+                                  .Select(Function(a)
+                                              Return New NamedValue(Of String)(a.Key, a.First.name)
+                                          End Function) _
+                                  .ToArray, s.Count)
                           End Function)
         Dim adducts As String() = metabolites _
             .Select(Function(s) s.adducts) _
@@ -188,14 +194,17 @@ Public Module Consensus
 
         Dim formula_str As String
         Dim adducts_str As String
+        Dim xref_str As String
 
         If topFormula.formula Is Nothing OrElse topFormula.adducts.AdductIonName Is Nothing Then
             ' deal wit hthe missing formula data
             formula_str = "*"
             adducts_str = "*"
+            xref_str = "-"
         Else
             formula_str = topFormula.formula.EmpiricalFormula
             adducts_str = topFormula.adducts.AdductIonName
+            xref_str = topFormula.src.Select(Function(s) s.Name).JoinBy(", ")
         End If
 
         If checkSpectrum Is Nothing Then
@@ -213,6 +222,7 @@ Public Module Consensus
                 field("adducts") = adducts_str,
                 field("rt") = ref_rt,
                 field("mz") = mz_str,
+                field("idset") = xref_str,
                 field("intensity") = intensity_str,
                 field("peak_ranking") = peak_ranking.GetJson,
                 field("umap") = ""
@@ -231,7 +241,8 @@ Public Module Consensus
                 field("rt") = ref_rt,
                 field("mz") = mz_str,
                 field("intensity") = intensity_str,
-                field("peak_ranking") = peak_ranking.GetJson
+                field("peak_ranking") = peak_ranking.GetJson,
+                field("idset") = xref_str
             )
         End If
 
@@ -339,10 +350,10 @@ Public Module Consensus
         Next
     End Function
 
-    Private Function RankFormula(f_str As KeyValuePair(Of String, Integer),
+    Private Function RankFormula(f_str As KeyValuePair(Of String, (src As NamedValue(Of String)(), size%)),
                                  clusterdata As PeakMs2(),
                                  precursor As Double,
-                                 adducts As String()) As (formula As Formula, replicates As Integer, scores As Double(), adducts As AdductIon)
+                                 adducts As String()) As (formula As Formula, replicates As Integer, src As NamedValue(Of String)(), scores As Double(), adducts As AdductIon)
 
         Dim formula As Formula = FormulaScanner.ScanFormula(f_str.Key)
         Dim rank As New AdductsRanking
@@ -367,7 +378,8 @@ Public Module Consensus
             .ToArray
 
         Return (formula,
-            replicates:=f_str.Value,
+            replicates:=f_str.Value.size,
+            src:=f_str.Value.src,
             scores:=annotations,
             adducts:=precursor_type
         )
@@ -384,5 +396,6 @@ Public Class clusterSpectrumData
     <DatabaseField> Public Property formula As String
     <DatabaseField> Public Property adducts As String
     <DatabaseField> Public Property name As String
+    <DatabaseField> Public Property xref_id As String
 
 End Class
