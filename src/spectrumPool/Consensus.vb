@@ -34,13 +34,31 @@ Public Module Consensus
             Throw New ArgumentException($"Model '{model}' not found in the database.")
         End If
 
-        Call mysql.consensus_model.add(
-            field("model_id") = modelObj.id,
-            field("consensus_cutoff") = cutoff,
-            field("umap_dimension") = dimensions,
-            field("umap_neighbors") = knn,
-            field("umap_others") = "{}"
-        )
+        Dim json As New Dictionary(Of String, String) From {
+            {"model_id", modelObj.id},
+            {"cutoff", cutoff.ToString("F4")},
+            {"dims", dimensions},
+            {"knn", knn},
+            {"others", "{}"}
+        }
+        Dim hashcode As String = json.GetJson.MD5
+        Dim check = mysql.consensus_model _
+            .where(field("model_id") = modelObj.id,
+                   field("hashcode") = hashcode) _
+            .find(Of clusterModels.consensus_model)
+
+        If Not check Is Nothing Then
+            Return check
+        Else
+            Call mysql.consensus_model.add(
+                field("model_id") = modelObj.id,
+                field("consensus_cutoff") = cutoff,
+                field("umap_dimension") = dimensions,
+                field("umap_neighbors") = knn,
+                field("umap_others") = "{}",
+                field("hashcode") = hashcode
+            )
+        End If
 
         Return mysql.consensus_model _
             .where(field("model_id") = modelObj.id) _
