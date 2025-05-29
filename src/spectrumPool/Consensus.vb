@@ -1,5 +1,7 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
+Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1.PrecursorType
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
 Imports BioNovoGene.BioDeep.Chemoinformatics.Formula
 Imports BioNovoGene.BioDeep.Chemoinformatics.Formula.MS
@@ -325,7 +327,9 @@ Public Module Consensus
                                  adducts As String()) As (formula As Formula, replicates As Integer, scores As Double(), adducts As AdductIon)
 
         Dim formula As Formula = FormulaScanner.ScanFormula(f_str.Key)
-        Dim adduct_type = PrecursorType.FindPrecursorType(formula.ExactMass, precursor, adducts, Tolerance.DeltaMass(0.5))
+        Dim rank As New AdductsRanking
+        Dim filter_adducts = rank.RankAdducts(formula, adducts).ToArray
+        Dim adduct_type As TypeMatch = filter_adducts.FindPrecursorType(formula.ExactMass, precursor, tolerance:=Tolerance.DeltaMass(0.5))
 
         If adduct_type.errors.IsNaNImaginary Then
             Return Nothing
