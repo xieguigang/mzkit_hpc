@@ -1,5 +1,4 @@
-﻿Imports System.Drawing
-Imports System.Runtime.CompilerServices
+﻿Imports System.Runtime.CompilerServices
 Imports BioNovoGene.Analytical.MassSpectrometry.Math
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1
 Imports BioNovoGene.Analytical.MassSpectrometry.Math.Ms1.PrecursorType
