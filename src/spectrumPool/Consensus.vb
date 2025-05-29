@@ -178,7 +178,7 @@ Public Module Consensus
                                    Return f.replicates * f.scores.Average
                                End Function) _
             .FirstOrDefault
-        Dim ref_rt As Double = spectrumData.Select(Function(a) a.rt).TabulateMode(topBin:=True, bags:=9)
+        Dim ref_rt As Double = spectrumData.Select(Function(a) a.rt).Where(Function(rt) rt > 0).TabulateMode(topBin:=True, bags:=9)
         Dim peak_ranking As ms2() = consens _
             .Select(Function(m) Val(m.name)) _
             .consens_peakRanking(decodeSpectrum, precursor_mz, topFormula.adducts, topFormula.formula, mzdiff) _
