@@ -1,4 +1,63 @@
-﻿Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
+﻿#Region "Microsoft.VisualBasic::367bbba7e42bfcaff9bac6c2a69f28f4, Rscript\Library\mzkit_hpc\src\hpc\MoleculeNetworking.vb"
+
+    ' Author:
+    ' 
+    '       xieguigang (gg.xie@bionovogene.com, BioNovoGene Co., LTD.)
+    ' 
+    ' Copyright (c) 2018 gg.xie@bionovogene.com, BioNovoGene Co., LTD.
+    ' 
+    ' 
+    ' MIT License
+    ' 
+    ' 
+    ' Permission is hereby granted, free of charge, to any person obtaining a copy
+    ' of this software and associated documentation files (the "Software"), to deal
+    ' in the Software without restriction, including without limitation the rights
+    ' to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    ' copies of the Software, and to permit persons to whom the Software is
+    ' furnished to do so, subject to the following conditions:
+    ' 
+    ' The above copyright notice and this permission notice shall be included in all
+    ' copies or substantial portions of the Software.
+    ' 
+    ' THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    ' IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    ' FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    ' AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    ' LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    ' OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    ' SOFTWARE.
+
+
+
+    ' /********************************************************************************/
+
+    ' Summaries:
+
+
+    ' Code Statistics:
+
+    '   Total Lines: 122
+    '    Code Lines: 82 (67.21%)
+    ' Comment Lines: 22 (18.03%)
+    '    - Xml Docs: 100.00%
+    ' 
+    '   Blank Lines: 18 (14.75%)
+    '     File Size: 5.48 KB
+
+
+    ' Module MoleculeNetworking
+    ' 
+    '     Function: consensus_annotation, consensus_model, createPool, getClusterSpectrum, openPool
+    '               setFileInfo, setGroupInfo, setProjectContext
+    ' 
+    '     Sub: ScanConsensus
+    ' 
+    ' /********************************************************************************/
+
+#End Region
+
+Imports BioNovoGene.Analytical.MassSpectrometry.Math.Spectra
 Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.Scripting.MetaData
@@ -120,3 +179,4 @@ Module MoleculeNetworking
         Call Consensus.ScanConsensus(mysql, args, page_size, top)
     End Sub
 End Module
+
