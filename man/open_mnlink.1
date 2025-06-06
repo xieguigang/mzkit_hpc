@@ -7,10 +7,6 @@ open_mnlink \- open_mnlink(user, passwd,
 \fIopen_mnlink(user, passwd,
     <i>host</i> = <span style='color: brown;'><strong>'127.0.0.1'</strong></span>,
     <i>port</i> = <span style='color: green;'>3306</span>)\fR
-.SH DESCRIPTION
-.PP
-Establishes a connection to the MySQL database used for storing spectral data and molecular networking information. Requires the graphQL package and MySQL driver.
-.PP
 .SH OPTIONS
 .PP
 \fBuser\fB \fR\- . Character string specifying the MySQL username for authentication.
@@ -32,6 +28,12 @@ Returns a MySQL connection object (CLR object) that can be used for subsequent d
 .PP
 This function loads required packages (graphQL and hpc) and initializes a connection using the specified credentials. Ensure MySQL service is running at the target host/port.
 .PP
+.SH EXAMPLES
+.PP
+\dontrun{ conn <- open_mnlink(user = "admin", passwd = "password", host = "db.server.com") }
+.PP
+.SH SEE ALSO
+\code{\link[graphQL]{mysql}} for MySQL connection management
 .SH FILES
 .PP
 SMRUCC/R#.declare_function.open_mnlink at mn_tools.R:line 25

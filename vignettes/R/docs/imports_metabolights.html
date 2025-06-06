@@ -22,7 +22,7 @@
 
         <h3>Description</h3>
 
-        <p>Processes MetaboLights study data including sample metadata and investigation files, then imports mass spectrometry data into specified clustering models in the database.</p>
+        
 
         <h3>Usage</h3>
 
@@ -63,9 +63,9 @@
 
         <p>Invisibly returns NULL. Main effects include: <em> Uploads study metadata to MySQL database </em> Imports raw spectra into specified clustering models * Updates file metadata in the repository</p>
 
-        <h3 style="display: none;">Examples</h3>
+        <h3 style="display: block;">Examples</h3>
 
-        
+        <pre><code id="example_r">\dontrun{ # Using explicit model list imports_metabolights( sample_metadata = "s_study.txt", model_name = list(positive = "metab_pos", negative = "metab_neg"), repo = open_mnlink(user = "admin", passwd = "secret") ) # Using auto-generated model names imports_metabolights( sample_metadata = "s_study.txt", model_name = "global_model" ) }</code></pre>
 
         <hr />
         <div style="text-align: center;">[Package <em>mzkit_hpc</em> version 3.2.56.56444 <a
