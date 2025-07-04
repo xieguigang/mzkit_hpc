@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::094ed53de109c9bc4cd81b6131e14a95, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\molecule_atoms.vb"
+﻿#Region "Microsoft.VisualBasic::bd6a525b70f17e2f672c5e385c4dea5d, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\molecule_atoms.vb"
 
     ' Author:
     ' 
@@ -228,4 +228,3 @@ End Class
 
 
 End Namespace
-

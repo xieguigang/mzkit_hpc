@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::5efe1bcd5a20e2eb695016e13aac55e2, Rscript\Library\mzkit_hpc\src\spectrumPool\views\spectrumData.vb"
+﻿#Region "Microsoft.VisualBasic::bf7b4206ba623027933ef882d79dade4, Rscript\Library\mzkit_hpc\src\spectrumPool\views\spectrumData.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 0.00%
     ' 
     '   Blank Lines: 3 (13.64%)
-    '     File Size: 987 B
+    '     File Size: 985 B
 
 
     ' Class spectrumData
@@ -79,4 +79,3 @@ Public Class spectrumData
     <DatabaseField> Public Property splash_id As String
 
 End Class
-

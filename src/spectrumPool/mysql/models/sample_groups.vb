@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::b35ac7a49651e81c03a25451ca1190b0, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\sample_groups.vb"
+﻿#Region "Microsoft.VisualBasic::cdfa472335b67e6dd30154e9abd721c0, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\sample_groups.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 100.00%
     ' 
     '   Blank Lines: 22 (14.29%)
-    '     File Size: 8.15 KB
+    '     File Size: 8.14 KB
 
 
     ' Class sample_groups
@@ -213,4 +213,3 @@ End Class
 
 
 End Namespace
-

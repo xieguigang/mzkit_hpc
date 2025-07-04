@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::9e6f75802b7872ae73280653cf73e5da, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\atoms.vb"
+﻿#Region "Microsoft.VisualBasic::86d97d451cf10d8bf07fd97e998942d0, Rscript\Library\mzkit_hpc\src\MoleculeTree\models\atoms.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 97.48%
     ' 
     '   Blank Lines: 22 (9.48%)
-    '     File Size: 11.65 KB
+    '     File Size: 11.64 KB
 
 
     ' Class atoms
@@ -291,4 +291,3 @@ End Class
 
 
 End Namespace
-

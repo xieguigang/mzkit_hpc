@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::7a62bc510783a2770b26581e52059e61, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\cluster_data.vb"
+﻿#Region "Microsoft.VisualBasic::374bba609f4dbda7d091fefa1003fe76, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\cluster_data.vb"
 
     ' Author:
     ' 
@@ -272,4 +272,3 @@ End Class
 
 
 End Namespace
-

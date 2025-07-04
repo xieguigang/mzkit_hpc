@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::2b11b510c5e548432c4585ad7f6a5916, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\cluster_tree.vb"
+﻿#Region "Microsoft.VisualBasic::145c995b6721a4e48ca9242740f6af94, Rscript\Library\mzkit_hpc\src\spectrumPool\mysql\models\cluster_tree.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 100.00%
     ' 
     '   Blank Lines: 22 (13.33%)
-    '     File Size: 7.52 KB
+    '     File Size: 7.51 KB
 
 
     ' Class cluster_tree
@@ -224,4 +224,3 @@ End Class
 
 
 End Namespace
-

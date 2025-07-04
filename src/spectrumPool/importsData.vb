@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::3eeb95fbf20bbd081ac642b77410001c, Rscript\Library\mzkit_hpc\src\spectrumPool\importsData.vb"
+﻿#Region "Microsoft.VisualBasic::171bca54419559f51d34c58d8261c294, Rscript\Library\mzkit_hpc\src\spectrumPool\importsData.vb"
 
     ' Author:
     ' 
@@ -43,7 +43,7 @@
     '    - Xml Docs: 0.00%
     ' 
     '   Blank Lines: 1 (33.33%)
-    '     File Size: 39 B
+    '     File Size: 37 B
 
 
     ' Class importsData
@@ -57,4 +57,3 @@
 Public Class importsData
 
 End Class
-
