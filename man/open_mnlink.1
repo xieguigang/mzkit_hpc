@@ -7,6 +7,13 @@ open_mnlink \- open_mnlink(user, passwd,
 \fIopen_mnlink(user, passwd,
     <i>host</i> = <span style='color: brown;'><strong>'127.0.0.1'</strong></span>,
     <i>port</i> = <span style='color: green;'>3306</span>)\fR
+.SH DESCRIPTION
+.PP
+
+
+Establishes a connection to the MySQL database used for storing spectral data and
+molecular networking information. Requires the graphQL package and MySQL driver.
+.PP
 .SH OPTIONS
 .PP
 \fBuser\fB \fR\- . Character string specifying the MySQL username for authentication.
@@ -15,22 +22,30 @@ open_mnlink \- open_mnlink(user, passwd,
 \fBpasswd\fB \fR\- . Character string containing the password for the MySQL user.
 .PP
 .PP
-\fBhost\fB \fR\- '127.0.0.1'. Character string specifying the host address of the MySQL server. Default is "127.0.0.1" (localhost).
+\fBhost\fB \fR\- '127.0.0.1'. Character string specifying the host address of the MySQL server.
+Default is "127.0.0.1" (localhost).
 .PP
 .PP
-\fBport\fB \fR\- 3306. Integer specifying the port number for the MySQL connection. Default is 3306 (standard MySQL port).
+\fBport\fB \fR\- 3306. Integer specifying the port number for the MySQL connection.
+Default is 3306 (standard MySQL port).
 .PP
 .SH VALUE
 .PP
-Returns a MySQL connection object (CLR object) that can be used for subsequent database operations. The connection is configured to use the "sample_pool" database.
+Returns a MySQL connection object (CLR object) that can be used for subsequent database
+operations. The connection is configured to use the "sample_pool" database.
 .PP
 .SH DETAILS
 .PP
-This function loads required packages (graphQL and hpc) and initializes a connection using the specified credentials. Ensure MySQL service is running at the target host/port.
+This function loads required packages (graphQL and hpc) and initializes a connection
+using the specified credentials. Ensure MySQL service is running at the target host/port.
 .PP
 .SH EXAMPLES
 .PP
-\dontrun{ conn <- open_mnlink(user = "admin", passwd = "password", host = "db.server.com") }
+#\dontrun{
+
+conn <- open_mnlink(user = "admin", passwd = "password", host = "db.server.com")
+
+#}
 .PP
 .SH SEE ALSO
 \code{\link[graphQL]{mysql}} for MySQL connection management

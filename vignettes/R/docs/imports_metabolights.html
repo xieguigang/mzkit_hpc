@@ -22,7 +22,8 @@
 
         <h3>Description</h3>
 
-        
+        <p>Processes MetaboLights study data including sample metadata and investigation files,
+then imports mass spectrometry data into specified clustering models in the database.</p>
 
         <h3>Usage</h3>
 
@@ -38,22 +39,45 @@
         <table>
             
 <dt>sample.metadata</dt>
-<dd><p><p>Character string specifying the file path to the sample metadata (e.g., s_*.txt from MetaboLights). Should contain biosample information.</p></p></dd>
+<dd><p><p>Character string specifying the file path to the sample metadata
+(e.g., s_*.txt from MetaboLights). Should contain biosample information.</p></p></dd>
 
 
 <dt>model.name</dt>
-<dd><p><p>Either a named list or character string specifying spectral clustering models: <em> If a named list, must contain "positive" and "negative" elements specifying model names for each polarity mode </em> If a character string, models will be auto-generated with "<em>POS" and "</em>NEG" suffixes for respective polarities Default: list(positive = "xxx<em>pos", negative = "xxx</em>neg")</p></p></dd>
+<dd><p><p>Either a named list or character string specifying spectral clustering models:
+<ul>
+<li>If a named list, must contain "positive" and "negative" elements specifying</li>
+</ul></p>
+
+<p>model names for each polarity mode
+<ul>
+<li>If a character string, models will be auto-generated with "<em>POS" and "</em>NEG"</li>
+</ul></p>
+
+<p>suffixes for respective polarities
+Default: list(positive = "xxx<em>pos", negative = "xxx</em>neg")</p></p></dd>
 
 
 <dt>repo</dt>
-<dd><p><p>MySQL connection object created by \code{open_mnlink}. Default uses placeholder credentials (replace for production use).</p></p></dd>
+<dd><p><p>MySQL connection object created by \code{open_mnlink}. Default uses placeholder
+credentials (replace for production use).</p></p></dd>
 
         </table>
 
 
         <h3 style="display: block;">Details</h3>
 
-        <p>Requires MetaboLights package for study file parsing and JSON package for data handling. Raw data files are expected in [investigation<em>dir]/FILES/[polarity]/[sample</em>name].raw. The function performs: 1. Study metadata parsing and database registration 2. Polarity-specific data insertion into clustering models 3. Biosample-instrument associations the folder that contains the given <code>sample_metadata</code> input file that should contains the files of: i<em>Investigation.txt MetaboLights investigation file (i</em>Investigation.txt). Used to extract study-level metadata.</p>
+        <p>Requires MetaboLights package for study file parsing and JSON package for data handling.
+Raw data files are expected in [investigation<em>dir]/FILES/[polarity]/[sample</em>name].raw.
+The function performs:
+<ol>
+<li>Study metadata parsing and database registration</li>
+<li>Polarity-specific data insertion into clustering models</li>
+<li>Biosample-instrument associations</li>
+</ol></p>
+
+<p>the folder that contains the given <code>sample_metadata</code> input file that should contains the files of:
+i<em>Investigation.txt MetaboLights investigation file (i</em>Investigation.txt). Used to extract study-level metadata.</p>
 
         <h3 style="display: block">Authors</h3>
 
@@ -61,11 +85,30 @@
 
         <h3>Value</h3>
 
-        <p>Invisibly returns NULL. Main effects include: <em> Uploads study metadata to MySQL database </em> Imports raw spectra into specified clustering models * Updates file metadata in the repository</p>
+        <p>Invisibly returns NULL. Main effects include:
+<ul>
+<li>Uploads study metadata to MySQL database</li>
+<li>Imports raw spectra into specified clustering models</li>
+<li>Updates file metadata in the repository</li>
+</ul></p>
 
         <h3 style="display: block;">Examples</h3>
 
-        <pre><code id="example_r">\dontrun{ # Using explicit model list imports_metabolights( sample_metadata = "s_study.txt", model_name = list(positive = "metab_pos", negative = "metab_neg"), repo = open_mnlink(user = "admin", passwd = "secret") ) # Using auto-generated model names imports_metabolights( sample_metadata = "s_study.txt", model_name = "global_model" ) }</code></pre>
+        <pre><code id="example_r">#\dontrun{
+
+# Using explicit model list
+imports_metabolights(
+sample_metadata = "s_study.txt",
+model_name = list(positive = "metab_pos", negative = "metab_neg"),
+repo = open_mnlink(user = "admin", passwd = "secret")
+)
+# Using auto-generated model names
+imports_metabolights(
+sample_metadata = "s_study.txt",
+model_name = "global_model"
+)
+
+#}</code></pre>
 
         <hr />
         <div style="text-align: center;">[Package <em>mzkit_hpc</em> version 3.2.56.56444 <a
